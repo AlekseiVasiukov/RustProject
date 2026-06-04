@@ -1,0 +1,17 @@
+title="Weapon_Bases"
+
+[[weapon_bases]]
+weapon_ranged=false
+name="sword"
+base_damage=10
+
+#unsupported
+[[weapon_bases]]
+weapon_ranged=false
+name="axe"
+base_damage=15
+
+[[weapon_bases]]
+weapon_ranged=true
+name="bow"
+base_damage=8
