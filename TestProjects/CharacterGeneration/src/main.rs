@@ -1,5 +1,25 @@
 use std::collections::HashMap;
 
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+pub enum Attribute {
+    Health, 
+    Attack, 
+    Range,
+    Defense,
+}
+
+impl Attribute {
+    pub fn all() -> Vec<Self>{
+        vec![
+            Self::Health,
+            Self::Attack,
+            Self::Range,
+            Self::Defense,
+        ]
+    }
+}
+
 fn main() {
     let mut success_params = HashMap::new();
     success_params.insert("health".to_string(), Parameter::new(8).unwrap());
