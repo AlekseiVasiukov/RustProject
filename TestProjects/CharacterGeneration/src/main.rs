@@ -4,8 +4,10 @@ fn main() {
     let mut success_params = HashMap::new();
     success_params.insert("health".to_string(), Parameter::new(8).unwrap());
     success_params.insert("attack".to_string(), Parameter::new(6).unwrap());
+    success_params.insert("range".to_string(), Parameter::new(6).unwrap());
+    success_params.insert("defense".to_string(), Parameter::new(6).unwrap());
 
-    match Character::new(success_params) {
+    match Character::new(&success_params) {
         Ok(character) => {
             println!("Successful{:?}", character);
         }
@@ -14,20 +16,18 @@ fn main() {
         }
     }
 
-    // let mut failure_params = HashMap::new();
-    // failure_params.insert("range".to_string(), Parameter::new(9).unwrap());
-    // failure_params.insert("defense".to_string(), Parameter::new(7).unwrap());
-    // match Character::new(failure_params) {
-    //     Ok(character) => {
-    //         println!("Character initialized successfully: {:?}", character);
-    //     }
-    //     Err(e) => {
-    //         println!("Error as expected: {}", e);
-    //         // Note: `failure_params` is still available here as ownership was not
-    //         // moved because the Character was never created.
-    //         println!("Original parameters map still exists: {:?}", failure_params);
-    //     }
-    // }
+    let mut failure_params = HashMap::new();
+    failure_params.insert("range".to_string(), Parameter::new(9).unwrap());
+    failure_params.insert("defense".to_string(), Parameter::new(7).unwrap());
+    match Character::new(&failure_params) {
+        Ok(character) => {
+            println!("Character initialized successfully: {:?}", character);
+        }
+        Err(e) => {
+            println!("Error as expected: {}", e);
+            println!("Original parameters map still exists: {:?}", failure_params);
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -52,13 +52,13 @@ pub struct Character {
 }
 
 impl Character {
-    pub fn new(external_parameters: HashMap<String, Parameter>) -> Result<Self, String> {
+    pub fn new(external_parameters: &HashMap<String, Parameter>) -> Result<Self, String> {
         match external_parameters.get("health") {
             Some(health_param) => {
                 let calculated_hp = health_param.value * 10;
                 let character = Self {
                     health_points: calculated_hp,
-                    parameters: external_parameters,
+                    parameters: external_parameters.clone(),
                 };
 
                 Ok(character)
