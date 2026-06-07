@@ -31,7 +31,7 @@ fn main() {
 }
 
 #[derive(Debug, Clone)]
-struct Parameter {
+pub struct Parameter {
     value: i32,
 }
 
