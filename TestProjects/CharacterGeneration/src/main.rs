@@ -18,23 +18,43 @@ impl Attribute {
             Self::Defense,
         ]
     }
+    
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::Health => "health",
+            Self::Attack => "attack",
+            Self::Range => "range",
+            Self::Defense => "defense",
+        }
+    }
 }
 
 fn main() {
     let mut success_params = HashMap::new();
-    success_params.insert("health".to_string(), Parameter::new(8).unwrap());
-    success_params.insert("attack".to_string(), Parameter::new(6).unwrap());
-    success_params.insert("range".to_string(), Parameter::new(6).unwrap());
-    success_params.insert("defense".to_string(), Parameter::new(6).unwrap());
 
-    match Character::new(&success_params) {
-        Ok(character) => {
-            println!("Successful{:?}", character);
-        }
-        Err(e) => {
-            println!("Error: {}", e);
-        }
+    for attr in Attribute::all() {
+        success_params.insert(attr.as_str().to_string(), Parameter::new(6).unwrap());
     }
+
+
+    // success_params.insert("health".to_string(), Parameter::new(8).unwrap());
+    // success_params.insert("attack".to_string(), Parameter::new(6).unwrap());
+    // success_params.insert("range".to_string(), Parameter::new(6).unwrap());
+    // success_params.insert("defense".to_string(), Parameter::new(6).unwrap());
+
+    match Character::new(&success_params){
+        Ok(character) => println!(" Successful{:?}", character),
+        Err(e) => println!("Error  {}", e),
+    }
+
+    // match Character::new(&success_params) {
+    //     Ok(character) => {
+    //         println!("Successful{:?}", character);
+    //     }
+    //     Err(e) => {
+    //         println!("Error: {}", e);
+    //     }
+    // }
 
     let mut failure_params = HashMap::new();
     failure_params.insert("range".to_string(), Parameter::new(9).unwrap());
