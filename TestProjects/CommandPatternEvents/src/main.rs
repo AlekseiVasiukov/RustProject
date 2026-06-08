@@ -53,7 +53,7 @@ pub struct GameEvent {
     pub round: u32,
     pub turn: u32,
     pub cmd: Command,
-    pub effect: Effect,
+    pub effect: Vec<Effect>,
 }
 
 fn main() {
