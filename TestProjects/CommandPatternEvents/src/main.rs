@@ -1,5 +1,7 @@
 use rand::Rng;
 use std::collections::HashSet;
+use serde::{Serialize, Deserialize};
+use serde_json;
 
 struct IdRegistry {
     used_ids: HashSet<String>,
@@ -23,6 +25,35 @@ impl IdRegistry {
             }
         }
     }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Command {
+    Attack {
+        src: String,
+        dst: String,
+        dmg: u32,
+    },
+    //Others shit goes here Heal, Hex, Poison
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Effect {
+    Damage {
+        src: String,
+        dst: String,
+        dmg: u32,
+        dst_hp: u32,
+    },
+    // Other effects goes here like Heal_received, Got_Poisoned
+}
+
+#[derive(Debug,Serialize,Deserialize)]
+pub struct GameEvent {
+    pub round: u32,
+    pub turn: u32,
+    pub cmd: Command,
+    pub effect: Effect,
 }
 
 fn main() {
