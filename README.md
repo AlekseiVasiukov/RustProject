@@ -20,13 +20,13 @@ CURRENT STAGE: MAKING THE TEST PROJECTS TO TRY OUT GAME MECHANICS
 ...
 
 Possible gameplay improvement to discuss: 
--Throughout progression. After battle finished, promote survived characters of own party, and empower the enemies. Will it complex the battle log too much?
--Time control. In general, the battle goes in straight pace, but when some character dies - slow there, to highlight the moment. Fast forward? Rewind? 
+- Throughout progression. After battle finished, promote survived characters of own party, and empower the enemies. Will it complex the battle log too much?
+- Time control. In general, the battle goes in straight pace, but when some character dies - slow there, to highlight the moment. Fast forward? Rewind? 
 
 UI:
-(NOW) Console app with stdout and cls
-(MAYBE) ratatui TUI app with better graphics
-(Nice to have) REST API server powered with AXUM/Tokio and webUI (powered by ??)
+- (NOW) Console app with stdout and cls
+- (MAYBE) ratatui TUI app with better graphics
+- (Nice to have) REST API server powered with AXUM/Tokio and webUI (powered by ??)
 
 Music - no 
 
