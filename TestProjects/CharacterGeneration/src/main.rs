@@ -77,7 +77,7 @@ pub struct Parameter {
 
 impl Parameter {
     fn new(value: i32) -> Option<Self> {
-        if value >= 0 && value <= 10 {
+        if (0..=10).contains(&value) {
             Some(Self { value })
         } else {
             Some(Self { value: 0 })
