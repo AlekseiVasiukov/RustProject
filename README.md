@@ -14,6 +14,7 @@ CURRENT STAGE: MAKING THE TEST PROJECTS TO TRY OUT GAME MECHANICS
 
 
 (PLANNED)
+- "ParametersProportionDistribution" Self-balancing character's parameters (Health, Attack, Range, Defense) calculator, considering the unit-type defining proportions with limits and additional bonus random points.
 - "StateMachineEngine" Game engine test project that handles 4 main stages Preparation, Generation, Battle and Result. Preparation is allowing to select characters. Generation stage is generating friends and foes. Battle stage is calculating serie of game events based on characters data. And Result stage making final conclusion.
 - "UserInput" Try out the key on keyboard and mouse input. How letters keys, spacebar, and mouse buttons are registered. How Mouse coords could be cought?
 - "GraphicsLayout" Test how much we control the field for the battle in console. Colors, Tabulation to separate parties. Arrows or attack lines to show who hit whom.
