@@ -92,18 +92,35 @@ pub struct Character {
 }
 
 impl Character {
-    pub fn new(external_parameters: &HashMap<String, Parameter>) -> Result<Self, String> {
-        match external_parameters.get("health") {
-            Some(health_param) => {
-                let calculated_hp = health_param.value * 10;
-                let character = Self {
-                    health_points: calculated_hp,
-                    parameters: external_parameters.clone(),
-                };
 
-                Ok(character)
+    pub fn new (external_parameters: &HashMap<String, Parameter>) -> Result<Self, String> {
+        for attr in Attribute::all() {
+            let key = attr.as_str().to_string();
+            if !external_parameters.contains_key(&key) {
+                return Err(format!("Initialization failed: '{}' parameter was not found", key));
             }
-            None => Err("Initialization failed: 'health' parameter was not found".to_string()),
         }
-    }
+
+        let health_param = external_parameters.get("health").unwrap();
+        let calculated_hp = health_param.value * 10;
+
+        Ok(Self {
+            health_points: calculated_hp,
+            parameters: external_parameters.clone(),
+        })
+    } 
+    // pub fn new(external_parameters: &HashMap<String, Parameter>) -> Result<Self, String> {
+    //     match external_parameters.get("health") {
+    //         Some(health_param) => {
+    //             let calculated_hp = health_param.value * 10;
+    //             let character = Self {
+    //                 health_points: calculated_hp,
+    //                 parameters: external_parameters.clone(),
+    //             };
+
+    //             Ok(character)
+    //         }
+    //         None => Err("Initialization failed: 'health' parameter was not found".to_string()),
+    //     }
+    // }
 }
