@@ -11,8 +11,13 @@ impl Parameter {
         }
     }
 
+    pub fn sum(&self) -> u32 {
+        self.values.iter().map(|&v| v as u32).sum()
+    }
 }
 
 fn main() {
-   
+   let mut my_params = Parameter::new(4);
+   my_params.values = vec![8, 3, 2, 7];
+   println!("SUm {}", my_params.sum());
 }
