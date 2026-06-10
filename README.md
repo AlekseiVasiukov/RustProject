@@ -3,6 +3,7 @@
 An Idea of the future project.
 It's the game of two parties fighting each other. 
 Left party (ours) consist of selected (4 maximum) characters. The opposite party (enemy, on the right) are generated with equal power.
+The calculations of units types parameters proportions can be found in Docs/UnitsParametersCalculations.xlsx
 
 CURRENT STAGE: MAKING THE TEST PROJECTS TO TRY OUT GAME MECHANICS
 
@@ -11,10 +12,12 @@ CURRENT STAGE: MAKING THE TEST PROJECTS TO TRY OUT GAME MECHANICS
 - "NamesConcatenationTest" Data-driven prototype of concatenating random characters names out of First and Last names arranged in TOML files.
 - "RustDungeonCrawler" The older prototype of Data-driven concept of randomly generated events. RNG test. TOML -> to "repository" test.
 - "CommandPatternEvents" Try to adopt the Command Pattern for compact presentation of generated serie of the game events. Very basic, only about attack. Also test short GUID/UUID for characters to identify.
+- "ParametersProportionDistribution" Units' parameters (Health, Attack, Range, Defense) generation system, considering the unit-type defining proportions with limits and additional bonus random points. (The Self-balancing  calculator app won't be implemented, use Docs/UnitsParametersCalculations.xlsx instead)
+
 
 
 (PLANNED)
-- "ParametersProportionDistribution" Self-balancing character's parameters (Health, Attack, Range, Defense) calculator, considering the unit-type defining proportions with limits and additional bonus random points.
+- "BattleSimulation" Test function, simulating the battle, calculating probability whom to hit based on Range, and damage based on Attack, Health and Defence percentages affected. 
 - "StateMachineEngine" Game engine test project that handles 4 main stages Preparation, Generation, Battle and Result. Preparation is allowing to select characters. Generation stage is generating friends and foes. Battle stage is calculating serie of game events based on characters data. And Result stage making final conclusion.
 - "UserInput" Try out the key on keyboard and mouse input. How letters keys, spacebar, and mouse buttons are registered. How Mouse coords could be cought?
 - "GraphicsLayout" Test how much we control the field for the battle in console. Colors, Tabulation to separate parties. Arrows or attack lines to show who hit whom.
