@@ -1,4 +1,7 @@
-use crossterm::event::{self, Event, KeyCode};
+use crossterm::{
+    event::{self, Event, KeyCode, KeyModifiers},
+    execute, terminal, ExecutableCommand,
+};
 use std::io;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -114,4 +117,20 @@ enum Action {
 
 fn main() -> io::Result<()> {
     Ok(())
+}
+
+fn get_action(event: &Event) -> Option<Action> {
+    if let Event::Key(key) = event {
+        match key.code {
+            KeyCode::Char(' ') | KeyCode::Enter => Some(Action::Continue),
+            KeyCode::Esc => Some(Action::Exit),
+            KeyCode::Up => Some(Action::MoveUp),
+            KeyCode::Down => Some(Action::MoveDown),
+            KeyCode::Left => Some(Action::MoveLeft),
+            KeyCode::Right => Some(Action::MoveRight),
+            _ => None,
+        }
+    } else {
+        None
+    }
 }
