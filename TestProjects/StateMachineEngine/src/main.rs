@@ -1,8 +1,9 @@
 use crossterm::{
+    cursor::{Hide, Show},
     event::{self, Event, KeyCode, KeyModifiers},
     execute, terminal, ExecutableCommand,
 };
-use std::io;
+use std::{io, time::Duration};
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum Stage {
@@ -116,6 +117,46 @@ enum Action {
 }
 
 fn main() -> io::Result<()> {
+    terminal::enable_raw_mode()?;
+    std::io::stdout().execute(terminal::EnterAlternateScreen)?;
+    std::io::stdout().execute(Hide)?;
+
+    let mut game = GameState::new();
+    game.render();
+    loop {
+        //Checkin user's input with a short timeout
+        if !event::poll(Duration::from_millis(100))? {
+            continue;
+        }
+
+        match event::read()? {
+            Event::Key(key) => {
+                if let Some(action) = get_action(&Event::Key(key)) {
+                    match action {
+                        Action::Continue => {
+                            if game.current_stage == Stage::Results {
+                                game.reset_to_preparation();
+                            } else {
+                                game.next_stage();
+                            }
+
+                            game.render();
+                        }
+
+                        Action::Exit => break,
+
+                        _ => {}
+                    }
+                }
+            }
+
+            _ => {}
+        }
+    }
+    std::io::stdout().execute(Show)?;
+    std::io::stdout().execute(terminal::LeaveAlternateScreen)?;
+    terminal::disable_raw_mode()?;
+
     Ok(())
 }
 
