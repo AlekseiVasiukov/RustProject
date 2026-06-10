@@ -1,4 +1,6 @@
-use std::collections::HashMap;
+use rand::Rng;
+//I Need the Binary tree, to be sure that order is preserved for items, damn!
+use std::collections::BTreeMap;
 
 const BASIC_HEALTH: f32 = 100.0;
 const BASIC_ATTACK: f32 = 10.0;
@@ -12,14 +14,14 @@ const HEALTH_MIDDLE_VALUE_PARAMETER: f32 = 4.0;
 
 #[derive(Debug)]
 pub struct Parameters {
-    values: HashMap<String, i32>,
+    values: BTreeMap<String, i32>,
     health_points: u32,
 }
 
 impl Parameters {
     fn new() -> Self {
         Self {
-            values: HashMap::new(),
+            values: BTreeMap::new(),
             health_points: 0,
         }
     }
@@ -98,7 +100,71 @@ fn generate_health_points(combatant: &Parameters) -> Result<u32, String> {
     }
 }
 
+fn calculate_target_for_hit_based_on_range(combatants: &Vec<Parameters>) -> Result<usize, String> {
+    for combatant in combatants {
+        for p in combatant.values.values() {
+            if !(0..=9).contains(p) {
+                return Err("Parameter is out of range".to_string());
+            }
+        }
+    }
+
+    for combatant in combatants {
+        if !combatant.values.contains_key("range") {
+            return Err(format!("Combatant is missing \"range\" parameter"));
+        }
+    }
+
+    let mut targets_map = BTreeMap::new();
+
+    for (index, combatant) in combatants.iter().enumerate() {
+        let probability = 10 - *combatant.values.get("range").unwrap();
+        targets_map.insert(index, probability);
+    }
+
+    // pretty-print Debug, cool thing
+    println!("probability list {:#?}", &targets_map);
+
+    let probabilities_sum = &targets_map.values().sum();
+    println!("probabilities_sum {:#?}", probabilities_sum);
+
+    let random_result = rand::thread_rng().gen_range(1..*probabilities_sum);
+    println!("random_result {:#?}", random_result);
+
+    let mut step = 0;
+    for target in &targets_map {
+        if random_result > step + target.1 {
+            step += target.1;
+        } else {
+            // first display the probabilities line
+            println!();
+            for &interval in targets_map.values() {
+                print!("|");
+
+                if interval > 1 {
+                    for _ in 0..interval.saturating_sub(1) {
+                        print!("_");
+                    }
+                }
+            }
+            //then display pointer of random number
+            println!();
+            for _ in 0..random_result.saturating_sub(1) {
+                print!(" ");
+            }
+            print!("^");
+            println!();
+
+            //And now return the value
+            return Ok(*target.0);
+        }
+    }
+
+    Err("Probabilities list ended up, but chosen number wasn't found our".to_string())
+}
+
 fn main() {
+    //Testing Attack
     let mut combatant1 = Parameters::new();
     combatant1.values.insert("attack".to_string(), 9);
     combatant1.health_points = 100;
@@ -112,6 +178,7 @@ fn main() {
         Ok(result) => println!("result {}", result),
     }
 
+    //Testing Health initialize
     let mut combatant3 = Parameters::new();
     combatant3.values.insert("health".to_string(), 2);
     let health_points = generate_health_points(&combatant3);
@@ -121,5 +188,24 @@ fn main() {
         Ok(result) => println!("result {}", result),
     }
 
+    //Testing Target for attack choice
+    let mut combatant4 = Parameters::new();
+    combatant4.values.insert("range".to_string(), 8);
+
+    let mut combatant5 = Parameters::new();
+    combatant5.values.insert("range".to_string(), 2);
+
+    let mut combatant6 = Parameters::new();
+    combatant6.values.insert("range".to_string(), 5);
+
+    let mut combatant7 = Parameters::new();
+    combatant7.values.insert("range".to_string(), 0);
+
+    let combatants = vec![combatant4, combatant5, combatant6, combatant7];
+    let target_for_hit = calculate_target_for_hit_based_on_range(&combatants);
+    match target_for_hit {
+        Err(e) => println!("There was error calculating target: {}", e),
+        Ok(result) => println!("target's index result {}", result),
+    };
     println!("Hello, world!");
 }
