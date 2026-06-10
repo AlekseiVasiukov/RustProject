@@ -1,11 +1,14 @@
 use std::collections::HashMap;
 
-const BASIC_HEALTH: u32 = 100;
+const BASIC_HEALTH: f32 = 100.0;
 const BASIC_ATTACK: f32 = 10.0;
 const ATTACK_PERCENT_PER_POINT: f32 = 5.0;
 const DEFENSE_PERCENT_PER_POINT: f32 = 5.0;
+const HEALTH_PERCENT_PER_POINT: f32 = 5.0;
+
 const ATTACK_MIDDLE_VALUE_PARAMETER: f32 = 4.0;
 const DEFENSE_MIDDLE_VALUE_PARAMETER: f32 = 4.0;
+const HEALTH_MIDDLE_VALUE_PARAMETER: f32 = 4.0;
 
 #[derive(Debug)]
 pub struct Parameters {
@@ -69,22 +72,51 @@ fn calculate_damage(combatant1: &Parameters, combatant2: &Parameters) -> Result<
     }
 }
 
+fn generate_health_points(combatant: &Parameters) -> Result<u32, String> {
+    for p in combatant.values.values() {
+        if !(0..=9).contains(p) {
+            return Err("Parameter is out of range".to_string());
+        }
+    }
+
+    if !combatant.values.contains_key("health") {
+        return Err("Combatant 1 is missing \"health\" parameter".to_string());
+    }
+
+    let health_bonus_points = combatant.values["health"] as f32 - HEALTH_MIDDLE_VALUE_PARAMETER;
+    println!("health bonus points are {}", health_bonus_points);
+
+    let health_bonus = HEALTH_PERCENT_PER_POINT * health_bonus_points;
+    println!("health bonus is {}", health_bonus);
+
+    let health_points = BASIC_HEALTH + (BASIC_HEALTH * health_bonus) / 100.0;
+
+    if health_points < 0.0 {
+        Ok(1)
+    } else {
+        Ok(health_points.trunc() as u32)
+    }
+}
+
 fn main() {
     let mut combatant1 = Parameters::new();
-    combatant1.values.insert("health".to_string(), 5);
-    combatant1.values.insert("attack".to_string(), 8);
-    combatant1.values.insert("range".to_string(), 5);
-    combatant1.values.insert("defense".to_string(), 5);
-    combatant1.health_points = BASIC_HEALTH;
+    combatant1.values.insert("attack".to_string(), 9);
+    combatant1.health_points = 100;
 
     let mut combatant2 = Parameters::new();
-    combatant2.values.insert("health".to_string(), 0);
-    combatant2.values.insert("attack".to_string(), 0);
-    combatant2.values.insert("range".to_string(), 0);
-    combatant2.values.insert("defense".to_string(), 8);
+    combatant2.values.insert("defense".to_string(), 7);
     combatant2.health_points = 5;
 
     match calculate_damage(&combatant1, &combatant2) {
+        Err(e) => println!("There was error {}", e),
+        Ok(result) => println!("result {}", result),
+    }
+
+    let mut combatant3 = Parameters::new();
+    combatant3.values.insert("health".to_string(), 2);
+    let health_points = generate_health_points(&combatant3);
+
+    match health_points {
         Err(e) => println!("There was error {}", e),
         Ok(result) => println!("result {}", result),
     }
