@@ -10,7 +10,11 @@ use std::error::Error;
 pub fn PrintEngine() {
     println!("YoEngine");
 
-    let i = GameInstance::new();
+    let mut i = GameInstance::new();
     println!("{:#?}", i);
+
+    i.initialize();
+    println!("{:#?}", i);
+
     PrintComb();
 }
