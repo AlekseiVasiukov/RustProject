@@ -17,8 +17,9 @@ range=8
 defense=2
 
 [[UnitTypes]]
-unit_type_name="mage"
-pretty_name="Mage"
+unit_type_name="witch"
+pretty_name="Witch"
+females_only=true
 health=3
 attack=9
 range=7

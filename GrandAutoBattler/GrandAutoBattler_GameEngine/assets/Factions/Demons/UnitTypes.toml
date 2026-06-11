@@ -11,6 +11,7 @@ defense=2
 [[UnitTypes]]
 unit_type_name="succubus"
 pretty_name="Succubus"
+females_only=true
 health=3
 attack=3
 range=6
@@ -25,8 +26,8 @@ range=4
 defense=1
 
 [[UnitTypes]]
-unit_type_name="moloch"
-pretty_name="Moloch"
+unit_type_name="abomination"
+pretty_name="Abomination"
 health=9
 attack=3
 range=2
