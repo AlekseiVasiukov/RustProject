@@ -1,8 +1,7 @@
 use std::io::{Write, stdout};
 
 use std::error::Error;
-// use serde::Deserialize;
 
 pub fn PrintComb() {
-    println!("Yo");
+    println!("YoCombat");
 }

@@ -15,7 +15,7 @@ fn main() {
     let target_dir = Path::new(&manifest_dir).join("target").join(profile);
 
     // Define the source and destination paths for the assets.
-    let source_assets_path = Path::new(&manifest_dir).join("assets");
+    let source_assets_path = Path::new(&manifest_dir).join("../GrandAutoBattler_GameEngine").join("assets");
 
     // Create the destination assets directory if it doesn't exist.
     if !target_dir.exists() {

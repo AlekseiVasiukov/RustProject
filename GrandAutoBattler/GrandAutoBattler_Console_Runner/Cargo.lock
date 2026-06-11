@@ -3,11 +3,23 @@
 version = 4
 
 [[package]]
-name = "GrandAutoBattler"
+name = "GrandAutoBattler_Console"
 version = "0.1.0"
 dependencies = [
+ "GrandAutoBattler_GameEngine",
+]
+
+[[package]]
+name = "GrandAutoBattler_Console_Runner"
+version = "0.1.0"
+dependencies = [
+ "GrandAutoBattler_Console",
  "fs_extra",
 ]
+
+[[package]]
+name = "GrandAutoBattler_GameEngine"
+version = "0.1.0"
 
 [[package]]
 name = "fs_extra"
