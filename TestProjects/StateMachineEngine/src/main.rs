@@ -3,7 +3,10 @@ use crossterm::{
     event::{self, Event, KeyCode, KeyModifiers},
     execute, terminal, ExecutableCommand,
 };
-use std::{io, time::Duration};
+use std::{
+    io,
+    time::{Duration, Instant},
+};
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum Stage {
@@ -123,6 +126,9 @@ fn main() -> io::Result<()> {
 
     let mut game = GameState::new();
     game.render();
+
+    let mut last_input: Option<Instant> = None;
+
     loop {
         //Checkin user's input with a short timeout
         if !event::poll(Duration::from_millis(100))? {
@@ -132,20 +138,31 @@ fn main() -> io::Result<()> {
         match event::read()? {
             Event::Key(key) => {
                 if let Some(action) = get_action(&Event::Key(key)) {
-                    match action {
-                        Action::Continue => {
-                            if game.current_stage == Stage::Results {
-                                game.reset_to_preparation();
-                            } else {
-                                game.next_stage();
+                    let now = Instant::now();
+                    //Debouncing to prevent several signals appear from pressed key
+                    let is_debounced = match last_input {
+                        None => true,
+                        Some(last) => now.duration_since(last) >= Duration::from_millis(500),
+                    };
+
+                    if is_debounced {
+                        last_input = Some(now);
+
+                        match action {
+                            Action::Continue => {
+                                if game.current_stage == Stage::Results {
+                                    game.reset_to_preparation();
+                                } else {
+                                    game.next_stage();
+                                }
+
+                                game.render();
                             }
 
-                            game.render();
+                            Action::Exit => break,
+
+                            _ => {}
                         }
-
-                        Action::Exit => break,
-
-                        _ => {}
                     }
                 }
             }
