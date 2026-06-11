@@ -1,17 +1,17 @@
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 use serde_json;
-use std::collections::HashSet;
+use std::collections::BTreeSet;
 
 #[derive(Clone)]
 struct IdRegistry {
-    used_ids: HashSet<String>,
+    used_ids: BTreeSet<String>,
 }
 
 impl IdRegistry {
     fn new() -> Self {
         Self {
-            used_ids: HashSet::new(),
+            used_ids: BTreeSet::new(),
         }
     }
 
