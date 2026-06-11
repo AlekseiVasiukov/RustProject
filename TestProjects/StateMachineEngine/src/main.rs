@@ -1,7 +1,12 @@
 use crossterm::{
     cursor::{Hide, Show},
     event::{self, Event, KeyCode, KeyModifiers},
-    execute, terminal, ExecutableCommand,
+    execute,
+    terminal::{
+        disable_raw_mode, enable_raw_mode, Clear, ClearType, EnterAlternateScreen,
+        LeaveAlternateScreen,
+    },
+    ExecutableCommand,
 };
 use std::{
     io,
@@ -61,7 +66,8 @@ impl GameState {
 
     pub fn render(&self) {
         //Clean the screen
-        println!("{}", "\n".to_string().repeat(20));
+
+        std::io::stdout().execute(Clear(ClearType::All));
 
         match self.current_stage {
             Stage::Title => {
@@ -120,8 +126,8 @@ enum Action {
 }
 
 fn main() -> io::Result<()> {
-    terminal::enable_raw_mode()?;
-    std::io::stdout().execute(terminal::EnterAlternateScreen)?;
+    enable_raw_mode()?;
+    std::io::stdout().execute(EnterAlternateScreen)?;
     std::io::stdout().execute(Hide)?;
 
     let mut game = GameState::new();
@@ -142,7 +148,7 @@ fn main() -> io::Result<()> {
                     //Debouncing to prevent several signals appear from pressed key
                     let is_debounced = match last_input {
                         None => true,
-                        Some(last) => now.duration_since(last) >= Duration::from_millis(500),
+                        Some(last) => now.duration_since(last) >= Duration::from_millis(300),
                     };
 
                     if is_debounced {
@@ -171,8 +177,8 @@ fn main() -> io::Result<()> {
         }
     }
     std::io::stdout().execute(Show)?;
-    std::io::stdout().execute(terminal::LeaveAlternateScreen)?;
-    terminal::disable_raw_mode()?;
+    std::io::stdout().execute(LeaveAlternateScreen)?;
+    disable_raw_mode()?;
 
     Ok(())
 }
