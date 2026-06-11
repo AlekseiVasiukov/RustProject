@@ -15,6 +15,4 @@ pub fn PrintEngine() {
 
     i.initialize();
     println!("{:#?}", i);
-
-    PrintComb();
 }
