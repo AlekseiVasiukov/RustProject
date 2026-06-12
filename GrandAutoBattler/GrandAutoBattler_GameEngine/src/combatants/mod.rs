@@ -1,5 +1,5 @@
 use std::collections::BTreeMap;
-
+use std::error::Error;
 #[derive(Debug)]
 pub struct Combatant {
     id: String,
@@ -27,17 +27,19 @@ pub(crate) struct UnitType {
     last_names: Option<Vec<String>>,
 }
 
-pub(crate) fn load_config() -> Result<String, String> {
-    let a = ConfigToml::new();
-    let d = toml_retriever::get_config();
-    println!("{:#?}", d);
+pub(crate) fn load_config() -> Result<String, Box <dyn Error>> {
+    // let a = ConfigToml::new();
+    // let d = toml_retriever::get_config()?;
+    // println!("{:#?}", d);
     // let asd = get_config();
-    Err("Error".to_string())
+    // Err("Error".to_string())
+    Ok("".to_string())
 }
 
-pub(crate) fn load_available_factions() -> Result<Vec<Faction>, String> {
-    Err("Error".to_string())
-}
+// pub(crate) fn load_available_factions() -> Result<Vec<Faction>, String> {
+//     // Err("Error".to_string())
+//     Ok(vec![0])
+// }
 
 mod toml_retriever;
 use toml_retriever::ConfigToml;
