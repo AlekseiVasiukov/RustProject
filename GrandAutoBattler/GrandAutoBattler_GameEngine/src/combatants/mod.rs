@@ -29,6 +29,9 @@ pub(crate) struct UnitType {
 
 pub(crate) fn load_config() -> Result<String, String> {
     let a = ConfigToml::new();
+    let d = toml_retriever::get_config();
+    println!("{:#?}", d);
+    // let asd = get_config();
     Err("Error".to_string())
 }
 
