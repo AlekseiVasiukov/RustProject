@@ -1,6 +1,4 @@
 mod combatants;
-use crate::combatants::*;
-
 mod game_instance;
 use game_instance::*;
 

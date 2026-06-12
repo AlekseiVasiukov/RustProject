@@ -1,13 +1,6 @@
 use std::collections::BTreeMap;
 
-use std::io::{stdout, Write};
-
-use std::error::Error;
-
-pub fn PrintComb() {
-    println!("YoCombat");
-}
-
+#[derive(Debug)]
 pub struct Combatant {
     id: String,
     faction: Faction,
@@ -18,12 +11,14 @@ pub struct Combatant {
     last_name: Option<String>,
 }
 
-pub struct Faction {
+#[derive(Debug)]
+pub(crate) struct Faction {
     name: String,
     unit_types: Vec<UnitType>,
 }
 
-pub struct UnitType {
+#[derive(Debug)]
+pub(crate) struct UnitType {
     name: String,
     pretty_name: Option<String>,
     females_only: bool,
@@ -32,6 +27,14 @@ pub struct UnitType {
     last_names: Option<Vec<String>>,
 }
 
+pub(crate) fn load_config() -> Result<String, String> {
+    let a = ConfigToml::new();
+    Err("Error".to_string())
+}
+
 pub(crate) fn load_available_factions() -> Result<Vec<Faction>, String> {
     Err("Error".to_string())
 }
+
+mod toml_retriever;
+use toml_retriever::ConfigToml;
