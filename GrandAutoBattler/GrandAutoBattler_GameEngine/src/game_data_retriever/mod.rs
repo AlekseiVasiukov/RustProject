@@ -1,6 +1,11 @@
+use serde::Deserialize;
 use std::collections::BTreeMap;
 use std::error::Error;
-#[derive(Debug)]
+
+// mod toml_retriever;
+
+// use toml_retriever::ConfigToml;
+#[derive(Debug, Deserialize)]
 pub struct Combatant {
     id: String,
     faction: Faction,
@@ -11,13 +16,13 @@ pub struct Combatant {
     last_name: Option<String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize)]
 pub(crate) struct Faction {
     name: String,
     unit_types: Vec<UnitType>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize)]
 pub(crate) struct UnitType {
     name: String,
     pretty_name: Option<String>,
@@ -41,5 +46,20 @@ pub(crate) fn load_config() -> Result<String, Box <dyn Error>> {
 //     Ok(vec![0])
 // }
 
-mod toml_retriever;
-use toml_retriever::ConfigToml;
+
+
+
+
+#[derive(Debug, Deserialize)]
+pub struct Config {
+    pub BASIC_HEALTH: f32,
+    pub BASIC_ATTACK: f32,
+    pub ATTACK_PERCENT_PER_POINT: f32,
+    pub DEFENSE_PERCENT_PER_POINT: f32,
+    pub HEALTH_PERCENT_PER_POINT: f32,
+    pub ATTACK_MIDDLE_VALUE_PARAMETER: f32,
+    pub DEFENSE_MIDDLE_VALUE_PARAMETER: f32,
+    pub HEALTH_MIDDLE_VALUE_PARAMETER: f32,
+}
+
+

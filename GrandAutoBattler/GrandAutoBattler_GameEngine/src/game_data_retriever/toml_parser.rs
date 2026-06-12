@@ -34,17 +34,7 @@ impl ConfigToml {
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Config {
-    pub BASIC_HEALTH: f32,
-    pub BASIC_ATTACK: f32,
-    pub ATTACK_PERCENT_PER_POINT: f32,
-    pub DEFENSE_PERCENT_PER_POINT: f32,
-    pub HEALTH_PERCENT_PER_POINT: f32,
-    pub ATTACK_MIDDLE_VALUE_PARAMETER: f32,
-    pub DEFENSE_MIDDLE_VALUE_PARAMETER: f32,
-    pub HEALTH_MIDDLE_VALUE_PARAMETER: f32,
-}
+
 
 fn parse_config_from_str(toml_string: &str) -> Result<Config, toml::de::Error> {
     toml::from_str(toml_string)
@@ -67,3 +57,6 @@ pub fn get_config() -> Result<Config, Box<dyn Error>> {
         Ok(config)
     // config
 }
+
+pub mod game_data_retriever;
+use game_data_retriever::ConfigToml;

@@ -1,4 +1,4 @@
-mod combatants;
+mod game_data_retriever;
 mod game_instance;
 use game_instance::*;
 
