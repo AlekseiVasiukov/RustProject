@@ -34,7 +34,7 @@ impl GameInstance {
 
     fn initialize_unit_types(&mut self) -> Result<(), Box<dyn Error>> {
         // let factions = load_available_factions()?;
-Ok(())
+        Ok(())
         // match factions {
         //     Err(e) => {
         //         println!("Couldn't initialize unit types: {}", e);
@@ -47,5 +47,3 @@ Ok(())
         // }
     }
 }
-
-

@@ -11,6 +11,12 @@ pub fn PrintEngine() {
     let mut i = GameInstance::new();
     println!("{:#?}", i);
 
-    i.initialize();
-    println!("{:#?}", i);
+    // match ;
+
+     match i.initialize() {
+        Err(e) => println!("Initialization failed. Game continuation is not possible. Error: {}", e),
+        Ok(result) => println!("Initialization succeed. {:#?}", i),
+    }
+
+    
 }
