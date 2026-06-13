@@ -72,7 +72,7 @@ pub(crate) fn load_factions() ->  Result<Vec<Faction>, Box<dyn Error>>{
         let d = assets_dir.join("Factions");
         // let dd = d.into_iter()
 
-        for entry in WalkDir::new(d)
+        for entry in WalkDir::new(&d)
         .into_iter()
         .filter_map(Result::ok)
                          .filter(|e| e.file_type().is_file()) {
@@ -80,6 +80,17 @@ pub(crate) fn load_factions() ->  Result<Vec<Faction>, Box<dyn Error>>{
                         println!("{}", f_name);
 
         }
+
+                for entry in WalkDir::new(&d)
+        .into_iter()
+        .filter_map(Result::ok)
+                         .filter(|e| e.file_type().is_dir()) {
+        let f_name = String::from(entry.file_name().to_string_lossy());
+                        println!("{}", f_name);
+
+        }
+
+
                 // println!("{}",dd);
 
 
