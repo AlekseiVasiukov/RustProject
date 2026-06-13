@@ -1,6 +1,11 @@
+// mod ::toml_parser;
+
+// use super::GameInstance::load_config;
 use serde::Deserialize;
 use std::collections::BTreeMap;
 use std::error::Error;
+
+use crate::{game_data_retriever, toml_parser};
 
 // mod toml_retriever;
 
@@ -17,13 +22,13 @@ pub struct Combatant {
 }
 
 #[derive(Debug, Deserialize)]
-pub(crate) struct Faction {
+pub struct Faction {
     name: String,
     unit_types: Vec<UnitType>,
 }
 
 #[derive(Debug, Deserialize)]
-pub(crate) struct UnitType {
+pub struct UnitType {
     name: String,
     pretty_name: Option<String>,
     females_only: bool,
@@ -32,23 +37,20 @@ pub(crate) struct UnitType {
     last_names: Option<Vec<String>>,
 }
 
-pub(crate) fn load_config() -> Result<String, Box <dyn Error>> {
+pub fn get_config() -> Result<Config, Box<dyn Error>> {
     // let a = ConfigToml::new();
-    // let d = toml_retriever::get_config()?;
+    let d = toml_parser::load_config()?;
     // println!("{:#?}", d);
     // let asd = get_config();
     // Err("Error".to_string())
-    Ok("".to_string())
+    Ok(d)
+    // Ok("".to_string())
 }
 
 // pub(crate) fn load_available_factions() -> Result<Vec<Faction>, String> {
 //     // Err("Error".to_string())
 //     Ok(vec![0])
 // }
-
-
-
-
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -62,4 +64,8 @@ pub struct Config {
     pub HEALTH_MIDDLE_VALUE_PARAMETER: f32,
 }
 
+// pub(crate) fn get_config() -> _ {
+//     todo!()
+// }
 
+// pub(crate) mod game_data_retriever;
