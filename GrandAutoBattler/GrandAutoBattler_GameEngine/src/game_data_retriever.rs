@@ -38,14 +38,19 @@ pub struct UnitType {
 }
 
 pub fn get_config() -> Result<Config, Box<dyn Error>> {
-    // let a = ConfigToml::new();
-    let d = toml_parser::load_config()?;
-    // println!("{:#?}", d);
+    let config = toml_parser::load_config()?;
     // let asd = get_config();
     // Err("Error".to_string())
-    Ok(d)
-    // Ok("".to_string())
+    Ok(config)
 }
+
+// pub fn get_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
+//     let d = toml_parser::load_factions()?;
+//     // let asd = get_config();
+//     // Err("Error".to_string())
+//     Ok(d)
+// }
+
 
 // pub(crate) fn load_available_factions() -> Result<Vec<Faction>, String> {
 //     // Err("Error".to_string())

@@ -39,7 +39,7 @@ fn parse_config_from_str(toml_string: &str) -> Result<Config, toml::de::Error> {
 }
 
 // pub fn get_config() -> Config {
-pub fn load_config() -> Result<Config, Box<dyn Error>> {
+pub(crate) fn load_config() -> Result<Config, Box<dyn Error>> {
     let config_toml = ConfigToml::new()?;
     let config_path = PathBuf::from(&config_toml.file_path);
 
@@ -54,6 +54,18 @@ pub fn load_config() -> Result<Config, Box<dyn Error>> {
 
     Ok(config)
     // config
+}
+
+pub(crate) fn load_factions() ->  Result<Vec<Faction>, Box<dyn Error>>{
+    let mut factions: Vec<Faction> = Vec::new();
+
+        let exe_path = env::current_exe()?;
+                let exe_dir = exe_path.parent().ok_or("Failed to get parent dir");
+        let assets_dir = exe_dir?.join("assets");
+
+
+
+    Ok(factions)
 }
 
 // pub mod toml_parser;
