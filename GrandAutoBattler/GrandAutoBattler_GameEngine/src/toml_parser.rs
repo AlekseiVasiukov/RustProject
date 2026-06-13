@@ -3,6 +3,10 @@ use std::env;
 use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
+use walkdir::WalkDir;
+use std::collections::HashMap;
+
+
 
 use crate::game_data_retriever::*;
 
@@ -35,7 +39,7 @@ impl ConfigToml {
 }
 
 fn parse_config_from_str(toml_string: &str) -> Result<Config, toml::de::Error> {
-    toml::from_str(toml_string)
+     toml::from_str(toml_string)
 }
 
 // pub fn get_config() -> Config {
@@ -48,6 +52,7 @@ pub(crate) fn load_config() -> Result<Config, Box<dyn Error>> {
 
     let config_result =
         parse_config_from_str(&toml_content).map_err(|e| Box::new(e) as Box<dyn Error>);
+        
 
     let config = config_result?;
     // .expect("Failed to parse GameSettings.toml. Check for syntax errors or missing fields.");
@@ -62,10 +67,27 @@ pub(crate) fn load_factions() ->  Result<Vec<Faction>, Box<dyn Error>>{
         let exe_path = env::current_exe()?;
                 let exe_dir = exe_path.parent().ok_or("Failed to get parent dir");
         let assets_dir = exe_dir?.join("assets");
+        let  b = assets_dir.to_string_lossy();
+        println!("{}",b);
+        let d = assets_dir.join("Factions");
+        // let dd = d.into_iter()
 
+        for entry in WalkDir::new(d)
+        .into_iter()
+        .filter_map(Result::ok)
+                         .filter(|e| e.file_type().is_file()) {
+        let f_name = String::from(entry.file_name().to_string_lossy());
+                        println!("{}", f_name);
+
+        }
+                // println!("{}",dd);
 
 
     Ok(factions)
+}
+
+pub(crate) fn get_folder()  {
+
 }
 
 // pub mod toml_parser;

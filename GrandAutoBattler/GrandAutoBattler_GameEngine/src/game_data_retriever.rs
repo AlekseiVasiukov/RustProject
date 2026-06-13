@@ -44,12 +44,12 @@ pub fn get_config() -> Result<Config, Box<dyn Error>> {
     Ok(config)
 }
 
-// pub fn get_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
-//     let d = toml_parser::load_factions()?;
-//     // let asd = get_config();
-//     // Err("Error".to_string())
-//     Ok(d)
-// }
+pub fn get_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
+    let d = toml_parser::load_factions()?;
+    // let asd = get_config();
+    // Err("Error".to_string())
+    Ok(d)
+}
 
 
 // pub(crate) fn load_available_factions() -> Result<Vec<Faction>, String> {
