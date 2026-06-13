@@ -5,7 +5,7 @@ It's the game of two parties fighting each other.
 Left party (ours) consist of selected (4 maximum) characters. The opposite party (enemy, on the right) are generated with equal power.
 The calculations of units types parameters proportions can be found in Docs/UnitsParametersCalculations.xlsx
 
-CURRENT STAGE: MAKING THE TEST PROJECTS TO TRY OUT GAME MECHANICS
+CURRENT STAGE: COMBINATING BASIC FUNCTIONALITY FOR MAIN PROJECT "GRAND AUTO-BATTLER" IN DEDICATED BRANCH, BASED ON TEST PROJECTS
 
 TEST PROJECTS:
 (DONE)
