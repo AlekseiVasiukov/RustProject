@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::env;
 use std::error::Error;
 use std::fs;
+use std::net::ToSocketAddrs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
@@ -80,6 +81,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
         println!("{}", f_name);
     }
 
+    let mut factions_names: Vec<String> = Vec::new();
     for entry in WalkDir::new(&d)
         .max_depth(1)
         .min_depth(1)
@@ -89,6 +91,12 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     {
         let f_name = String::from(entry.file_name().to_string_lossy());
         println!("{}", f_name);
+        factions_names.push(f_name);
+    }
+
+    if (factions_names.is_empty()) {
+        //THis is boxing text for Err return 0_o
+        return Err("Factions folder is empty".into());
     }
 
     // println!("{}",dd);
