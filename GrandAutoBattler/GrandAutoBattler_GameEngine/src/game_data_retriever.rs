@@ -23,12 +23,12 @@ pub struct Combatant {
 
 #[derive(Debug, Deserialize)]
 pub struct Faction {
-    name: String,
-    unit_types: Vec<UnitType>,
-    female_first_names: Vec<String>,
-    male_first_names: Vec<String>,
-    female_last_names: Vec<String>,
-    male_last_names: Vec<String>,
+    pub name: String,
+    pub unit_types: Vec<UnitType>,
+    pub female_first_names: Vec<String>,
+    pub male_first_names: Vec<String>,
+    pub female_last_names: Vec<String>,
+    pub male_last_names: Vec<String>,
 }
 
 impl Faction {
@@ -75,6 +75,23 @@ impl UnitType {
     }
 }
 
+//From pattern, good shit
+impl From<toml_parser::UnitTypesToml> for UnitType {
+    fn from(item: toml_parser::UnitTypesToml) -> Self {
+        let mut parameters_set = BTreeMap::new();
+        parameters_set.insert("health".to_string(), item.health);
+        parameters_set.insert("attack".to_string(), item.attack);
+        parameters_set.insert("range".to_string(), item.range);
+        parameters_set.insert("defense".to_string(), item.defense);
+
+        UnitType::new(
+            item.unit_type_name,
+            item.unit_type_pretty_name,
+            item.females_only.unwrap_or(false),
+            parameters_set,
+        )
+    }
+}
 
 pub fn get_config() -> Result<Config, Box<dyn Error>> {
     let config = toml_parser::load_config()?;
