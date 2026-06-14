@@ -194,4 +194,3 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     }
     Ok(factions)
 }
-

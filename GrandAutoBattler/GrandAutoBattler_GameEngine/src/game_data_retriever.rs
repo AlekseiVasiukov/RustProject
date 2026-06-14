@@ -1,8 +1,9 @@
+use rand::Rng;
 use serde::Deserialize;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::error::Error;
 
-use crate::{toml_parser};
+use crate::toml_parser;
 
 #[derive(Debug, Deserialize)]
 pub struct Combatant {
@@ -101,4 +102,29 @@ pub struct Config {
     pub ATTACK_MIDDLE_VALUE_PARAMETER: f32,
     pub DEFENSE_MIDDLE_VALUE_PARAMETER: f32,
     pub HEALTH_MIDDLE_VALUE_PARAMETER: f32,
+}
+
+#[derive(Clone)]
+pub(crate) struct IdRegistry {
+    used_ids: BTreeSet<String>,
+}
+
+impl IdRegistry {
+    pub(crate) fn new() -> Self {
+        Self {
+            used_ids: BTreeSet::new(),
+        }
+    }
+
+    pub(crate) fn generate_id(&mut self) -> String {
+        loop {
+            let id = rand::random::<u32>();
+            let id_str = format!("{:08x}", id);
+
+            //If not exist - save for future and return
+            if self.used_ids.insert(id_str.clone()) {
+                return id_str;
+            }
+        }
+    }
 }

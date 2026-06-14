@@ -4,17 +4,17 @@ use std::error::Error;
 
 #[derive(Debug)]
 pub struct GameInstance {
-    id: i32,
+    id: String,
     factions: Vec<Faction>,
     config: Config,
 }
 
 impl GameInstance {
-    pub fn new() -> Result<Self, Box<dyn Error>> {
+    pub fn new(new_id: &String) -> Result<Self, Box<dyn Error>> {
         let config = game_data_retriever::get_config()?;
         let factions = game_data_retriever::get_factions()?;
         Ok(Self {
-            id: 0,
+            id: new_id.clone(),
             factions,
             config,
         })

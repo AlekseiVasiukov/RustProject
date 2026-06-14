@@ -7,34 +7,38 @@ use game_instance::*;
 use std::io::{Write, stdout};
 
 use std::error::Error;
-pub fn GetNewGameInstance() {
-    println!("Trying to initialize new Game Instance");
 
-    let mut result = match GameInstance::new() {
-        Err(e) => {
-            println!(
-                "Initialization failed. Game continuation is not possible. Error: {}",
-                e
-            );
+use crate::game_data_retriever::IdRegistry;
 
-            return;
-        }
-
-        Ok(result) => println!("Initialization succeed. {:#?}", result),
-    };
+pub struct GameInstancesManager {
+    pub(crate) game_instances_id: IdRegistry,
 }
-// {
-// Ok(i) => i,
-// Err(e) => {
-//     println!("Failed to create game instance: {}", e);
-//     return;
-// }
 
-// println!("{:#?}", i);
+impl GameInstancesManager {
+    pub fn new() -> Self {
+        Self {
+            game_instances_id: IdRegistry::new(),
+        }
+    }
 
-// match ;
+    pub fn GetNewGameInstanceId(&mut self) -> String {
+        println!("Trying to initialize new Game Instance");
 
-//  match i.initialize() {
-//     Err(e) => println!("Initialization failed. Game continuation is not possible. Error: {}", e),
-//     Ok(result) => println!("Initialization succeed. {:#?}", i),
-// }
+        let new_game_id = self.game_instances_id.generate_id();
+        let result = match GameInstance::new(&new_game_id) {
+            Err(e) => {
+                println!(
+                    "Initialization failed. Game continuation is not possible. Error: {}",
+                    e
+                );
+
+                return String::new();
+            }
+
+            Ok(result) => {
+                println!("Initialization succeed. {:#?}", result);
+                return new_game_id;
+            }
+        };
+    }
+}
