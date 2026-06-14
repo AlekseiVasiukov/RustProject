@@ -10,32 +10,32 @@ CURRENT STAGE: BASIC FUNCTIONALITY FOR MAIN PROJECT "GRAND AUTO-BATTLER" IN DEDI
 **MAIN PROJECT**:
 NAVIGATE YOURSELF TO \FinalRustProject\GrandAutoBattler\ in VScode, Make the "GrandAutoBattler_Console_Runner" your active directory, then "cargo run".
 -> **GrandAutoBattler_Console_Runner** (Just an entry point. In future there will be "runners" for ratatui port and REST API server)
-    -> **GrandAutoBattler_Console**  (Intended to keep States of the game to be presented in console window (using alternate screen/raw_mode/cursor_off) and process user's input. Now it is only requesting new game instance id)
-      ->  **GrandAutoBattler_GameEngine** (Functional engine to parse TOML files of data-driven game files. It now initializing usable data for game. In future: Returning possible playable units. Generating whole gameplay sequence of command-pattern chained events, taking all gameplay calculations and parameters tracking on it. Intented to be agnostic for caller client.)
+-> **GrandAutoBattler_Console**  (Intended to keep States of the game to be presented in console window (using alternate screen/raw_mode/cursor_off) and process user's input. Now it is only requesting new game instance id)
+->  **GrandAutoBattler_GameEngine** (Functional engine to parse TOML files of data-driven game files. It now initializing usable data for game. In future: Returning possible playable units. Generating whole gameplay sequence of command-pattern chained events, taking all gameplay calculations and parameters tracking on it. Intented to be agnostic for caller client.)
 
 FOLLOWING IMPLEMENTATIONS (MUST)
 **GrandAutoBattler_GameEngine**
-  -Generating playable factions/units in one method, and accepting chosen with the other.
-  -Generating command-pattern events of units blowing the hits on each other on their turn, calculactions are heavily based on units' parameters
+    -Generating playable factions/units in one method, and accepting chosen with the other.
+    -Generating command-pattern events of units blowing the hits on each other on their turn, calculactions are heavily based on units' parameters
 
 **GrandAutoBattler_Console** 
- -State Machine looping user through game stages.
- -Input with buttons debouncing and catching not only spacebar and enter, but also arrows and letters
- -Console output in raw mode, alternative screen and cursor hidden, redrawn with new game stage applied.
+    -State Machine looping user through game stages.
+    -Input with buttons debouncing and catching not only spacebar and enter, but also arrows and letters
+    -Console output in raw mode, alternative screen and cursor hidden, redrawn with new game stage applied.
 
  
 FOLLOWING IMPLEMENTATIONS (NICE TO HAVE)
 **GrandAutoBattler_GameEngine**
--Gameplay progression. Most simple promotion of survived units considering events journal size increase after improvements
+    -Gameplay progression. Most simple promotion of survived units considering events journal size increase after improvements
 **GrandAutoBattler_Console** 
--Graphics with pixel units representation, considering data-driven approach with unability to draw sprites for new units.
--ratatui UI rework. Since game engine should be agnostic to client, the implementation is only limited by time and difficulity.
+    -Graphics with pixel units representation, considering data-driven approach with unability to draw sprites for new units.
+    -ratatui UI rework. Since game engine should be agnostic to client, the implementation is only limited by time and difficulity.
 
 REST API + WebUI FrontEnd client.
--First learn Tokio.
--Then learn Axum.
--Then investigate what's better Json REST requests or gRPC?
--Then decisions on further implementations.
+    -First learn Tokio.
+    -Then learn Axum.
+    -Then investigate what's better Json REST requests or gRPC?
+    -Then decisions on further implementations.
 
 TEST PROJECTS:
 (DONE)
