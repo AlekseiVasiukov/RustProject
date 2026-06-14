@@ -22,15 +22,17 @@ pub struct Combatant {
 }
 
 #[derive(Debug, Deserialize)]
+
 pub struct Faction {
     name: String,
     unit_types: Vec<UnitType>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct UnitType {
-    name: String,
-    pretty_name: Option<String>,
+
+    unit_type_name: String,
+    unit_type_pretty_name: Option<String>,
     females_only: bool,
     parameters_set: BTreeMap<String, u8>,
     first_names: Option<Vec<String>>,
@@ -61,9 +63,9 @@ pub fn get_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
 pub struct Config {
     pub BASIC_HEALTH: f32,
     pub BASIC_ATTACK: f32,
-    pub ATTACK_PERCENT_PER_POINT: f32,
-    pub DEFENSE_PERCENT_PER_POINT: f32,
-    pub HEALTH_PERCENT_PER_POINT: f32,
+    pub ATTACK_PERCENTAGE_PER_POINT: f32,
+    pub DEFENSE_PERCENTAGE_PER_POINT: f32,
+    pub HEALTH_PERCENTAGE_PER_POINT: f32,
     pub ATTACK_MIDDLE_VALUE_PARAMETER: f32,
     pub DEFENSE_MIDDLE_VALUE_PARAMETER: f32,
     pub HEALTH_MIDDLE_VALUE_PARAMETER: f32,

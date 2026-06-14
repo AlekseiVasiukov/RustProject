@@ -37,6 +37,31 @@ impl ConfigToml {
     }
 }
 
+// #[derive(Debug,Deserialize)]
+// pub(crate) struct  UnitTypesToml {
+//         #[serde(rename = "name")]
+
+//     UnitTypes: Vec<UnitType>,
+// }
+
+#[derive(Debug, Deserialize, Clone)]
+
+pub struct UnitTypesArrayToml{
+    UnitTypes: Vec<UnitTypesToml>,
+}
+#[derive(Debug, Deserialize, Clone)]
+
+pub struct UnitTypesToml {
+    unit_type_name: String,
+    unit_type_pretty_name: Option<String>,
+    // #[serde(Option)]
+    females_only: Option<bool>,
+    health: u8,
+    attack: u8,
+    range: u8,
+    defense: u8,
+}
+
 fn parse_config_from_str(toml_string: &str) -> Result<Config, toml::de::Error> {
     toml::from_str(toml_string)
 }
@@ -100,12 +125,14 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     }
 
     let mut factions_list: Vec<Faction> = Vec::new();
-    for faction_name in factions_names{
-        
+    for faction_name in factions_names {
         let faction_folder_path = factions_folder_path.join(faction_name);
         let faction_types_path = faction_folder_path.join("UnitTypes.toml");
-        
+        let toml_content = fs::read_to_string(&faction_types_path)?;
+        println!("{}", &toml_content);
 
+        let unit_types_result: UnitTypesArrayToml = toml::from_str(&toml_content)?;
+        println!("{:#?}", &unit_types_result);
     }
 
     // println!("{}",dd);
