@@ -46,7 +46,7 @@ impl ConfigToml {
 
 #[derive(Debug, Deserialize, Clone)]
 
-pub struct UnitTypesArrayToml{
+pub struct UnitTypesArrayToml {
     UnitTypes: Vec<UnitTypesToml>,
 }
 #[derive(Debug, Deserialize, Clone)]
@@ -126,13 +126,38 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
 
     let mut factions_list: Vec<Faction> = Vec::new();
     for faction_name in factions_names {
-        let faction_folder_path = factions_folder_path.join(faction_name);
+        //Checking if there are types
+        let faction_folder_path = factions_folder_path.join(&faction_name);
         let faction_types_path = faction_folder_path.join("UnitTypes.toml");
-        let toml_content = fs::read_to_string(&faction_types_path)?;
+        let toml_content = match fs::read_to_string(&faction_types_path) {
+            Err(e) => {
+                println!(
+                    "Couldn't get the faction's UnitType contents for: {:?},{}",
+                    &faction_name, e
+                );
+                continue;
+            }
+            Ok(result) => result,
+        };
+
         println!("{}", &toml_content);
 
-        let unit_types_result: UnitTypesArrayToml = toml::from_str(&toml_content)?;
+        let unit_types_result: UnitTypesArrayToml = match toml::from_str(&toml_content) {
+            Err(e) => {
+                println!(
+                    "Couldn't parse the faction's UnitType contents for: {:?},{}",
+                    &faction_name, e
+                );
+                continue;
+            }
+            Ok(result) => result,
+        };
+
         println!("{:#?}", &unit_types_result);
+
+        //since there are types, trying to fetch the names
+
+        //building compact type for caller.
     }
 
     // println!("{}",dd);
