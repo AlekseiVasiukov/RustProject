@@ -25,6 +25,7 @@ FOLLOWING IMPLEMENTATIONS (MUST)
 
  
 FOLLOWING IMPLEMENTATIONS (NICE TO HAVE)
+
 **GrandAutoBattler_GameEngine**
 - Gameplay progression. Most simple promotion of survived units considering events journal size increase after improvements
 **GrandAutoBattler_Console**
