@@ -1,0 +1,11 @@
+[package]
+name = "GrandAutoBattler_Console_Runner"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+GrandAutoBattler_Console = { path = "../GrandAutoBattler_Console" }
+
+
+[build-dependencies]
+fs_extra = "1.3"
