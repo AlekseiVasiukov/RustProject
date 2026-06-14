@@ -15,27 +15,27 @@ NAVIGATE YOURSELF TO \FinalRustProject\GrandAutoBattler\ in VScode, Make the "Gr
 
 FOLLOWING IMPLEMENTATIONS (MUST)
 **GrandAutoBattler_GameEngine**
-    - Generating playable factions/units in one method, and accepting chosen with the other.
-    - Generating command-pattern events of units blowing the hits on each other on their turn, calculactions are heavily based on units' parameters
+- Generating playable factions/units in one method, and accepting chosen with the other.
+- Generating command-pattern events of units blowing the hits on each other on their turn, calculactions are heavily based on units' parameters
 
 **GrandAutoBattler_Console** 
-    - State Machine looping user through game stages.
-    - Input with buttons debouncing and catching not only spacebar and enter, but also arrows and letters
-    - Console output in raw mode, alternative screen and cursor hidden, redrawn with new game stage applied.
+- State Machine looping user through game stages.
+- Input with buttons debouncing and catching not only spacebar and enter, but also arrows and letters
+- Console output in raw mode, alternative screen and cursor hidden, redrawn with new game stage applied.
 
  
 FOLLOWING IMPLEMENTATIONS (NICE TO HAVE)
 **GrandAutoBattler_GameEngine**
-    - Gameplay progression. Most simple promotion of survived units considering events journal size increase after improvements
-**GrandAutoBattler_Console** 
-    - Graphics with pixel units representation, considering data-driven approach with unability to draw sprites for new units.
-    - ratatui UI rework. Since game engine should be agnostic to client, the implementation is only limited by time and difficulity.
+- Gameplay progression. Most simple promotion of survived units considering events journal size increase after improvements
+**GrandAutoBattler_Console**
+  - Graphics with pixel units representation, considering data-driven approach with unability to draw sprites for new units.
+  - ratatui UI rework. Since game engine should be agnostic to client, the implementation is only limited by time and difficulity.
 
 REST API + WebUI FrontEnd client.
-    - First learn Tokio.
-    - Then learn Axum.
-    - Then investigate what's better Json REST requests or gRPC?
-    - Then decisions on further implementations.
+- First learn Tokio.
+- Then learn Axum.
+- Then investigate what's better Json REST requests or gRPC?
+- Then decisions on further implementations.
 
 TEST PROJECTS:
 (DONE)
