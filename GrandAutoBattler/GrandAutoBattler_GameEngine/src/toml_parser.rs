@@ -1,12 +1,10 @@
 use serde::Deserialize;
+use std::collections::HashMap;
 use std::env;
 use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
-use std::collections::HashMap;
-
-
 
 use crate::game_data_retriever::*;
 
@@ -39,7 +37,7 @@ impl ConfigToml {
 }
 
 fn parse_config_from_str(toml_string: &str) -> Result<Config, toml::de::Error> {
-     toml::from_str(toml_string)
+    toml::from_str(toml_string)
 }
 
 // pub fn get_config() -> Config {
@@ -52,7 +50,6 @@ pub(crate) fn load_config() -> Result<Config, Box<dyn Error>> {
 
     let config_result =
         parse_config_from_str(&toml_content).map_err(|e| Box::new(e) as Box<dyn Error>);
-        
 
     let config = config_result?;
     // .expect("Failed to parse GameSettings.toml. Check for syntax errors or missing fields.");
@@ -61,45 +58,45 @@ pub(crate) fn load_config() -> Result<Config, Box<dyn Error>> {
     // config
 }
 
-pub(crate) fn load_factions() ->  Result<Vec<Faction>, Box<dyn Error>>{
+pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     let mut factions: Vec<Faction> = Vec::new();
 
-        let exe_path = env::current_exe()?;
-                let exe_dir = exe_path.parent().ok_or("Failed to get parent dir");
-        let assets_dir = exe_dir?.join("assets");
-        let  b = assets_dir.to_string_lossy();
-        println!("{}",b);
-        let d = assets_dir.join("Factions");
-        // let dd = d.into_iter()
+    let exe_path = env::current_exe()?;
+    let exe_dir = exe_path.parent().ok_or("Failed to get parent dir");
+    let assets_dir = exe_dir?.join("assets");
+    let b = assets_dir.to_string_lossy();
+    println!("{}", b);
+    let d = assets_dir.join("Factions");
+    // let dd = d.into_iter()
 
-        for entry in WalkDir::new(&d)
+    for entry in WalkDir::new(&d)
+        .max_depth(1)
+        .min_depth(1)
         .into_iter()
         .filter_map(Result::ok)
-                         .filter(|e| e.file_type().is_file()) {
+        .filter(|e| e.file_type().is_file())
+    {
         let f_name = String::from(entry.file_name().to_string_lossy());
-                        println!("{}", f_name);
+        println!("{}", f_name);
+    }
 
-        }
-
-                for entry in WalkDir::new(&d)
+    for entry in WalkDir::new(&d)
+        .max_depth(1)
+        .min_depth(1)
         .into_iter()
         .filter_map(Result::ok)
-                         .filter(|e| e.file_type().is_dir()) {
+        .filter(|e| e.file_type().is_dir())
+    {
         let f_name = String::from(entry.file_name().to_string_lossy());
-                        println!("{}", f_name);
+        println!("{}", f_name);
+    }
 
-        }
-
-
-                // println!("{}",dd);
-
+    // println!("{}",dd);
 
     Ok(factions)
 }
 
-pub(crate) fn get_folder()  {
-
-}
+pub(crate) fn get_folder() {}
 
 // pub mod toml_parser;
 // use crate::game_data_retriever::*;
