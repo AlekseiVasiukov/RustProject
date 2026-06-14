@@ -155,13 +155,20 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
 
         println!("{:#?}", &unit_types_result);
 
+        if (unit_types_result.UnitTypes.is_empty()){
+            eprintln!("There is no usable Unit Type for {:?} faction loaded. Skipping faction", faction_name);
+            continue
+        }
+
         //since there are types, trying to fetch the names
 
         //building compact type for caller.
     }
 
     // println!("{}",dd);
-
+    if (factions.is_empty()){
+        return Err("There is no usable faction loaded.".into());
+    }
     Ok(factions)
 }
 
