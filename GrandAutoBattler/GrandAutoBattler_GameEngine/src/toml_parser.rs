@@ -64,7 +64,7 @@ pub(crate) struct UnitTypesToml {
 
 #[derive(Debug, Deserialize)]
 struct NameToml {
-    name: Vec<String>,
+    names: Vec<String>,
 }
 
 fn parse_config_from_str(toml_string: &str) -> Result<Config, toml::de::Error> {
@@ -96,7 +96,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     let exe_dir = exe_path.parent().ok_or("Failed to get parent dir");
     let assets_dir = exe_dir?.join("assets");
     let b = assets_dir.to_string_lossy();
-    println!("{}", b);
+    // println!("{}", b);
     let factions_folder_path = assets_dir.join("Factions");
     // let dd = d.into_iter()
 
@@ -108,7 +108,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
         .filter(|e| e.file_type().is_file())
     {
         let f_name = String::from(entry.file_name().to_string_lossy());
-        println!("{}", f_name);
+        // println!("{}", f_name);
     }
 
     let mut factions_names: Vec<String> = Vec::new();
@@ -120,7 +120,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
         .filter(|e| e.file_type().is_dir())
     {
         let f_name = String::from(entry.file_name().to_string_lossy());
-        println!("{}", f_name);
+        // println!("{}", f_name);
         factions_names.push(f_name);
     }
 
@@ -145,7 +145,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
             Ok(result) => result,
         };
 
-        println!("{}", &toml_content);
+        // println!("{}", &toml_content);
 
         let unit_types_result: UnitTypesArrayToml = match toml::from_str(&toml_content) {
             Err(e) => {
@@ -158,7 +158,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
             Ok(result) => result,
         };
 
-        println!("{:#?}", &unit_types_result);
+        // println!("{:#?}", &unit_types_result);
 
         if unit_types_result.UnitTypes.is_empty() {
             eprintln!(
@@ -175,26 +175,53 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
             .map(Into::into)
             .collect();
 
-        println!("{:#?}", &faction);
-
-        let mut male_names_list: Vec<String> = Vec::new();
-        let mut female_names_list: Vec<String> = Vec::new();
+        //since there are types already parsed, trying to fetch the optional names
         let mut male_names_folder_location = faction_folder_path.join("MaleNames");
-        let mut male_names_fist_names_file = male_names_folder_location.join("FirstNames.toml");
+        let mut male_names_first_names_file = male_names_folder_location.join("FirstNames.toml");
+        let mut male_names_last_names_file =
+            male_names_folder_location.join("MiddleLastNames.toml");
 
-        // let content = fs::read_to_string(path)?;
-        // if let Ok(content) = fs::read_to_string(path){
-        //         // let data: NameToml = toml::from_str(&content)
+        // if let Ok(result) pattern, allowing to continue logic and silence the errors.
+        if let Ok(content) = fs::read_to_string(male_names_first_names_file)
+            && let Ok(data) = toml::from_str::<NameToml>(&content)
+        {
+            //without first names, last names doesn't make any sense.
+            faction.male_first_names = data.names;
+            if let Ok(content) = fs::read_to_string(male_names_last_names_file)
+                && let Ok(data) = toml::from_str::<NameToml>(&content)
+            {
+                faction.male_last_names = data.names;
+            }
+        }
 
-        // }
+        //female
+        let mut female_names_folder_location = faction_folder_path.join("FemaleNames");
+        let mut female_names_first_names_file =
+            female_names_folder_location.join("FirstNames.toml");
+        let mut female_names_last_names_file =
+            female_names_folder_location.join("MiddleLastNames.toml");
+
+        if let Ok(content) = fs::read_to_string(female_names_first_names_file)
+            && let Ok(data) = toml::from_str::<NameToml>(&content)
+        {
+            //without first names, last names doesn't make any sense.
+            faction.female_first_names = data.names;
+            if let Ok(content) = fs::read_to_string(female_names_last_names_file)
+                && let Ok(data) = toml::from_str::<NameToml>(&content)
+            {
+                faction.female_last_names = data.names;
+            }
+        }
+
+        // let mut male_names_last_names_file =
+        //     male_names_folder_location.join("MiddleLastNames.toml");
 
         // for unit_type_data in unit_types_result.UnitTypes{
 
         // }
 
-        //since there are types, trying to fetch the names
-
-        //building compact type for caller.
+        // println!("{:#?}", &faction);
+        factions.push(faction);
     }
 
     // println!("{}",dd);
