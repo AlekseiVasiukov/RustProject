@@ -22,22 +22,59 @@ pub struct Combatant {
 }
 
 #[derive(Debug, Deserialize)]
-
 pub struct Faction {
     name: String,
     unit_types: Vec<UnitType>,
+    female_first_names: Vec<String>,
+    male_first_names: Vec<String>,
+    female_last_names: Vec<String>,
+    male_last_names: Vec<String>,
+}
+
+impl Faction {
+    pub fn new(faction_name: String) -> Self {
+        // let unit_types = Vec::new();
+
+        // let female_first_names = Vec::new();
+        // let male_first_names = Vec::new();
+        // let female_last_names = Vec::new();
+        // let male_last_names = Vec::new();
+        Self {
+            name: faction_name,
+            unit_types: Vec::new(),
+
+            female_first_names: Vec::new(),
+            male_first_names: Vec::new(),
+            female_last_names: Vec::new(),
+            male_last_names: Vec::new(),
+        }
+    }
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct UnitType {
-
     unit_type_name: String,
     unit_type_pretty_name: Option<String>,
     females_only: bool,
     parameters_set: BTreeMap<String, u8>,
-    first_names: Option<Vec<String>>,
-    last_names: Option<Vec<String>>,
 }
+
+impl UnitType {
+    pub fn new(
+        unit_type_name: String,
+        unit_type_pretty_name: Option<String>,
+        females_only: bool,
+        parameters_set: BTreeMap<String, u8>,
+    ) -> Self {
+        Self {
+            unit_type_name,
+            unit_type_pretty_name,
+            females_only,
+            parameters_set,
+        }
+    }
+}
+
 
 pub fn get_config() -> Result<Config, Box<dyn Error>> {
     let config = toml_parser::load_config()?;
@@ -52,7 +89,6 @@ pub fn get_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     // Err("Error".to_string())
     Ok(d)
 }
-
 
 // pub(crate) fn load_available_factions() -> Result<Vec<Faction>, String> {
 //     // Err("Error".to_string())

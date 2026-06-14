@@ -46,12 +46,12 @@ impl ConfigToml {
 
 #[derive(Debug, Deserialize, Clone)]
 
-pub struct UnitTypesArrayToml {
+struct UnitTypesArrayToml {
     UnitTypes: Vec<UnitTypesToml>,
 }
-#[derive(Debug, Deserialize, Clone)]
 
-pub struct UnitTypesToml {
+#[derive(Debug, Deserialize, Clone)]
+struct UnitTypesToml {
     unit_type_name: String,
     unit_type_pretty_name: Option<String>,
     // #[serde(Option)]
@@ -60,6 +60,11 @@ pub struct UnitTypesToml {
     attack: u8,
     range: u8,
     defense: u8,
+}
+
+#[derive(Debug,Deserialize)]
+struct NameToml {
+    name: Vec<String>
 }
 
 fn parse_config_from_str(toml_string: &str) -> Result<Config, toml::de::Error> {
@@ -126,6 +131,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
 
     let mut factions_list: Vec<Faction> = Vec::new();
     for faction_name in factions_names {
+  
         //Checking if there are types
         let faction_folder_path = factions_folder_path.join(&faction_name);
         let faction_types_path = faction_folder_path.join("UnitTypes.toml");
@@ -155,9 +161,34 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
 
         println!("{:#?}", &unit_types_result);
 
-        if (unit_types_result.UnitTypes.is_empty()){
+        if unit_types_result.UnitTypes.is_empty(){
             eprintln!("There is no usable Unit Type for {:?} faction loaded. Skipping faction", faction_name);
             continue
+        }
+
+        let mut faction: Faction = Faction::new(faction_name);
+        
+        
+        let mut male_names_list: Vec<String> = Vec::new();
+        let mut female_names_list: Vec<String> = Vec::new();
+        let mut male_names_folder_location =  faction_folder_path.join("MaleNames");
+        let mut male_names_fist_names_file =  male_names_folder_location.join("FirstNames.toml");
+        
+            // let content = fs::read_to_string(path)?;
+                        // if let Ok(content) = fs::read_to_string(path){
+                        //         // let data: NameToml = toml::from_str(&content)
+                            
+                        // }
+
+
+
+        
+
+
+
+
+        for unit_type_data in unit_types_result.UnitTypes{
+            
         }
 
         //since there are types, trying to fetch the names
@@ -166,7 +197,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     }
 
     // println!("{}",dd);
-    if (factions.is_empty()){
+    if factions.is_empty(){
         return Err("There is no usable faction loaded.".into());
     }
     Ok(factions)
