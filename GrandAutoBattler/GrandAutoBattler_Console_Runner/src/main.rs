@@ -2,5 +2,6 @@
 use GrandAutoBattler_Console;
 
 pub fn main (){
-    GrandAutoBattler_Console::PrintConsole();
+        println!("Console App runner is trying to run the console app");
+    GrandAutoBattler_Console::RunConsoleApp();
 }

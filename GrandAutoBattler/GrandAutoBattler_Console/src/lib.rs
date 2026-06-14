@@ -3,7 +3,9 @@ use std::io::{Write, stdout};
 
 use std::error::Error;
 
-pub fn PrintConsole() {
-    println!("YoConcole");
-    GrandAutoBattler_GameEngine::PrintEngine();
+pub fn RunConsoleApp() {
+    println!("Console App launched");
+    println!("Trying to request new game instance from game engine");
+
+    GrandAutoBattler_GameEngine::GetNewGameInstance();
 }

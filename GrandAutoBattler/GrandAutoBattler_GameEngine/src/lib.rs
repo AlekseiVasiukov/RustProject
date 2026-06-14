@@ -4,13 +4,11 @@ mod toml_parser;
 
 use game_instance::*;
 
-use std::io::{stdout, Write};
+use std::io::{Write, stdout};
 
 use std::error::Error;
-pub fn PrintEngine() {
-    println!("YoEngine");
-
-    // let mut i = GameInstance::new();
+pub fn GetNewGameInstance() {
+    println!("Trying to initialize new Game Instance");
 
     let mut result = match GameInstance::new() {
         Err(e) => {
@@ -22,7 +20,6 @@ pub fn PrintEngine() {
             return;
         }
 
-        // Err(e) => println!("Initialization failed. Game continuation is not possible. Error: {}", e),
         Ok(result) => println!("Initialization succeed. {:#?}", result),
     };
 }
