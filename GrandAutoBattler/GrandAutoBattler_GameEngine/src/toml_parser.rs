@@ -67,10 +67,10 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     let assets_dir = exe_dir?.join("assets");
     let b = assets_dir.to_string_lossy();
     println!("{}", b);
-    let d = assets_dir.join("Factions");
+    let factions_folder_path = assets_dir.join("Factions");
     // let dd = d.into_iter()
 
-    for entry in WalkDir::new(&d)
+    for entry in WalkDir::new(&factions_folder_path)
         .max_depth(1)
         .min_depth(1)
         .into_iter()
@@ -82,7 +82,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     }
 
     let mut factions_names: Vec<String> = Vec::new();
-    for entry in WalkDir::new(&d)
+    for entry in WalkDir::new(&factions_folder_path)
         .max_depth(1)
         .min_depth(1)
         .into_iter()
@@ -97,6 +97,15 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     if (factions_names.is_empty()) {
         //THis is boxing text for Err return 0_o
         return Err("Factions folder is empty".into());
+    }
+
+    let mut factions_list: Vec<Faction> = Vec::new();
+    for faction_name in factions_names{
+        
+        let faction_folder_path = factions_folder_path.join(faction_name);
+        let faction_types_path = faction_folder_path.join("UnitTypes.toml");
+        
+
     }
 
     // println!("{}",dd);
