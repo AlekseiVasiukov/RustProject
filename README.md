@@ -3,7 +3,15 @@
 An Idea of the future project.
 It's the game of two parties fighting each other. 
 Left party (ours) consist of selected (4 maximum) characters. The opposite party (enemy, on the right) are generated with equal power.
-The calculations of units types parameters proportions can be found in Docs/UnitsParametersCalculations.xlsx
+
+The design-document can be found in:
+Docs/FinalProject_Rust_Vasiukov_Barros.pptx
+
+The calculations of units types parameters proportions can be found in:
+Docs/UnitsParametersCalculations.xlsx
+
+<img width="700" height="350" alt="ComfyUI_temp_pmtgp_00017_" src="https://github.com/user-attachments/assets/31bbe1eb-1034-4e63-af24-3618dc6d0490" />
+
 
 CURRENT STAGE: BASIC FUNCTIONALITY FOR MAIN PROJECT "GRAND AUTO-BATTLER" IN DEDICATED BRANCH IS PLACED
 
