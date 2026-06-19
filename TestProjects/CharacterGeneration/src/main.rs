@@ -61,7 +61,7 @@ fn main() {
     failure_params.insert("defense".to_string(), Parameter::new(7).unwrap());
     match Character::new(&failure_params) {
         Ok(character) => {
-            println!("Character initialized successfully: {:?}", character);
+            println!("Character initialized successfully: {:#?}", character);
         }
         Err(e) => {
             println!("Error as expected: {}", e);
