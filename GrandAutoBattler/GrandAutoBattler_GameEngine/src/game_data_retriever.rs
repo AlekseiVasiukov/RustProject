@@ -16,7 +16,7 @@ pub struct Combatant {
     last_name: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Faction {
     pub name: String,
     pub unit_types: Vec<UnitType>,
@@ -92,7 +92,7 @@ pub fn get_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     Ok(factions)
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Config {
     pub BASIC_HEALTH: f32,
     pub BASIC_ATTACK: f32,

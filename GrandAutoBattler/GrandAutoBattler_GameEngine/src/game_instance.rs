@@ -2,10 +2,10 @@ use crate::game_data_retriever::{self, Config, Faction};
 
 use std::error::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GameInstance {
     id: String,
-    factions: Vec<Faction>,
+    pub factions: Vec<Faction>,
     config: Config,
 }
 
