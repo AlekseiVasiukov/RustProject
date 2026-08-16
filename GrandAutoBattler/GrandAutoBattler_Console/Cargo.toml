@@ -9,3 +9,5 @@ edition = "2024"
 
 [dependencies]
 GrandAutoBattler_GameEngine = { path = "../GrandAutoBattler_GameEngine" }
+crossterm = "0.29.0"
+execute = "0.2.15"
