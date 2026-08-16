@@ -1,7 +1,7 @@
 use GrandAutoBattler_GameEngine;
 use crossterm::{
     ExecutableCommand,
-    cursor::{Hide, Show},
+    cursor::{Hide, MoveTo, Show},
     event::{self, Event, KeyCode, KeyModifiers, read},
     execute,
     terminal::{
@@ -61,13 +61,16 @@ impl GameState {
     }
 
     pub fn render(&self) {
-        std::io::stdout().execute(Clear(ClearType::All));
-        std::io::stdout().execute(Clear(ClearType::All));
-        std::io::stdout().execute(Clear(ClearType::All));
-        std::io::stdout().execute(Clear(ClearType::All));
-        std::io::stdout().execute(Clear(ClearType::All));
-        
+        // Single clear call to prevent cumulative scrolling/clipping
 
+        let mut stdout = std::io::stdout();
+        execute!(
+            stdout, 
+            Clear(ClearType::All), 
+            MoveTo(0, 40),
+        ).unwrap();
+
+        
         match self.current_stage {
             Stage::Title => {
                 println!("========================================");
