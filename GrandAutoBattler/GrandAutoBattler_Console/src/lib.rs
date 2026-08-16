@@ -62,6 +62,11 @@ impl GameState {
 
     pub fn render(&self) {
         std::io::stdout().execute(Clear(ClearType::All));
+        std::io::stdout().execute(Clear(ClearType::All));
+        std::io::stdout().execute(Clear(ClearType::All));
+        std::io::stdout().execute(Clear(ClearType::All));
+        std::io::stdout().execute(Clear(ClearType::All));
+        
 
         match self.current_stage {
             Stage::Title => {
@@ -126,7 +131,7 @@ pub fn RunConsoleApp() -> io::Result<()> {
 
     loop {
         //Checkin user's input with a short timeout
-        if !event::poll(Duration::from_millis(100))?{
+        if !event::poll(Duration::from_millis(100))? {
             continue;
         }
 
@@ -139,16 +144,40 @@ pub fn RunConsoleApp() -> io::Result<()> {
                         None => true,
                         Some(last) => now.duration_since(last) >= Duration::from_millis(300),
                     };
+                    if is_debounced {
+                        last_input = Some(now);
+
+                        match action {
+                            Action::Continue => {
+                                if game.current_stage == Stage::Results {
+                                    game.reset_to_preparation();
+                                } else {
+                                    game.next_stage();
+                                }
+
+                                game.render();
+                            }
+
+                            Action::Exit => break,
+
+                            _ => {}
+                        }
+                    }
                 }
             }
             _ => {}
         }
     }
+
     // loop {
     // let current_faction = &game_instance.factions[faction_index];
     // let current_unit_types = &current_faction.unit_types;
     // println!("{:#?}", current_unit_types);
     // }
+    std::io::stdout().execute(Show)?;
+    std::io::stdout().execute(LeaveAlternateScreen)?;
+    disable_raw_mode()?;
+    Ok(())
 }
 
 fn get_action(event: &Event) -> Option<Action> {
