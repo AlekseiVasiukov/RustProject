@@ -33,35 +33,49 @@ pub struct GameState {
     pub counter: i32,
     // pub selected_units: Vec<()
     pub journal_index: usize,
-    pub conflicting_sides: Vec<ConflictngSide>,
+    pub conflicting_sides: BTreeMap<usize, ConflictngSide>,
+    pub(crate) cursor_on_faction: usize,
+    pub(crate) cursor_on_unit_types: usize,
 }
 
 pub struct ConflictngSide {
     pub selected_faction: usize,
     selected_units: BTreeMap<usize, Option<usize>>,
-
-    
-
 }
 
 impl ConflictngSide {
-    pub fn new () -> Self {
+    pub fn new() -> Self {
+        let mut units: BTreeMap<usize, Option<usize>> = BTreeMap::new();
+        units.insert(0, Some(0));
+        units.insert(0, None);
+        units.insert(0, None);
+        units.insert(0, None);
         Self {
             selected_faction: 0,
-            selected_units:  BTreeMap::new()
+            selected_units: units,
         }
     }
 }
 
+impl Default for ConflictngSide {
+    fn default() -> Self {
+        ConflictngSide::new()
+    }
+}
 
 impl GameState {
     pub fn new() -> Self {
+        let mut default_conflicting_sides: BTreeMap<usize, ConflictngSide> = BTreeMap::new();
+        default_conflicting_sides.insert(0, ConflictngSide::default());
+        default_conflicting_sides.insert(1, ConflictngSide::default());
         Self {
             current_stage: Stage::Title,
             counter: 0,
             // selected_units:
             journal_index: 0,
-            conflicting_sides: Vec::new()
+            conflicting_sides: default_conflicting_sides,
+            cursor_on_faction: 0,
+            cursor_on_unit_types: 0,
         }
     }
 
@@ -86,13 +100,8 @@ impl GameState {
         // Single clear call to prevent cumulative scrolling/clipping
 
         let mut stdout = std::io::stdout();
-        execute!(
-            stdout, 
-            Clear(ClearType::All), 
-            MoveTo(0, 40),
-        ).unwrap();
+        execute!(stdout, Clear(ClearType::All), MoveTo(0, 40),).unwrap();
 
-        
         match self.current_stage {
             Stage::Title => {
                 println!("========================================");
@@ -104,9 +113,10 @@ impl GameState {
             Stage::PreparationFactions => {
                 println!(" PREPARATION STAGE: CHOOSE YOUR FACTION");
                 println!(" YOUR FACTION:");
-                
+                // println!(" {}", self.get_faction_display(0));
+                println!();
                 println!(" OPPONENT'S FACTION:");
-                
+                println!();
                 println!(" Counter: {}", self.counter); // Showing counter for debugging
                 println!();
                 println!(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
@@ -123,6 +133,23 @@ impl GameState {
                 println!(" [ CONTINUE (spacebar) ] [ EXIT (esc)]");
             }
         }
+    }
+
+    // fn get_faction_display(&self, side_index: usize) -> String {
+    //     let name = self.conflicting_sides;
+    //     let
+    //     // let prefix = match side_index {
+    //     //     0=> if cursor_on_faction { "► ".to_string()} else { "\t".to_string()},
+    //     //     1=> "\t".to_string(),
+    //     //     _=> " ".to_string(),
+    //     // };
+    //     format!("{} {}", prefix, name)
+    // }
+}
+
+impl Default for GameState {
+    fn default() -> Self {
+        GameState::new()
     }
 }
 
@@ -149,8 +176,8 @@ pub fn RunConsoleApp() -> io::Result<()> {
     println!("{:#?}", &game_instance.factions);
 
     let faction_index = 0;
-    let cursor_on_faction: usize = 0;
-    let cursor_on_unit_types: usize = 0;
+    // let cursor_on_faction: usize = 0;
+    // let cursor_on_unit_types: usize = 0;
     // let unitTypes: BTreeMap<usize, i32> = BTreeMap::new();
 
     //StateMachine loop
@@ -200,7 +227,7 @@ pub fn RunConsoleApp() -> io::Result<()> {
                             _ => {}
                         }
                     }
-                } 
+                }
                 // if game.current_stage == Stage::Pr
             }
             _ => {}
