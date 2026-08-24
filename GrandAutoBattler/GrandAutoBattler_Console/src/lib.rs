@@ -106,6 +106,7 @@ impl GameState {
                 println!(" YOUR FACTION:");
                 
                 println!(" OPPONENT'S FACTION:");
+                
                 println!(" Counter: {}", self.counter); // Showing counter for debugging
                 println!();
                 println!(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
@@ -148,6 +149,8 @@ pub fn RunConsoleApp() -> io::Result<()> {
     println!("{:#?}", &game_instance.factions);
 
     let faction_index = 0;
+    let cursor_on_faction: usize = 0;
+    let cursor_on_unit_types: usize = 0;
     // let unitTypes: BTreeMap<usize, i32> = BTreeMap::new();
 
     //StateMachine loop
@@ -205,8 +208,7 @@ pub fn RunConsoleApp() -> io::Result<()> {
     }
 
     // loop {
-    // let current_faction = &game_instance.factions[faction_index];
-    // let current_unit_types = &current_faction.unit_types;
+
     // println!("{:#?}", current_unit_types);
     // }
     std::io::stdout().execute(Show)?;
