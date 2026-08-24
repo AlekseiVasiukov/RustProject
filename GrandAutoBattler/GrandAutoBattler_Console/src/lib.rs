@@ -20,7 +20,8 @@ use std::{
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum Stage {
     Title,
-    Preparation,
+    PreparationFactions,
+    PreparationUnitTypes,
     UnitsGeneration,
     BattleSimulation,
     BattleJournal,
@@ -32,7 +33,26 @@ pub struct GameState {
     pub counter: i32,
     // pub selected_units: Vec<()
     pub journal_index: usize,
+    pub conflicting_sides: Vec<ConflictngSide>,
 }
+
+pub struct ConflictngSide {
+    pub selected_faction: usize,
+    selected_units: BTreeMap<usize, Option<usize>>,
+
+    
+
+}
+
+impl ConflictngSide {
+    pub fn new () -> Self {
+        Self {
+            selected_faction: 0,
+            selected_units:  BTreeMap::new()
+        }
+    }
+}
+
 
 impl GameState {
     pub fn new() -> Self {
@@ -41,23 +61,25 @@ impl GameState {
             counter: 0,
             // selected_units:
             journal_index: 0,
+            conflicting_sides: Vec::new()
         }
     }
 
     pub fn next_stage(&mut self) {
         self.counter += 1;
         self.current_stage = match self.current_stage {
-            Stage::Title => Stage::Preparation,
-            Stage::Preparation => Stage::UnitsGeneration,
+            Stage::Title => Stage::PreparationFactions,
+            Stage::PreparationFactions => Stage::PreparationUnitTypes,
+            Stage::PreparationUnitTypes => Stage::UnitsGeneration,
             Stage::UnitsGeneration => Stage::BattleSimulation,
             Stage::BattleSimulation => Stage::BattleJournal,
             Stage::BattleJournal => Stage::Results,
-            Stage::Results => Stage::Preparation,
+            Stage::Results => Stage::PreparationFactions,
         }
     }
 
     pub fn reset_to_preparation(&mut self) {
-        self.current_stage = Stage::Preparation;
+        self.current_stage = Stage::PreparationFactions;
     }
 
     pub fn render(&self) {
@@ -79,8 +101,17 @@ impl GameState {
                 println!();
                 println!(" [ START (spacebar) ] [ EXIT (esc) ]");
             }
-            Stage::Preparation => {
-                println!(" PREPARATION STAGE");
+            Stage::PreparationFactions => {
+                println!(" PREPARATION STAGE: CHOOSE YOUR FACTION");
+                println!(" YOUR FACTION:");
+                
+                println!(" OPPONENT'S FACTION:");
+                println!(" Counter: {}", self.counter); // Showing counter for debugging
+                println!();
+                println!(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
+            }
+            Stage::PreparationUnitTypes => {
+                println!(" PREPARATION STAGE: CHOOSE YOUR WARRIORS");
                 println!(" Units: Knight, Archer, Mage, Paladin");
                 println!(" Counter: {}", self.counter); // Showing counter for debugging
                 println!();
@@ -117,7 +148,7 @@ pub fn RunConsoleApp() -> io::Result<()> {
     println!("{:#?}", &game_instance.factions);
 
     let faction_index = 0;
-    let unitTypes: BTreeMap<usize, i32> = BTreeMap::new();
+    // let unitTypes: BTreeMap<usize, i32> = BTreeMap::new();
 
     //StateMachine loop
 
@@ -166,7 +197,8 @@ pub fn RunConsoleApp() -> io::Result<()> {
                             _ => {}
                         }
                     }
-                }
+                } 
+                // if game.current_stage == Stage::Pr
             }
             _ => {}
         }
