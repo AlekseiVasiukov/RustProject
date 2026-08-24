@@ -42,10 +42,10 @@ impl Faction {
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct UnitType {
-    unit_type_name: String,
-    unit_type_pretty_name: Option<String>,
-    females_only: bool,
-    parameters_set: BTreeMap<String, u8>,
+    pub unit_type_name: String,
+    pub unit_type_pretty_name: Option<String>,
+    pub females_only: bool,
+    pub parameters_set: BTreeMap<String, u8>,
 }
 
 impl UnitType {

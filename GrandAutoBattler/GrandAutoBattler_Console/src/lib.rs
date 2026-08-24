@@ -36,6 +36,8 @@ pub struct GameState {
     pub conflicting_sides: BTreeMap<usize, ConflictngSide>,
     pub(crate) cursor_on_faction: usize,
     pub(crate) cursor_on_unit_types: usize,
+    pub(crate) available_factions_names: Vec<String>,
+    pub(crate) available_unittypes_names: BTreeMap<usize, Vec<String>>,
 }
 
 pub struct ConflictngSide {
@@ -64,7 +66,10 @@ impl Default for ConflictngSide {
 }
 
 impl GameState {
-    pub fn new() -> Self {
+    pub fn new(
+        default_factions_names: Vec<String>,
+        default_unittypes_names: BTreeMap<usize, Vec<String>>,
+    ) -> Self {
         let mut default_conflicting_sides: BTreeMap<usize, ConflictngSide> = BTreeMap::new();
         default_conflicting_sides.insert(0, ConflictngSide::default());
         default_conflicting_sides.insert(1, ConflictngSide::default());
@@ -76,6 +81,8 @@ impl GameState {
             conflicting_sides: default_conflicting_sides,
             cursor_on_faction: 0,
             cursor_on_unit_types: 0,
+            available_factions_names: default_factions_names,
+            available_unittypes_names: default_unittypes_names,
         }
     }
 
@@ -113,9 +120,10 @@ impl GameState {
             Stage::PreparationFactions => {
                 println!(" PREPARATION STAGE: CHOOSE YOUR FACTION");
                 println!(" YOUR FACTION:");
-                // println!(" {}", self.get_faction_display(0));
+                println!(" {}", self.get_faction_display(&0));
                 println!();
                 println!(" OPPONENT'S FACTION:");
+                println!(" {}", self.get_faction_display(&1));
                 println!();
                 println!(" Counter: {}", self.counter); // Showing counter for debugging
                 println!();
@@ -135,23 +143,33 @@ impl GameState {
         }
     }
 
-    // fn get_faction_display(&self, side_index: usize) -> String {
-    //     let name = self.conflicting_sides;
-    //     let
-    //     // let prefix = match side_index {
-    //     //     0=> if cursor_on_faction { "► ".to_string()} else { "\t".to_string()},
-    //     //     1=> "\t".to_string(),
-    //     //     _=> " ".to_string(),
-    //     // };
-    //     format!("{} {}", prefix, name)
-    // }
-}
-
-impl Default for GameState {
-    fn default() -> Self {
-        GameState::new()
+    fn get_faction_display(&self, side_index: &usize) -> String {
+        let faction_name = self.available_factions_names
+            [self.conflicting_sides[side_index].selected_faction]
+            .clone();
+        // let faction_name =  self.available_unittypes_names self.conflicting_sides[side_index].selected_faction;
+        // let
+        let marked = if self.cursor_on_faction == *side_index {
+            "►"
+        } else {
+            ""
+        };
+        let result = format!(" {}\t{}", marked, faction_name);
+        result
+        // let prefix = match side_index {
+        //     0=> if cursor_on_faction { "► ".to_string()} else { "\t".to_string()},
+        //     1=> "\t".to_string(),
+        //     _=> " ".to_string(),
+        // };
+        // format!("{} {}", prefix, name)
     }
 }
+
+// impl Default for GameState {
+//     fn default() -> Self {
+//         GameState::new()
+//     }
+// }
 
 enum Action {
     Continue,
@@ -186,7 +204,23 @@ pub fn RunConsoleApp() -> io::Result<()> {
     std::io::stdout().execute(EnterAlternateScreen).unwrap();
     std::io::stdout().execute(Hide).unwrap();
 
-    let mut game = GameState::new();
+    let mut faction_names: Vec<String> = Vec::new();
+    let mut unittypes_names: BTreeMap<usize, Vec<String>> = BTreeMap::new();
+    for (i, faction) in game_instance.factions.iter().enumerate() {
+        faction_names.push(faction.name.clone());
+
+        let mut unittypes_names_of_faction: Vec<String> = Vec::new();
+        for unit_type in faction.unit_types.clone() {
+            if let Some(pretty_name) = unit_type.unit_type_pretty_name {
+                unittypes_names_of_faction.push(pretty_name);
+            } else {
+                unittypes_names_of_faction.push(unit_type.unit_type_name);
+            }
+        }
+        unittypes_names.insert(i, unittypes_names_of_faction);
+    }
+
+    let mut game = GameState::new(faction_names, unittypes_names);
 
     game.render();
 
