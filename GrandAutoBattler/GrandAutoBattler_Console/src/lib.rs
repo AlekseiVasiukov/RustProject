@@ -157,14 +157,19 @@ impl GameState {
     }
 
     pub(crate) fn apply_action_to_game_stage(&mut self, action: Action) {
+        let len = self.conflicting_sides.len();
+        if len == 0 {
+            return;
+        }
         match self.current_stage {
             Stage::PreparationFactions => match action {
+                //Using modulo, to cicle the loop
                 Action::MoveUp => {
-                    if self.cursor_on_faction == 0 {
-                        self.cursor_on_faction = self.conflicting_sides.len().saturating_sub(1)
-                    } else {
-                        self.cursor_on_faction -= 1
-                    }
+                    // Adding len ensures the result is positive before modulo
+                    self.cursor_on_faction = (self.cursor_on_faction + len - 1) % len;
+                }
+                Action::MoveDown => {
+                    self.cursor_on_faction = (self.cursor_on_faction + 1) % len;
                 }
                 _ => {}
             },
