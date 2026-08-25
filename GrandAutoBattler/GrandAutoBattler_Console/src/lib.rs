@@ -157,20 +157,46 @@ impl GameState {
     }
 
     pub(crate) fn apply_action_to_game_stage(&mut self, action: Action) {
-        let len = self.conflicting_sides.len();
-        if len == 0 {
-            return;
-        }
         match self.current_stage {
             Stage::PreparationFactions => match action {
+                //Switching between ours and opponent's faction
                 //Using modulo, to cicle the loop
                 Action::MoveUp => {
+                    let len = self.conflicting_sides.len();
+                    if len == 0 {
+                        return;
+                    }
                     // Adding len ensures the result is positive before modulo
                     self.cursor_on_faction = (self.cursor_on_faction + len - 1) % len;
                 }
                 Action::MoveDown => {
+                    let len = self.conflicting_sides.len();
+                    if len == 0 {
+                        return;
+                    }
                     self.cursor_on_faction = (self.cursor_on_faction + 1) % len;
                 }
+
+                Action::MoveLeft => {
+                    let len = self.available_factions_names.len();
+                    if len == 0 {
+                        return;
+                    }
+                    // self.available_factions_names
+                    if let Some(side) = self.conflicting_sides.get_mut(&self.cursor_on_faction) {
+                        side.selected_faction = (side.selected_faction + len - 1) % len;
+                    }
+                }
+                Action::MoveRight => {
+                    let len = self.available_factions_names.len();
+                    if len == 0 {
+                        return;
+                    }
+                    if let Some(side) = self.conflicting_sides.get_mut(&self.cursor_on_faction) {
+                        side.selected_faction = (side.selected_faction + 1) % len;
+                    }
+                }
+
                 _ => {}
             },
             _ => {}
