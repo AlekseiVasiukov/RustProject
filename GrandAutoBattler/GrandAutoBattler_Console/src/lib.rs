@@ -147,8 +147,6 @@ impl GameState {
         let faction_name = self.available_factions_names
             [self.conflicting_sides[side_index].selected_faction]
             .clone();
-        // let faction_name =  self.available_unittypes_names self.conflicting_sides[side_index].selected_faction;
-        // let
         let marked = if self.cursor_on_faction == *side_index {
             "►"
         } else {
@@ -156,20 +154,25 @@ impl GameState {
         };
         let result = format!(" {}\t{}", marked, faction_name);
         result
-        // let prefix = match side_index {
-        //     0=> if cursor_on_faction { "► ".to_string()} else { "\t".to_string()},
-        //     1=> "\t".to_string(),
-        //     _=> " ".to_string(),
-        // };
-        // format!("{} {}", prefix, name)
+    }
+
+    pub(crate) fn apply_action_to_game_stage(&mut self, action: Action) {
+        match self.current_stage {
+            Stage::PreparationFactions => match action {
+                Action::MoveUp => {
+                    if self.cursor_on_faction == 0 {
+                        self.cursor_on_faction = self.conflicting_sides.len().saturating_sub(1)
+                    } else {
+                        self.cursor_on_faction -= 1
+                    }
+                }
+                _ => {}
+            },
+            _ => {}
+        }
+        self.render();
     }
 }
-
-// impl Default for GameState {
-//     fn default() -> Self {
-//         GameState::new()
-//     }
-// }
 
 enum Action {
     Continue,
@@ -194,13 +197,7 @@ pub fn RunConsoleApp() -> io::Result<()> {
     println!("{:#?}", &game_instance.factions);
 
     let faction_index = 0;
-    // let cursor_on_faction: usize = 0;
-    // let cursor_on_unit_types: usize = 0;
-    // let unitTypes: BTreeMap<usize, i32> = BTreeMap::new();
 
-    //StateMachine loop
-
-    // enable_raw_mode().unwrap();
     std::io::stdout().execute(EnterAlternateScreen).unwrap();
     std::io::stdout().execute(Hide).unwrap();
 
@@ -240,7 +237,7 @@ pub fn RunConsoleApp() -> io::Result<()> {
                     //Debouncing to prevent several signals appear from pressed key
                     let is_debounced = match last_input {
                         None => true,
-                        Some(last) => now.duration_since(last) >= Duration::from_millis(300),
+                        Some(last) => now.duration_since(last) >= Duration::from_millis(150),
                     };
                     if is_debounced {
                         last_input = Some(now);
@@ -252,13 +249,11 @@ pub fn RunConsoleApp() -> io::Result<()> {
                                 } else {
                                     game.next_stage();
                                 }
-
                                 game.render();
                             }
-
                             Action::Exit => break,
-
-                            _ => {}
+                            _ => game.apply_action_to_game_stage(action),
+                            // _ => {}
                         }
                     }
                 }
