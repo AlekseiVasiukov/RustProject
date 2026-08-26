@@ -17,6 +17,8 @@ use std::{
     time::{Duration, Instant},
 };
 
+use crate::Stage::PreparationFactions;
+
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum Stage {
     Title,
@@ -88,6 +90,20 @@ impl GameState {
 
     pub fn next_stage(&mut self) {
         self.counter += 1;
+
+
+        //resetting values
+        if self.current_stage == PreparationFactions {
+            self.cursor_on_faction = 0;
+            self.cursor_on_unit_types = 0;
+
+            let mut default_conflicting_sides: BTreeMap<usize, ConflictngSide> = BTreeMap::new();
+            default_conflicting_sides.insert(0, ConflictngSide::default());
+            default_conflicting_sides.insert(1, ConflictngSide::default());
+
+            self.conflicting_sides = default_conflicting_sides;
+        }
+
         self.current_stage = match self.current_stage {
             Stage::Title => Stage::PreparationFactions,
             Stage::PreparationFactions => Stage::PreparationUnitTypes,
