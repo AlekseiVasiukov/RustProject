@@ -19,7 +19,7 @@ use std::{
 
 use crate::Stage::PreparationFactions;
 
-#[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Stage {
     Title,
     PreparationFactions,
@@ -30,10 +30,10 @@ pub enum Stage {
     Results,
 }
 
+#[derive(Debug)]
 pub struct GameState {
     pub current_stage: Stage,
     pub counter: i32,
-    // pub selected_units: Vec<()
     pub journal_index: usize,
     pub conflicting_sides: BTreeMap<usize, ConflictngSide>,
     pub(crate) cursor_on_faction: usize,
@@ -42,6 +42,7 @@ pub struct GameState {
     pub(crate) available_unittypes_names: BTreeMap<usize, Vec<String>>,
 }
 
+#[derive(Debug)]
 pub struct ConflictngSide {
     pub selected_faction: usize,
     selected_units: BTreeMap<usize, Option<usize>>,
@@ -51,9 +52,9 @@ impl ConflictngSide {
     pub fn new() -> Self {
         let mut units: BTreeMap<usize, Option<usize>> = BTreeMap::new();
         units.insert(0, Some(0));
-        units.insert(0, None);
-        units.insert(0, None);
-        units.insert(0, None);
+        units.insert(1, None);
+        units.insert(2, None);
+        units.insert(3, None);
         Self {
             selected_faction: 0,
             selected_units: units,
@@ -75,10 +76,11 @@ impl GameState {
         let mut default_conflicting_sides: BTreeMap<usize, ConflictngSide> = BTreeMap::new();
         default_conflicting_sides.insert(0, ConflictngSide::default());
         default_conflicting_sides.insert(1, ConflictngSide::default());
+
+        
         Self {
             current_stage: Stage::Title,
             counter: 0,
-            // selected_units:
             journal_index: 0,
             conflicting_sides: default_conflicting_sides,
             cursor_on_faction: 0,
@@ -92,17 +94,6 @@ impl GameState {
         self.counter += 1;
 
 
-        //resetting values
-        if self.current_stage == PreparationFactions {
-            self.cursor_on_faction = 0;
-            self.cursor_on_unit_types = 0;
-
-            let mut default_conflicting_sides: BTreeMap<usize, ConflictngSide> = BTreeMap::new();
-            default_conflicting_sides.insert(0, ConflictngSide::default());
-            default_conflicting_sides.insert(1, ConflictngSide::default());
-
-            self.conflicting_sides = default_conflicting_sides;
-        }
 
         self.current_stage = match self.current_stage {
             Stage::Title => Stage::PreparationFactions,
@@ -112,6 +103,18 @@ impl GameState {
             Stage::BattleSimulation => Stage::BattleJournal,
             Stage::BattleJournal => Stage::Results,
             Stage::Results => Stage::PreparationFactions,
+        };
+
+                //resetting values
+        if self.current_stage == PreparationFactions {
+            self.cursor_on_faction = 0;
+            self.cursor_on_unit_types = 0;
+
+            let mut default_conflicting_sides: BTreeMap<usize, ConflictngSide> = BTreeMap::new();
+            default_conflicting_sides.insert(0, ConflictngSide::default());
+            default_conflicting_sides.insert(1, ConflictngSide::default());
+
+            self.conflicting_sides = default_conflicting_sides;
         }
     }
 
@@ -147,7 +150,12 @@ impl GameState {
             }
             Stage::PreparationUnitTypes => {
                 println!(" PREPARATION STAGE: CHOOSE YOUR WARRIORS");
-                println!(" Units: Knight, Archer, Mage, Paladin");
+                println!(" {}", self.get_unittype_display(&0));
+                println!(" {}", self.get_unittype_display(&1));
+                println!(" {}", self.get_unittype_display(&2));
+                println!(" {}", self.get_unittype_display(&3));
+
+                // println!(" Units: Knight, Archer, Mage, Paladin");
                 println!(" Counter: {}", self.counter); // Showing counter for debugging
                 println!();
                 println!(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
@@ -170,6 +178,70 @@ impl GameState {
         };
         let result = format!(" {}\t{}", marked, faction_name);
         result
+    }
+
+    fn get_unittype_display(&self, unit_index: &usize) -> String {
+        let side = &self.conflicting_sides[&0];
+
+        // println!("{:#?}", self.conflicting_sides[&0].selected_faction);
+        // let slot = unit_index;
+
+        // println!("{:#?}", &self);
+
+        // let a = side.selected_units.get(&unit_index);
+        // println!("{:#?}", a);
+
+        // let b = &self.available_unittypes_names;
+        //         println!("{:#?}", b);
+
+        // let d = side.selected_units.get(&unit_index);
+        //         println!("{:#?}", d);
+
+        // let c = side.selected_units.get(&1);
+        //         println!("{:#?}", c);
+//  let j = self.available_unittypes_names[&side.selected_faction].clone();
+// println!("{:#?}", j);
+
+//  let k = self.available_unittypes_names[&side.selected_faction][0].clone();
+// println!("{:#?}", k);
+
+//         let index_corresponding_name = side.selected_units.get(&unit_index).and_then(|&v| v);
+//                 println!("{:#?}", index_corresponding_name);
+
+        
+        // let selected_unittype = side.selected_units.get(&unit_index);
+        //         println!("{:#?}", selected_unittype);
+
+        let unit_name = match side.selected_units.get(&unit_index).and_then(|&v| v) {
+            Some(idx) => self.available_unittypes_names[&side.selected_faction][idx].clone(),
+            None => "None".to_string(),
+        };
+
+        // println!("{:#?}", unit_name);
+
+
+        let marked = if self.cursor_on_unit_types == *unit_index {
+            "►"
+        } else {
+            ""
+        };
+        let result = format!(" {}\t[{}]\t{}", marked, unit_index, unit_name);
+        result
+
+        // let faction_name = self.available_factions_names
+        //     [self.conflicting_sides[side_index].selected_faction]
+        //     .clone();
+
+        // let self.available_unittypes_names.iter().position(|n| n == "Humans".to_string());
+
+        // let unittype_name: String = self.available_unittypes_names[s]
+        // let marked = if self.cursor_on_faction == *side_index {
+        //     "►"
+        // } else {
+        //     ""
+        // };
+        // let result = format!(" {}\t{}", marked, faction_name);
+        // result
     }
 
     pub(crate) fn apply_action_to_game_stage(&mut self, action: Action) {
@@ -241,9 +313,7 @@ pub fn RunConsoleApp() -> io::Result<()> {
     );
 
     let game_instance = games_manager.GetGameDataById(&game_instance_id);
-    println!("{:#?}", &game_instance.factions);
-
-    let faction_index = 0;
+    // println!("{:#?}", &game_instance.factions);
 
     std::io::stdout().execute(EnterAlternateScreen).unwrap();
     std::io::stdout().execute(Hide).unwrap();
@@ -263,6 +333,9 @@ pub fn RunConsoleApp() -> io::Result<()> {
         }
         unittypes_names.insert(i, unittypes_names_of_faction);
     }
+        // println!("TEST ");
+
+        // println!("{:#?}", &unittypes_names);
 
     let mut game = GameState::new(faction_names, unittypes_names);
 
@@ -310,10 +383,6 @@ pub fn RunConsoleApp() -> io::Result<()> {
         }
     }
 
-    // loop {
-
-    // println!("{:#?}", current_unit_types);
-    // }
     std::io::stdout().execute(Show)?;
     std::io::stdout().execute(LeaveAlternateScreen)?;
     disable_raw_mode()?;
