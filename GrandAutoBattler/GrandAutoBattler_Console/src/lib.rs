@@ -77,7 +77,6 @@ impl GameState {
         default_conflicting_sides.insert(0, ConflictngSide::default());
         default_conflicting_sides.insert(1, ConflictngSide::default());
 
-        
         Self {
             current_stage: Stage::Title,
             counter: 0,
@@ -93,8 +92,6 @@ impl GameState {
     pub fn next_stage(&mut self) {
         self.counter += 1;
 
-
-
         self.current_stage = match self.current_stage {
             Stage::Title => Stage::PreparationFactions,
             Stage::PreparationFactions => Stage::PreparationUnitTypes,
@@ -105,7 +102,7 @@ impl GameState {
             Stage::Results => Stage::PreparationFactions,
         };
 
-                //resetting values
+        //resetting values
         if self.current_stage == PreparationFactions {
             self.cursor_on_faction = 0;
             self.cursor_on_unit_types = 0;
@@ -124,7 +121,6 @@ impl GameState {
 
     pub fn render(&self) {
         // Single clear call to prevent cumulative scrolling/clipping
-
         let mut stdout = std::io::stdout();
         execute!(stdout, Clear(ClearType::All), MoveTo(0, 40),).unwrap();
 
@@ -154,8 +150,6 @@ impl GameState {
                 println!(" {}", self.get_unittype_display(&1));
                 println!(" {}", self.get_unittype_display(&2));
                 println!(" {}", self.get_unittype_display(&3));
-
-                // println!(" Units: Knight, Archer, Mage, Paladin");
                 println!(" Counter: {}", self.counter); // Showing counter for debugging
                 println!();
                 println!(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
@@ -183,42 +177,10 @@ impl GameState {
     fn get_unittype_display(&self, unit_index: &usize) -> String {
         let side = &self.conflicting_sides[&0];
 
-        // println!("{:#?}", self.conflicting_sides[&0].selected_faction);
-        // let slot = unit_index;
-
-        // println!("{:#?}", &self);
-
-        // let a = side.selected_units.get(&unit_index);
-        // println!("{:#?}", a);
-
-        // let b = &self.available_unittypes_names;
-        //         println!("{:#?}", b);
-
-        // let d = side.selected_units.get(&unit_index);
-        //         println!("{:#?}", d);
-
-        // let c = side.selected_units.get(&1);
-        //         println!("{:#?}", c);
-//  let j = self.available_unittypes_names[&side.selected_faction].clone();
-// println!("{:#?}", j);
-
-//  let k = self.available_unittypes_names[&side.selected_faction][0].clone();
-// println!("{:#?}", k);
-
-//         let index_corresponding_name = side.selected_units.get(&unit_index).and_then(|&v| v);
-//                 println!("{:#?}", index_corresponding_name);
-
-        
-        // let selected_unittype = side.selected_units.get(&unit_index);
-        //         println!("{:#?}", selected_unittype);
-
         let unit_name = match side.selected_units.get(&unit_index).and_then(|&v| v) {
             Some(idx) => self.available_unittypes_names[&side.selected_faction][idx].clone(),
             None => "None".to_string(),
         };
-
-        // println!("{:#?}", unit_name);
-
 
         let marked = if self.cursor_on_unit_types == *unit_index {
             "►"
@@ -227,21 +189,6 @@ impl GameState {
         };
         let result = format!(" {}\t[{}]\t{}", marked, unit_index, unit_name);
         result
-
-        // let faction_name = self.available_factions_names
-        //     [self.conflicting_sides[side_index].selected_faction]
-        //     .clone();
-
-        // let self.available_unittypes_names.iter().position(|n| n == "Humans".to_string());
-
-        // let unittype_name: String = self.available_unittypes_names[s]
-        // let marked = if self.cursor_on_faction == *side_index {
-        //     "►"
-        // } else {
-        //     ""
-        // };
-        // let result = format!(" {}\t{}", marked, faction_name);
-        // result
     }
 
     pub(crate) fn apply_action_to_game_stage(&mut self, action: Action) {
@@ -313,7 +260,6 @@ pub fn RunConsoleApp() -> io::Result<()> {
     );
 
     let game_instance = games_manager.GetGameDataById(&game_instance_id);
-    // println!("{:#?}", &game_instance.factions);
 
     std::io::stdout().execute(EnterAlternateScreen).unwrap();
     std::io::stdout().execute(Hide).unwrap();
@@ -333,9 +279,6 @@ pub fn RunConsoleApp() -> io::Result<()> {
         }
         unittypes_names.insert(i, unittypes_names_of_faction);
     }
-        // println!("TEST ");
-
-        // println!("{:#?}", &unittypes_names);
 
     let mut game = GameState::new(faction_names, unittypes_names);
 
