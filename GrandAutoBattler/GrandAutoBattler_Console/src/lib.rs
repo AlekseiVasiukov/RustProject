@@ -121,8 +121,8 @@ impl GameState {
 
     pub fn render(&self) {
         // Single clear call to prevent cumulative scrolling/clipping
-        // let mut stdout = std::io::stdout();
-        // execute!(stdout, Clear(ClearType::All), MoveTo(0, 40),).unwrap();
+        let mut stdout = std::io::stdout();
+        execute!(stdout, Clear(ClearType::All), MoveTo(0, 40),).unwrap();
 
         match self.current_stage {
             Stage::Title => {
@@ -345,8 +345,8 @@ pub fn RunConsoleApp() -> io::Result<()> {
 
     let game_instance = games_manager.GetGameDataById(&game_instance_id);
 
-    // std::io::stdout().execute(EnterAlternateScreen).unwrap();
-    // std::io::stdout().execute(Hide).unwrap();
+    std::io::stdout().execute(EnterAlternateScreen).unwrap();
+    std::io::stdout().execute(Hide).unwrap();
 
     let mut faction_names: Vec<String> = Vec::new();
     let mut unittypes_names: BTreeMap<usize, Vec<String>> = BTreeMap::new();
