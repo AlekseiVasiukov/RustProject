@@ -178,7 +178,7 @@ impl GameState {
         let side = &self.conflicting_sides[&0];
 
         let unit_name = match side.selected_units.get(&unit_index).and_then(|&v| v) {
-            Some(idx) => self.available_unittypes_names[&side.selected_faction][idx].clone(),
+            Some(index) => self.available_unittypes_names[&side.selected_faction][index].clone(),
             None => "None".to_string(),
         };
 
@@ -187,7 +187,7 @@ impl GameState {
         } else {
             ""
         };
-        let result = format!(" {}\t[{}]\t{}", marked, unit_index, unit_name);
+        let result = format!(" {}\t[{}]\t{}", marked, unit_index + 1, unit_name);
         result
     }
 
@@ -257,29 +257,40 @@ impl GameState {
                 }
 
                 Action::MoveLeft => {
- if let Some(side) = self.conflicting_sides.get_mut(&0) {
+                    if let Some(side) = self.conflicting_sides.get_mut(&0) {
                         let faction_index = side.selected_faction;
+                        let cursor_index = self.cursor_on_unit_types;
 
-                        if let Some(current_selection) =
-                            side.selected_units.get_mut(&self.cursor_on_unit_types)
+                        // Get current value to check for None constraint
+                        let current_val = *side.selected_units.get(&cursor_index).unwrap();
+
+                        if let Some(unit_types_list) =
+                            self.available_unittypes_names.get(&faction_index)
                         {
-                            if let Some(current_index) = *current_selection {
+                            if !unit_types_list.is_empty() {
+                                let len = unit_types_list.len();
 
-                                if let Some(unit_types_list) =
-                                    self.available_unittypes_names.get(&faction_index)
-                                {
-                                    let len = unit_types_list.len();
-                                    if len > 0 {
-                                        
-                                        *current_selection = Some((current_index + len - 1) % len);
-                                    }
-                                }
-                            } else {
-                                if let Some(unit_types_list) =
-                                    self.available_unittypes_names.get(&faction_index)
-                                {
-                                    if !unit_types_list.is_empty() {
-                                        *current_selection = Some(0);
+                                let total_slots = len + 1;
+
+                                if current_val.is_none() {
+                                    *side.selected_units.get_mut(&cursor_index).unwrap() =
+                                        Some(len - 1);
+                                } else if let Some(index) = current_val {
+                                    if index == 0 {
+                                        let others_all_none = side
+                                            .selected_units
+                                            .iter()
+                                            .filter(|(k, _)| *k != &cursor_index) // exclude the slot we're about to change
+                                            .all(|(_, v)| v.is_none());
+
+                                        if others_all_none {
+                                            return; // no mutation happened at all
+                                        }
+
+                                        *side.selected_units.get_mut(&cursor_index).unwrap() = None;
+                                    } else {
+                                        *side.selected_units.get_mut(&cursor_index).unwrap() =
+                                            Some(index - 1);
                                     }
                                 }
                             }
@@ -289,27 +300,34 @@ impl GameState {
                 Action::MoveRight => {
                     if let Some(side) = self.conflicting_sides.get_mut(&0) {
                         let faction_index = side.selected_faction;
+                        let cursor_index = self.cursor_on_unit_types;
 
-                        if let Some(current_selection) =
-                            side.selected_units.get_mut(&self.cursor_on_unit_types)
+                        let current_val = *side.selected_units.get(&cursor_index).unwrap();
+
+                        if let Some(unit_types_list) =
+                            self.available_unittypes_names.get(&faction_index)
                         {
-                            if let Some(current_index) = *current_selection {
+                            if !unit_types_list.is_empty() {
+                                let len = unit_types_list.len();
 
-                                if let Some(unit_types_list) =
-                                    self.available_unittypes_names.get(&faction_index)
-                                {
-                                    let len = unit_types_list.len();
-                                    if len > 0 {
-                                        
-                                        *current_selection = Some((current_index + 1) % len);
-                                    }
-                                }
-                            } else {
-                                if let Some(unit_types_list) =
-                                    self.available_unittypes_names.get(&faction_index)
-                                {
-                                    if !unit_types_list.is_empty() {
-                                        *current_selection = Some(0);
+                                if current_val.is_none() {
+                                    *side.selected_units.get_mut(&cursor_index).unwrap() = Some(0);
+                                } else if let Some(index) = current_val {
+                                    if index == len - 1 {
+                                        let others_all_none = side
+                                            .selected_units
+                                            .iter()
+                                            .filter(|(k, _)| *k != &cursor_index) // exclude the slot we're about to change
+                                            .all(|(_, v)| v.is_none());
+
+                                        if others_all_none {
+                                            return; // no mutation happened at all
+                                        }
+
+                                        *side.selected_units.get_mut(&cursor_index).unwrap() = None;
+                                    } else {
+                                        *side.selected_units.get_mut(&cursor_index).unwrap() =
+                                            Some(index + 1);
                                     }
                                 }
                             }
