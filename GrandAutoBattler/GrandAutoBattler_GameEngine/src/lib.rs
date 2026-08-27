@@ -40,7 +40,8 @@ impl GameInstancesManager {
 
             Ok(result) => {
                 self.games_by_ids.insert(new_game_id.clone(), result.clone());
-                println!("Initialization succeed. {:#?}", &result);
+                println!("Initialization succeed. ");
+                // println!("Initialization succeed. {:#?}", &result);
                 return new_game_id;
             }
         };

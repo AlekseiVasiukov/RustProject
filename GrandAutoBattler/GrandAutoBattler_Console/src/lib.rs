@@ -17,7 +17,9 @@ use std::{
     time::{Duration, Instant},
 };
 
-#[derive(PartialEq, Eq, Clone, Copy)]
+use crate::Stage::PreparationFactions;
+
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Stage {
     Title,
     PreparationFactions,
@@ -28,10 +30,10 @@ pub enum Stage {
     Results,
 }
 
+#[derive(Debug)]
 pub struct GameState {
     pub current_stage: Stage,
     pub counter: i32,
-    // pub selected_units: Vec<()
     pub journal_index: usize,
     pub conflicting_sides: BTreeMap<usize, ConflictngSide>,
     pub(crate) cursor_on_faction: usize,
@@ -40,6 +42,7 @@ pub struct GameState {
     pub(crate) available_unittypes_names: BTreeMap<usize, Vec<String>>,
 }
 
+#[derive(Debug)]
 pub struct ConflictngSide {
     pub selected_faction: usize,
     selected_units: BTreeMap<usize, Option<usize>>,
@@ -49,9 +52,9 @@ impl ConflictngSide {
     pub fn new() -> Self {
         let mut units: BTreeMap<usize, Option<usize>> = BTreeMap::new();
         units.insert(0, Some(0));
-        units.insert(0, None);
-        units.insert(0, None);
-        units.insert(0, None);
+        units.insert(1, None);
+        units.insert(2, None);
+        units.insert(3, None);
         Self {
             selected_faction: 0,
             selected_units: units,
@@ -73,10 +76,10 @@ impl GameState {
         let mut default_conflicting_sides: BTreeMap<usize, ConflictngSide> = BTreeMap::new();
         default_conflicting_sides.insert(0, ConflictngSide::default());
         default_conflicting_sides.insert(1, ConflictngSide::default());
+
         Self {
             current_stage: Stage::Title,
             counter: 0,
-            // selected_units:
             journal_index: 0,
             conflicting_sides: default_conflicting_sides,
             cursor_on_faction: 0,
@@ -88,6 +91,7 @@ impl GameState {
 
     pub fn next_stage(&mut self) {
         self.counter += 1;
+
         self.current_stage = match self.current_stage {
             Stage::Title => Stage::PreparationFactions,
             Stage::PreparationFactions => Stage::PreparationUnitTypes,
@@ -96,6 +100,18 @@ impl GameState {
             Stage::BattleSimulation => Stage::BattleJournal,
             Stage::BattleJournal => Stage::Results,
             Stage::Results => Stage::PreparationFactions,
+        };
+
+        //resetting values
+        if self.current_stage == PreparationFactions {
+            self.cursor_on_faction = 0;
+            self.cursor_on_unit_types = 0;
+
+            let mut default_conflicting_sides: BTreeMap<usize, ConflictngSide> = BTreeMap::new();
+            default_conflicting_sides.insert(0, ConflictngSide::default());
+            default_conflicting_sides.insert(1, ConflictngSide::default());
+
+            self.conflicting_sides = default_conflicting_sides;
         }
     }
 
@@ -105,7 +121,6 @@ impl GameState {
 
     pub fn render(&self) {
         // Single clear call to prevent cumulative scrolling/clipping
-
         let mut stdout = std::io::stdout();
         execute!(stdout, Clear(ClearType::All), MoveTo(0, 40),).unwrap();
 
@@ -131,7 +146,10 @@ impl GameState {
             }
             Stage::PreparationUnitTypes => {
                 println!(" PREPARATION STAGE: CHOOSE YOUR WARRIORS");
-                println!(" Units: Knight, Archer, Mage, Paladin");
+                println!(" {}", self.get_unittype_display(&0));
+                println!(" {}", self.get_unittype_display(&1));
+                println!(" {}", self.get_unittype_display(&2));
+                println!(" {}", self.get_unittype_display(&3));
                 println!(" Counter: {}", self.counter); // Showing counter for debugging
                 println!();
                 println!(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
@@ -156,6 +174,23 @@ impl GameState {
         result
     }
 
+    fn get_unittype_display(&self, unit_index: &usize) -> String {
+        let side = &self.conflicting_sides[&0];
+
+        let unit_name = match side.selected_units.get(&unit_index).and_then(|&v| v) {
+            Some(index) => self.available_unittypes_names[&side.selected_faction][index].clone(),
+            None => "None".to_string(),
+        };
+
+        let marked = if self.cursor_on_unit_types == *unit_index {
+            "►"
+        } else {
+            ""
+        };
+        let result = format!(" {}\t[{}]\t{}", marked, unit_index + 1, unit_name);
+        result
+    }
+
     pub(crate) fn apply_action_to_game_stage(&mut self, action: Action) {
         match self.current_stage {
             Stage::PreparationFactions => match action {
@@ -163,7 +198,7 @@ impl GameState {
                 //Using modulo, to cicle the loop
                 Action::MoveUp => {
                     let len = self.conflicting_sides.len();
-                    if len == 0 {
+                    if len <= 1 {
                         return;
                     }
                     // Adding len ensures the result is positive before modulo
@@ -171,7 +206,7 @@ impl GameState {
                 }
                 Action::MoveDown => {
                     let len = self.conflicting_sides.len();
-                    if len == 0 {
+                    if len <= 1 {
                         return;
                     }
                     self.cursor_on_faction = (self.cursor_on_faction + 1) % len;
@@ -179,7 +214,7 @@ impl GameState {
 
                 Action::MoveLeft => {
                     let len = self.available_factions_names.len();
-                    if len == 0 {
+                    if len <= 1 {
                         return;
                     }
                     // self.available_factions_names
@@ -189,7 +224,7 @@ impl GameState {
                 }
                 Action::MoveRight => {
                     let len = self.available_factions_names.len();
-                    if len == 0 {
+                    if len <= 1 {
                         return;
                     }
                     if let Some(side) = self.conflicting_sides.get_mut(&self.cursor_on_faction) {
@@ -199,7 +234,109 @@ impl GameState {
 
                 _ => {}
             },
-            _ => {}
+            Stage::PreparationUnitTypes => match action {
+                Action::MoveUp => {
+                    let side = &self.conflicting_sides[&0];
+
+                    if side.selected_units.len() <= 1 {
+                        return;
+                    }
+                    let len = side.selected_units.len();
+                    self.cursor_on_unit_types = (self.cursor_on_unit_types + len - 1) % len;
+                }
+                Action::MoveDown => {
+                    let side = &self.conflicting_sides[&0];
+
+                    if side.selected_units.len() <= 1 {
+                        return;
+                    }
+                    let len = side.selected_units.len();
+                    self.cursor_on_unit_types = (self.cursor_on_unit_types + 1) % len;
+
+                    print!("{:#?}", side);
+                }
+
+                Action::MoveLeft => {
+                    if let Some(side) = self.conflicting_sides.get_mut(&0) {
+                        let faction_index = side.selected_faction;
+                        let cursor_index = self.cursor_on_unit_types;
+
+                        // Get current value to check for None constraint
+                        let current_val = *side.selected_units.get(&cursor_index).unwrap();
+
+                        if let Some(unit_types_list) =
+                            self.available_unittypes_names.get(&faction_index)
+                        {
+                            if !unit_types_list.is_empty() {
+                                let len = unit_types_list.len();
+
+                                let total_slots = len + 1;
+
+                                if current_val.is_none() {
+                                    *side.selected_units.get_mut(&cursor_index).unwrap() =
+                                        Some(len - 1);
+                                } else if let Some(index) = current_val {
+                                    if index == 0 {
+                                        let others_all_none = side
+                                            .selected_units
+                                            .iter()
+                                            .filter(|(k, _)| *k != &cursor_index) // exclude the slot we're about to change
+                                            .all(|(_, v)| v.is_none());
+
+                                        if others_all_none {
+                                            return; // no mutation happened at all
+                                        }
+
+                                        *side.selected_units.get_mut(&cursor_index).unwrap() = None;
+                                    } else {
+                                        *side.selected_units.get_mut(&cursor_index).unwrap() =
+                                            Some(index - 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Action::MoveRight => {
+                    if let Some(side) = self.conflicting_sides.get_mut(&0) {
+                        let faction_index = side.selected_faction;
+                        let cursor_index = self.cursor_on_unit_types;
+
+                        let current_val = *side.selected_units.get(&cursor_index).unwrap();
+
+                        if let Some(unit_types_list) =
+                            self.available_unittypes_names.get(&faction_index)
+                        {
+                            if !unit_types_list.is_empty() {
+                                let len = unit_types_list.len();
+
+                                if current_val.is_none() {
+                                    *side.selected_units.get_mut(&cursor_index).unwrap() = Some(0);
+                                } else if let Some(index) = current_val {
+                                    if index == len - 1 {
+                                        let others_all_none = side
+                                            .selected_units
+                                            .iter()
+                                            .filter(|(k, _)| *k != &cursor_index) // exclude the slot we're about to change
+                                            .all(|(_, v)| v.is_none());
+
+                                        if others_all_none {
+                                            return; // no mutation happened at all
+                                        }
+
+                                        *side.selected_units.get_mut(&cursor_index).unwrap() = None;
+                                    } else {
+                                        *side.selected_units.get_mut(&cursor_index).unwrap() =
+                                            Some(index + 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            },
+            _ => return,
         }
         self.render();
     }
@@ -225,9 +362,6 @@ pub fn RunConsoleApp() -> io::Result<()> {
     );
 
     let game_instance = games_manager.GetGameDataById(&game_instance_id);
-    println!("{:#?}", &game_instance.factions);
-
-    let faction_index = 0;
 
     std::io::stdout().execute(EnterAlternateScreen).unwrap();
     std::io::stdout().execute(Hide).unwrap();
@@ -294,10 +428,6 @@ pub fn RunConsoleApp() -> io::Result<()> {
         }
     }
 
-    // loop {
-
-    // println!("{:#?}", current_unit_types);
-    // }
     std::io::stdout().execute(Show)?;
     std::io::stdout().execute(LeaveAlternateScreen)?;
     disable_raw_mode()?;
