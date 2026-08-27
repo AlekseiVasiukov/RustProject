@@ -257,100 +257,64 @@ impl GameState {
                 }
 
                 Action::MoveLeft => {
-                    // print!("{:#?}", self.conflicting_sides.get_mut(&0));
+ if let Some(side) = self.conflicting_sides.get_mut(&0) {
+                        let faction_index = side.selected_faction;
 
-                    // if let Some(side) = self.conflicting_sides.get_mut(&0) {
-                    //     let faction_index = side.selected_faction;
-                    //     if let Some(unit_types_list) =
-                    //         self.available_unittypes_names.get(&faction_index)
-                    //     {
-                    //         let len = unit_types_list.len();
-                    //         // if len <= 1 {
-                    //         //     return;
-                    //         // }
-                    //         print!("{:#?}", side.selected_units);
-                    //         print!("{:#?}", unit_types_list);
+                        if let Some(current_selection) =
+                            side.selected_units.get_mut(&self.cursor_on_unit_types)
+                        {
+                            if let Some(current_index) = *current_selection {
 
-                    //         if let Some(current_selection) =
-                    //             side.selected_units.get_mut(&self.cursor_on_unit_types)
-                    //         {
-                    //             print!("{:#?} {:#?}", len, current_selection);
-
-                    //             if let Some(mut current_index) = *current_selection {
-                    //                 current_index = (current_index + len - 1) % len;
-                    //             }
-                    //             // else {
-                    //             //     *current_selection = Some(0);
-                    //             // }
-                    //         }
-                    //     }
-                    // }
+                                if let Some(unit_types_list) =
+                                    self.available_unittypes_names.get(&faction_index)
+                                {
+                                    let len = unit_types_list.len();
+                                    if len > 0 {
+                                        
+                                        *current_selection = Some((current_index + len - 1) % len);
+                                    }
+                                }
+                            } else {
+                                if let Some(unit_types_list) =
+                                    self.available_unittypes_names.get(&faction_index)
+                                {
+                                    if !unit_types_list.is_empty() {
+                                        *current_selection = Some(0);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 Action::MoveRight => {
-                    let side = self.conflicting_sides.get_mut(&0).unwrap();
-                    println!("{:#?}", side);
+                    if let Some(side) = self.conflicting_sides.get_mut(&0) {
+                        let faction_index = side.selected_faction;
 
-                    let faction_index = side.selected_faction;
+                        if let Some(current_selection) =
+                            side.selected_units.get_mut(&self.cursor_on_unit_types)
+                        {
+                            if let Some(current_index) = *current_selection {
 
-                    println!("{:#?}", faction_index);
-
-                    let unit_types_list =
-                        self.available_unittypes_names.get(&faction_index).unwrap();
-
-                    println!("{:#?}", unit_types_list);
-
-                    let len = self.available_unittypes_names[&side.selected_faction].len() ;
-
-                    println!("{:#?}", len);
-
-                    let mut current_unit = side
-                        .selected_units
-                        .get_mut(&self.cursor_on_unit_types)
-                        .unwrap().unwrap();
-
-                    println!("cur sel{:#?}", current_unit);
-
-                    // if let Some(side) = self.conflicting_sides.get_mut(&self.cursor_on_faction) {
-                    //     side.selected_faction = (side.selected_faction + 1) % len;
-                    // }
-
-                    if let Some( unit) = side.selected_units.get_mut(&self.cursor_on_unit_types) {
-                        *unit = Some((current_unit + 1) % len)
+                                if let Some(unit_types_list) =
+                                    self.available_unittypes_names.get(&faction_index)
+                                {
+                                    let len = unit_types_list.len();
+                                    if len > 0 {
+                                        
+                                        *current_selection = Some((current_index + 1) % len);
+                                    }
+                                }
+                            } else {
+                                if let Some(unit_types_list) =
+                                    self.available_unittypes_names.get(&faction_index)
+                                {
+                                    if !unit_types_list.is_empty() {
+                                        *current_selection = Some(0);
+                                    }
+                                }
+                            }
+                        }
                     }
-                    // match current_unit {
-                    //     Some(value) => {
-                    //         side.selected_units[&self.cursor_on_unit_types] = (value + 1) % len
-                    //     }
-                    //     None => side.selected_units[&self.cursor_on_unit_types] = None,
-                    // }
-
-                    // if let Some(side) = self.conflicting_sides.get_mut(&0) {
-                    //     let faction_index = side.selected_faction;
-                    //     if let Some(unit_types_list) =
-                    //         self.available_unittypes_names.get(&faction_index)
-                    //     {
-                    //         let len = unit_types_list.len();
-                    //         // if len <= 1 {
-                    //         //     return;
-                    //         // }
-                    //         print!("{:#?}", side.selected_units);
-
-                    //         print!("{:#?}", unit_types_list);
-
-                    //         if let Some(current_selection) =
-                    //             side.selected_units.get_mut(&self.cursor_on_unit_types)
-                    //         {
-                    //             print!("{:#?} {:#?}", len, current_selection);
-
-                    //             if let Some(mut current_index) = *current_selection {
-                    //                 current_index = (current_index + 1) % len;
-                    //             }
-                    //             // else {
-                    //             //     *current_selection = Some(0);
-                    //             // }
-                    //         }
-                    //     }
-                    // }
                 }
                 _ => {}
             },
