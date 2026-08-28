@@ -6,7 +6,7 @@ use crossterm::{
     execute,
     terminal::{
         Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode,
-        enable_raw_mode,
+        enable_raw_mode, size,
     },
 };
 use std::collections::BTreeMap;
@@ -122,15 +122,38 @@ impl GameState {
     pub fn render(&self) {
         // Single clear call to prevent cumulative scrolling/clipping
         let mut stdout = std::io::stdout();
-        execute!(stdout, Clear(ClearType::All), MoveTo(0, 40),).unwrap();
+        // let (_, h) = crossterm::terminal::size().unwrap();
+
+        // let content_height: u16 = match self.current_stage {
+        //     Stage::Title => 5,
+        //     Stage::PreparationFactions => 9,
+        //     Stage::PreparationUnitTypes => 8,
+        //     _ => 2,
+        // };
+
+        // let start_row = h.saturating_sub(content_height);
+
+        // execute!(stdout, Clear(ClearType::All), MoveTo(0, start_row)).unwrap();
+        execute!(stdout, Clear(ClearType::All), MoveTo(10, 10),).unwrap();
 
         match self.current_stage {
             Stage::Title => {
-                println!("========================================");
-                println!("       GRAND AUTO-BATTLER             ");
-                println!(" ================================= ======");
-                println!();
-                println!(" [ START (spacebar) ] [ EXIT (esc) ]");
+                let mut lock = stdout.lock();
+
+                raw_println("========================================");
+                // stdout.flush().unwrap();
+
+                raw_println("       GRAND AUTO-BATTLER             ");
+                // stdout.flush().unwrap();
+
+                raw_println("=======================================");
+                // stdout.flush().unwrap();
+
+                raw_println("");
+                // stdout.flush().unwrap();
+
+                raw_println(" [ START (spacebar) ] [ EXIT (esc) ]");
+                // stdout.flush().unwrap();
             }
             Stage::PreparationFactions => {
                 println!(" PREPARATION STAGE: CHOOSE YOUR FACTION");
@@ -253,7 +276,7 @@ impl GameState {
                     let len = side.selected_units.len();
                     self.cursor_on_unit_types = (self.cursor_on_unit_types + 1) % len;
 
-                    print!("{:#?}", side);
+                    println!("{:#?}", side);
                 }
 
                 Action::MoveLeft => {
@@ -363,6 +386,7 @@ pub fn RunConsoleApp() -> io::Result<()> {
 
     let game_instance = games_manager.GetGameDataById(&game_instance_id);
 
+    enable_raw_mode()?;
     std::io::stdout().execute(EnterAlternateScreen).unwrap();
     std::io::stdout().execute(Hide).unwrap();
 
@@ -448,4 +472,9 @@ fn get_action(event: &Event) -> Option<Action> {
     } else {
         None
     }
+}
+pub fn raw_println(s: &str) -> io::Result<()> {
+    let mut out = io::stdout().lock();
+    write!(out, "\r\n{}\r\n", s)?;
+    out.flush()
 }
