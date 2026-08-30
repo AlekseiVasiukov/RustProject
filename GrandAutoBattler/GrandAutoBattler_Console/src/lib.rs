@@ -473,8 +473,15 @@ fn get_action(event: &Event) -> Option<Action> {
         None
     }
 }
+
+pub fn raw_print(s: &str) -> io::Result<()> {
+    let mut out = io::stdout().lock();
+    write!(out, "{}", s)?;
+    out.flush()
+}
+
 pub fn raw_println(s: &str) -> io::Result<()> {
     let mut out = io::stdout().lock();
-    write!(out, "\r\n{}\r\n", s)?;
+    write!(out, "{}\r\n", s)?;
     out.flush()
 }
