@@ -156,7 +156,15 @@ impl GameState {
             Stage::UnitsGeneration => {
                 raw_println_yellow(" UNIT GENERATION STAGE: SEE YOUR WARRIORS BEFORE BATTLE");
                 raw_println("");
-                raw_println("");
+                raw_println_green(" YOUR FACTION");
+                raw_println_green(" ———————————————————————————————————");
+                raw_println_green(format!(" {}", self.get_generated_warriors_display(&0)));
+                raw_println(" ———————————————————————————————————");
+                
+                raw_println_magenta(format!(" {}", self.get_generated_warriors_display(&1)));
+                raw_println_magenta(" ———————————————————————————————————");
+                raw_println_magenta(" OPPONENT'S FACTION");
+
                 raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
                 raw_println(" [ Continue (spacebar) ] [ EXIT (esc) ]");
             }
@@ -194,6 +202,11 @@ impl GameState {
             ""
         };
         let result = format!(" {}\t[{}]\t{}", marked, unit_index + 1, unit_name);
+        result
+    }
+
+    fn get_generated_warriors_display(&self, unit_index: &usize) -> String {
+        let result = format!("TEST");
         result
     }
 
@@ -481,6 +494,17 @@ pub fn raw_println(s: impl AsRef<str>) {
 pub fn raw_println_yellow(s: impl AsRef<str>) {
     let mut out = io::stdout().lock();
     write!(out, "\r\n\x1b[33m{}\x1b[0m", s.as_ref()).unwrap();
+    out.flush().unwrap()
+}
+pub fn raw_println_green(s: impl AsRef<str>) {
+    let mut out = io::stdout().lock();
+    write!(out, "\r\n\x1b[92m{}\x1b[0m", s.as_ref()).unwrap();
+    out.flush().unwrap()
+}
+
+pub fn raw_println_magenta(s: impl AsRef<str>) {
+    let mut out = io::stdout().lock();
+    write!(out, "\r\n\x1b[95m{}\x1b[0m", s.as_ref()).unwrap();
     out.flush().unwrap()
 }
 
