@@ -6,7 +6,7 @@ use crossterm::{
     execute,
     terminal::{
         Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode,
-        enable_raw_mode,
+        enable_raw_mode, size,
     },
 };
 use std::collections::BTreeMap;
@@ -120,43 +120,42 @@ impl GameState {
     }
 
     pub fn render(&self) {
-        // Single clear call to prevent cumulative scrolling/clipping
         let mut stdout = std::io::stdout();
         execute!(stdout, Clear(ClearType::All), MoveTo(0, 40),).unwrap();
 
         match self.current_stage {
             Stage::Title => {
-                println!("========================================");
-                println!("       GRAND AUTO-BATTLER             ");
-                println!(" ================================= ======");
-                println!();
-                println!(" [ START (spacebar) ] [ EXIT (esc) ]");
+                raw_println("========================================");
+                raw_println("       GRAND AUTO-BATTLER             ");
+                raw_println("=======================================");
+                raw_println("");
+                raw_println(" [ START (spacebar) ] [ EXIT (esc) ]");
             }
             Stage::PreparationFactions => {
-                println!(" PREPARATION STAGE: CHOOSE YOUR FACTION");
-                println!(" YOUR FACTION:");
-                println!(" {}", self.get_faction_display(&0));
-                println!();
-                println!(" OPPONENT'S FACTION:");
-                println!(" {}", self.get_faction_display(&1));
-                println!();
-                println!(" Counter: {}", self.counter); // Showing counter for debugging
-                println!();
-                println!(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
+                raw_println(" PREPARATION STAGE: CHOOSE YOUR FACTION");
+                raw_println(" YOUR FACTION:");
+                raw_println(format!(" {}", self.get_faction_display(&0)));
+                raw_println(format!(""));
+                raw_println(" OPPONENT'S FACTION:");
+                raw_println(format!(" {}", self.get_faction_display(&1)));
+                raw_println(format!(""));
+                raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
+                raw_println(format!(""));
+                raw_println(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
             }
             Stage::PreparationUnitTypes => {
-                println!(" PREPARATION STAGE: CHOOSE YOUR WARRIORS");
-                println!(" {}", self.get_unittype_display(&0));
-                println!(" {}", self.get_unittype_display(&1));
-                println!(" {}", self.get_unittype_display(&2));
-                println!(" {}", self.get_unittype_display(&3));
-                println!(" Counter: {}", self.counter); // Showing counter for debugging
-                println!();
-                println!(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
+                raw_println(" PREPARATION STAGE: CHOOSE YOUR WARRIORS");
+                raw_println(format!(" {}", self.get_unittype_display(&0)));
+                raw_println(format!(" {}", self.get_unittype_display(&1)));
+                raw_println(format!(" {}", self.get_unittype_display(&2)));
+                raw_println(format!(" {}", self.get_unittype_display(&3)));
+                raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
+                raw_println(format!(""));
+                raw_println(format!(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]"));
             }
             _ => {
-                println!("Not implemented stage yet.");
-                println!(" [ CONTINUE (spacebar) ] [ EXIT (esc)]");
+                raw_println("Not implemented stage yet.");
+                raw_println(" [ CONTINUE (spacebar) ] [ EXIT (esc)]");
             }
         }
     }
@@ -253,7 +252,7 @@ impl GameState {
                     let len = side.selected_units.len();
                     self.cursor_on_unit_types = (self.cursor_on_unit_types + 1) % len;
 
-                    print!("{:#?}", side);
+                    raw_println(format!("{:#?}", side));
                 }
 
                 Action::MoveLeft => {
@@ -352,17 +351,18 @@ enum Action {
 }
 
 pub fn RunConsoleApp() -> io::Result<()> {
-    println!("Console App launched");
-    println!("Trying to request new game instance from game engine");
+    raw_println("Console App launched");
+    raw_println("Trying to request new game instance from game engine");
     let mut games_manager = GrandAutoBattler_GameEngine::GameInstancesManager::new();
     let game_instance_id = games_manager.GetNewGameInstanceId();
-    println!(
-        "Game engine generated new game with Id: {}",
-        game_instance_id
+    raw_println(
+        format!("Game engine generated new game with Id: {}",
+        game_instance_id)
     );
 
     let game_instance = games_manager.GetGameDataById(&game_instance_id);
 
+    enable_raw_mode()?;
     std::io::stdout().execute(EnterAlternateScreen).unwrap();
     std::io::stdout().execute(Hide).unwrap();
 
@@ -448,4 +448,16 @@ fn get_action(event: &Event) -> Option<Action> {
     } else {
         None
     }
+}
+
+pub fn raw_print(s: impl AsRef<str>) -> io::Result<()> {
+    let mut out = io::stdout().lock();
+    write!(out, "{}", s.as_ref())?;
+    out.flush()
+}
+
+pub fn raw_println(s: impl AsRef<str>) -> io::Result<()> {
+    let mut out = io::stdout().lock();
+    write!(out, "\r\n{}", s.as_ref())?;
+    out.flush()
 }
