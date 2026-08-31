@@ -155,6 +155,13 @@ impl GameState {
                     " [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]"
                 ));
             }
+            Stage::UnitsGeneration => {
+                raw_println_yellow(" UNIT GENERATION STAGE: SEE YOUR WARRIORS BEFORE BATTLE");
+                raw_println(format!(""));
+                raw_println(format!(""));
+                raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
+                raw_println(" [ Continue (spacebar) ] [ EXIT (esc) ]");
+            }
             _ => {
                 raw_println("Not implemented stage yet.");
                 raw_println(" [ CONTINUE (spacebar) ] [ EXIT (esc)]");
@@ -452,24 +459,24 @@ fn get_action(event: &Event) -> Option<Action> {
     }
 }
 
-pub fn raw_print(s: impl AsRef<str>) -> io::Result<()> {
+pub fn raw_print(s: impl AsRef<str>) {
     let mut out = io::stdout().lock();
-    write!(out, "{}", s.as_ref())?;
-    out.flush()
+    write!(out, "{}", s.as_ref()).unwrap();
+    out.flush().unwrap()
 }
 
-pub fn raw_println(s: impl AsRef<str>) -> io::Result<()> {
+pub fn raw_println(s: impl AsRef<str>) {
     let mut out = io::stdout().lock();
-    write!(out, "\r\n{}", s.as_ref())?;
-    out.flush()
+    write!(out, "\r\n{}", s.as_ref()).unwrap();
+    out.flush().unwrap()
 }
 
 //Including colors     "\x1b[97mHello \x1b[37mworld\x1b[0m"
 //\x1b[
 //97m color choose (light gray)
 //0m - resetting formatting.
-pub fn raw_println_yellow(s: impl AsRef<str>) -> io::Result<()> {
+pub fn raw_println_yellow(s: impl AsRef<str>) {
     let mut out = io::stdout().lock();
-    write!(out, "\r\n\x1b[33m{}\x1b[0m", s.as_ref())?;
-    out.flush()
+    write!(out, "\r\n\x1b[33m{}\x1b[0m", s.as_ref()).unwrap();
+    out.flush().unwrap()
 }
