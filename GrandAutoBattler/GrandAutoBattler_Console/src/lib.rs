@@ -132,7 +132,7 @@ impl GameState {
                 raw_println(" [ START (spacebar) ] [ EXIT (esc) ]");
             }
             Stage::PreparationFactions => {
-                raw_println(" PREPARATION STAGE: CHOOSE YOUR FACTION");
+                raw_println_yellow(" PREPARATION STAGE: CHOOSE YOUR FACTION");
                 raw_println(" YOUR FACTION:");
                 raw_println(format!(" {}", self.get_faction_display(&0)));
                 raw_println(format!(""));
@@ -144,7 +144,7 @@ impl GameState {
                 raw_println(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
             }
             Stage::PreparationUnitTypes => {
-                raw_println(" PREPARATION STAGE: CHOOSE YOUR WARRIORS");
+                raw_println_yellow(" PREPARATION STAGE: CHOOSE YOUR WARRIORS");
                 raw_println(format!(" {}", self.get_unittype_display(&0)));
                 raw_println(format!(" {}", self.get_unittype_display(&1)));
                 raw_println(format!(" {}", self.get_unittype_display(&2)));
