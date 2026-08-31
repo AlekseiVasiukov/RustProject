@@ -160,7 +160,7 @@ impl GameState {
                 raw_println_green(" ———————————————————————————————————");
                 raw_println_green(format!(" {}", self.get_generated_warriors_display(&0)));
                 raw_println(" ———————————————————————————————————");
-                
+
                 raw_println_magenta(format!(" {}", self.get_generated_warriors_display(&1)));
                 raw_println_magenta(" ———————————————————————————————————");
                 raw_println_magenta(" OPPONENT'S FACTION");
@@ -205,7 +205,10 @@ impl GameState {
         result
     }
 
-    fn get_generated_warriors_display(&self, unit_index: &usize) -> String {
+    fn get_generated_warriors_display(&self, side_index: &usize) -> String {
+        let side = &self.conflicting_sides[&side_index];
+        
+
         let result = format!("TEST");
         result
     }
