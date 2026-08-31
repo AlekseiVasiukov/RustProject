@@ -125,14 +125,14 @@ impl GameState {
 
         match self.current_stage {
             Stage::Title => {
-                raw_println("========================================");
-                raw_println("       GRAND AUTO-BATTLER             ");
-                raw_println("=======================================");
+                raw_println_yellow("========================================");
+                raw_println_yellow("       GRAND AUTO-BATTLER             ");
+                raw_println_yellow("========================================");
                 raw_println("");
                 raw_println(" [ START (spacebar) ] [ EXIT (esc) ]");
             }
             Stage::PreparationFactions => {
-                raw_println(" PREPARATION STAGE: CHOOSE YOUR FACTION");
+                raw_println_yellow(" PREPARATION STAGE: CHOOSE YOUR FACTION");
                 raw_println(" YOUR FACTION:");
                 raw_println(format!(" {}", self.get_faction_display(&0)));
                 raw_println(format!(""));
@@ -144,14 +144,16 @@ impl GameState {
                 raw_println(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
             }
             Stage::PreparationUnitTypes => {
-                raw_println(" PREPARATION STAGE: CHOOSE YOUR WARRIORS");
+                raw_println_yellow(" PREPARATION STAGE: CHOOSE YOUR WARRIORS");
                 raw_println(format!(" {}", self.get_unittype_display(&0)));
                 raw_println(format!(" {}", self.get_unittype_display(&1)));
                 raw_println(format!(" {}", self.get_unittype_display(&2)));
                 raw_println(format!(" {}", self.get_unittype_display(&3)));
                 raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
                 raw_println(format!(""));
-                raw_println(format!(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]"));
+                raw_println(format!(
+                    " [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]"
+                ));
             }
             _ => {
                 raw_println("Not implemented stage yet.");
@@ -355,10 +357,10 @@ pub fn RunConsoleApp() -> io::Result<()> {
     raw_println("Trying to request new game instance from game engine");
     let mut games_manager = GrandAutoBattler_GameEngine::GameInstancesManager::new();
     let game_instance_id = games_manager.GetNewGameInstanceId();
-    raw_println(
-        format!("Game engine generated new game with Id: {}",
-        game_instance_id)
-    );
+    raw_println(format!(
+        "Game engine generated new game with Id: {}",
+        game_instance_id
+    ));
 
     let game_instance = games_manager.GetGameDataById(&game_instance_id);
 
@@ -459,5 +461,15 @@ pub fn raw_print(s: impl AsRef<str>) -> io::Result<()> {
 pub fn raw_println(s: impl AsRef<str>) -> io::Result<()> {
     let mut out = io::stdout().lock();
     write!(out, "\r\n{}", s.as_ref())?;
+    out.flush()
+}
+
+//Including colors     "\x1b[97mHello \x1b[37mworld\x1b[0m"
+//\x1b[
+//97m color choose (light gray)
+//0m - resetting formatting.
+pub fn raw_println_yellow(s: impl AsRef<str>) -> io::Result<()> {
+    let mut out = io::stdout().lock();
+    write!(out, "\r\n\x1b[33m{}\x1b[0m", s.as_ref())?;
     out.flush()
 }
