@@ -135,12 +135,12 @@ impl GameState {
                 raw_println_yellow(" PREPARATION STAGE: CHOOSE YOUR FACTION");
                 raw_println(" YOUR FACTION:");
                 raw_println(format!(" {}", self.get_faction_display(&0)));
-                raw_println(format!(""));
+                raw_println("");
                 raw_println(" OPPONENT'S FACTION:");
                 raw_println(format!(" {}", self.get_faction_display(&1)));
-                raw_println(format!(""));
+                raw_println("");
                 raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
-                raw_println(format!(""));
+                raw_println("");
                 raw_println(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
             }
             Stage::PreparationUnitTypes => {
@@ -150,15 +150,13 @@ impl GameState {
                 raw_println(format!(" {}", self.get_unittype_display(&2)));
                 raw_println(format!(" {}", self.get_unittype_display(&3)));
                 raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
-                raw_println(format!(""));
-                raw_println(format!(
-                    " [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]"
-                ));
+                raw_println("");
+                raw_println(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
             }
             Stage::UnitsGeneration => {
                 raw_println_yellow(" UNIT GENERATION STAGE: SEE YOUR WARRIORS BEFORE BATTLE");
-                raw_println(format!(""));
-                raw_println(format!(""));
+                raw_println("");
+                raw_println("");
                 raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
                 raw_println(" [ Continue (spacebar) ] [ EXIT (esc) ]");
             }
@@ -395,7 +393,7 @@ pub fn RunConsoleApp() -> io::Result<()> {
     while event::poll(Duration::from_millis(0))? {
         let _ = event::read()?;
     }
-    
+
     let mut game = GameState::new(faction_names, unittypes_names);
 
     game.render();
