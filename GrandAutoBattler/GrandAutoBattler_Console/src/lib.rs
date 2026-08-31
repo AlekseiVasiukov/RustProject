@@ -391,6 +391,11 @@ pub fn RunConsoleApp() -> io::Result<()> {
         unittypes_names.insert(i, unittypes_names_of_faction);
     }
 
+    // clear any buffered input events
+    while event::poll(Duration::from_millis(0))? {
+        let _ = event::read()?;
+    }
+    
     let mut game = GameState::new(faction_names, unittypes_names);
 
     game.render();
