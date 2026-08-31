@@ -480,3 +480,22 @@ pub fn raw_println_yellow(s: impl AsRef<str>) {
     write!(out, "\r\n\x1b[33m{}\x1b[0m", s.as_ref()).unwrap();
     out.flush().unwrap()
 }
+
+// Colors
+// 30 black
+// 31 red
+// 32 green
+// 33 yellow
+// 34 blue
+// 35 magenta
+// 36 cyan
+// 37 white/light gray
+
+// 90 bright black/dark gray
+// 91 bright red
+// 92 bright green
+// 93 bright yellow
+// 94 bright blue
+// 95 bright magenta
+// 96 bright cyan
+// 97 bright white
