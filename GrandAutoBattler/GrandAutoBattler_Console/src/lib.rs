@@ -212,10 +212,22 @@ impl GameState {
     }
 
     fn get_generated_warriors_display(&self, side_index: &usize) -> String {
-        let side = &self.conflicting_sides[&side_index];
+        // if self.game_result == None {
+        //     let result = format!("NO WARRIORS");
+        //     return result
+        // }
+        let a = self
+            .game_result
+            .as_ref()
+            .expect("Game result should be present");
+        let b = &a.generated_combatants[&side_index];
+        let c = &b[&0];
+        let d = format!("{:?}", &c);
 
-        let result = format!("TEST");
-        result
+        // let side = &self.conflicting_sides[&side_index];
+
+        let result = d;
+        return result;
     }
 
     pub(crate) fn apply_action_to_game_stage(&mut self, action: Action) {
@@ -444,13 +456,14 @@ pub fn RunConsoleApp() -> io::Result<()> {
                             Action::Continue => {
                                 if game.current_stage == Stage::Results {
                                     game.reset_to_preparation();
-                                    if game.current_stage == Stage::UnitsGeneration {
-                                        games_manager.GetGameResultByIdAndSelection(
-                                            &game_instance_id,
-                                            &game.conflicting_sides[&0].selected_faction,
-                                            &game.conflicting_sides[&0].selected_units,
-                                        );
-                                    }
+                                } else if game.current_stage == Stage::PreparationUnitTypes {
+                                    let game_result = games_manager.GetGameResultByIdAndSelection(
+                                        &game_instance_id,
+                                        &game.conflicting_sides[&0].selected_faction,
+                                        &game.conflicting_sides[&0].selected_units,
+                                    );
+                                    game.game_result = Some(game_result);
+                                    game.next_stage();
                                 } else {
                                     game.next_stage();
                                 }
