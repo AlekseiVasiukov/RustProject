@@ -1,4 +1,6 @@
-use GrandAutoBattler_GameEngine;
+use GrandAutoBattler_GameEngine::game_instance::{Combatant, GameResult};
+use GrandAutoBattler_GameEngine::*;
+
 use crossterm::{
     ExecutableCommand,
     cursor::{Hide, MoveTo, Show},
@@ -40,12 +42,13 @@ pub struct GameState {
     pub(crate) cursor_on_unit_types: usize,
     pub(crate) available_factions_names: Vec<String>,
     pub(crate) available_unittypes_names: BTreeMap<usize, Vec<String>>,
+    pub(crate) game_result: Option<GameResult>,
 }
 
 #[derive(Debug)]
 pub struct ConflictngSide {
     pub selected_faction: usize,
-    selected_units: BTreeMap<usize, Option<usize>>,
+    pub selected_units: BTreeMap<usize, Option<usize>>,
 }
 
 impl ConflictngSide {
@@ -86,6 +89,7 @@ impl GameState {
             cursor_on_unit_types: 0,
             available_factions_names: default_factions_names,
             available_unittypes_names: default_unittypes_names,
+            game_result: None,
         }
     }
 
@@ -440,6 +444,13 @@ pub fn RunConsoleApp() -> io::Result<()> {
                             Action::Continue => {
                                 if game.current_stage == Stage::Results {
                                     game.reset_to_preparation();
+                                    if game.current_stage == Stage::UnitsGeneration {
+                                        games_manager.GetGameResultByIdAndSelection(
+                                            &game_instance_id,
+                                            &game.conflicting_sides[&0].selected_faction,
+                                            &game.conflicting_sides[&0].selected_units,
+                                        );
+                                    }
                                 } else {
                                     game.next_stage();
                                 }

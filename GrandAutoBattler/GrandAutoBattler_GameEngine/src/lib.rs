@@ -1,5 +1,5 @@
 mod game_data_retriever;
-mod game_instance;
+pub mod game_instance;
 mod toml_parser;
 
 use game_instance::*;
@@ -57,7 +57,7 @@ impl GameInstancesManager {
         &mut self,
         key: &String,
         selected_faction: &usize,
-        selected_unittypes: BTreeMap<usize, Vec<usize>>,
+        selected_unittypes: &BTreeMap<usize, Option<usize>>,
     ) -> GameResult {
         let game_instance_ref = self.games_by_ids.get_mut(key).expect("Game instance not found");
         // let mut game_instance_clone = game_instance_ref.clone();
@@ -69,3 +69,5 @@ impl GameInstancesManager {
         result
     }
 }
+
+

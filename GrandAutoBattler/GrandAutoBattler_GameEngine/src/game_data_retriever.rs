@@ -5,37 +5,7 @@ use std::error::Error;
 
 use crate::toml_parser;
 
-#[derive(Debug, Deserialize)]
-pub struct Combatant {
-    id: String,
-    faction: Faction,
-    unit_type_name: String,
-    unit_type_pretty_name: Option<String>,
-    // parameters: BTreeMap<String, u8>,
-    first_name: Option<String>,
-    last_name: Option<String>,
-}
 
-impl Combatant {
-    pub fn new(
-        id: String,
-        faction: String,
-        unit_type_name: String,
-        unit_type_pretty_name: Option<String>,
-        first_name: Option<String>,
-        last_name: Option<String>,
-    ) -> Self {
-        Self {
-            id: id,
-            faction: faction,
-            unit_type_name: unit_type_name,
-            unit_type_pretty_name: unit_type_pretty_name,
-            // parameters: BTreeMap<String, u8>,
-            first_name: first_name,
-            last_name: last_name,
-        }
-    }
-}
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Faction {

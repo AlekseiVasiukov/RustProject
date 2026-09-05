@@ -1,7 +1,7 @@
-use crate::game_data_retriever::{self, Combatant, Config, Faction};
+use crate::game_data_retriever::{self, Config, Faction};
 
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::{BTreeMap},
     error::Error,
 };
 
@@ -15,7 +15,7 @@ pub struct GameInstance {
 
 #[derive(Debug, Clone)]
 pub struct GameResult {
-    generated_combatants: BTreeMap<usize, BTreeMap<usize, Combatant>>,
+    pub generated_combatants: BTreeMap<usize, BTreeMap<usize, Combatant>>,
 }
 
 impl GameResult {
@@ -25,6 +25,37 @@ impl GameResult {
         Ok(Self {
             generated_combatants: generated_combatants,
         })
+    }
+}
+#[derive(Debug, Clone)]
+pub struct Combatant {
+    id: String,
+    faction: String,
+    unit_type_name: String,
+    unit_type_pretty_name: Option<String>,
+    // parameters: BTreeMap<String, u8>,
+    first_name: Option<String>,
+    last_name: Option<String>,
+}
+
+impl Combatant {
+    pub fn new(
+        id: String,
+        faction: String,
+        unit_type_name: String,
+        unit_type_pretty_name: Option<String>,
+        first_name: Option<String>,
+        last_name: Option<String>,
+    ) -> Self {
+        Self {
+            id: id,
+            faction: faction,
+            unit_type_name: unit_type_name,
+            unit_type_pretty_name: unit_type_pretty_name,
+            // parameters: BTreeMap<String, u8>,
+            first_name: first_name,
+            last_name: last_name,
+        }
     }
 }
 
@@ -82,7 +113,7 @@ impl GameInstance {
             Some("Gorge".to_string()),
             Some("From Jungle".to_string()),
         );
-        let our_units: BTreeMap<usize, Combatant> = BTreeMap::new();
+        let mut our_units: BTreeMap<usize, Combatant> = BTreeMap::new();
         our_units.insert(0, character1);
 
         let character2 = Combatant::new(
@@ -93,9 +124,9 @@ impl GameInstance {
             Some("Jujuka".to_string()),
             Some("Minoris".to_string()),
         );        
-        let opponents_units: BTreeMap<usize, Combatant> = BTreeMap::new();
+        let mut opponents_units: BTreeMap<usize, Combatant> = BTreeMap::new();
         opponents_units.insert(0, character2);
-        let sides: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
+        let mut sides: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
         sides.insert(0, our_units);
         sides.insert(1, opponents_units);
 
