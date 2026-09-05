@@ -1,8 +1,12 @@
 mod game_data_retriever;
-pub mod game_instance;
+mod game_instance;
+pub mod combatant_manager;
+pub mod game_result_manager;
 mod toml_parser;
 
 use game_instance::*;
+use combatant_manager::*;
+use game_result_manager::*;
 
 use std::collections::BTreeMap;
 use std::io::{Write, stdout};
@@ -15,7 +19,6 @@ pub struct GameInstancesManager {
     pub(crate) game_instances_ids: IdRegistry,
     pub games_by_ids: BTreeMap<String, GameInstance>,
 
-    pub(crate) combatants_ids: IdRegistry,
 }
 
 impl GameInstancesManager {
@@ -24,7 +27,6 @@ impl GameInstancesManager {
             game_instances_ids: IdRegistry::new(),
             games_by_ids: BTreeMap::new(),
 
-            combatants_ids: IdRegistry::new(),
         }
     }
 

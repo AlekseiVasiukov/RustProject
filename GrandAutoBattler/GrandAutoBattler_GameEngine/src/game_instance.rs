@@ -1,4 +1,6 @@
-use crate::game_data_retriever::{self, Config, Faction};
+use crate::game_data_retriever::{self, Config, Faction, UnitType};
+use crate::combatant_manager::Combatant;
+use crate::game_result_manager::GameResult;
 
 use std::{
     collections::{BTreeMap},
@@ -13,51 +15,6 @@ pub struct GameInstance {
     pub game_result: Option<GameResult>,
 }
 
-#[derive(Debug, Clone)]
-pub struct GameResult {
-    pub generated_combatants: BTreeMap<usize, BTreeMap<usize, Combatant>>,
-}
-
-impl GameResult {
-    pub fn new(
-        generated_combatants: BTreeMap<usize, BTreeMap<usize, Combatant>>,
-    ) -> Result<Self, Box<dyn Error>> {
-        Ok(Self {
-            generated_combatants: generated_combatants,
-        })
-    }
-}
-#[derive(Debug, Clone)]
-pub struct Combatant {
-    id: String,
-    faction: String,
-    unit_type_name: String,
-    unit_type_pretty_name: Option<String>,
-    // parameters: BTreeMap<String, u8>,
-    first_name: Option<String>,
-    last_name: Option<String>,
-}
-
-impl Combatant {
-    pub fn new(
-        id: String,
-        faction: String,
-        unit_type_name: String,
-        unit_type_pretty_name: Option<String>,
-        first_name: Option<String>,
-        last_name: Option<String>,
-    ) -> Self {
-        Self {
-            id: id,
-            faction: faction,
-            unit_type_name: unit_type_name,
-            unit_type_pretty_name: unit_type_pretty_name,
-            // parameters: BTreeMap<String, u8>,
-            first_name: first_name,
-            last_name: last_name,
-        }
-    }
-}
 
 // #[derive(Debug, Clone)]
 // pub struct Combatant {
@@ -86,28 +43,21 @@ impl GameInstance {
         selected_factions: &BTreeMap<usize, usize>,
         selected_unittypes: &BTreeMap<usize, Option<usize>>,
     ) -> Result<GameResult, Box<dyn Error>> {
-        //    let mut units: BTreeMap<usize, Option<usize>> = BTreeMap::new();
-        // units.insert(0, Some(0));
-        // units.insert(1, None);
-        // units.insert(2, None);
-        // units.insert(3, None);
-
-        //         pub id: String,
-        // pub faction: String,
-        // pub unittype: String,
-        // pub firstName: String,
-        // pub lastName: Option<String>,
-        // pub parameters: BTreeMap<String, u8>,
-
-        // let character1 = Combatant::new(
-        // //     id: "42",
-        // //     faction: Humans,
-        // //     unittype
-
-        //         let character1 = Combatant::new(
-        //             id
-
-        // // );
+    
+    //Plan
+    
+    //1) Get our faction
+    //2) Get number of our fighters
+    //3) generate number of combatants with their 
+        //id
+        //name
+        //unittype
+        //max healthpoints
+        //current healthpoints
+        //parameters
+    //4) depending on number of our fighters, generate opposing combatants
+    
+    //5) Genarate Battle journal...  
 
         
 

@@ -1,5 +1,6 @@
-use GrandAutoBattler_GameEngine::game_instance::{Combatant, GameResult};
-use GrandAutoBattler_GameEngine::*;
+
+use GrandAutoBattler_GameEngine::game_result_manager::GameResult;
+use GrandAutoBattler_GameEngine::combatant_manager::Combatant;
 
 use crossterm::{
     ExecutableCommand,
