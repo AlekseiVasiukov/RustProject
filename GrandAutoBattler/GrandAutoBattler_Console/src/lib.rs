@@ -1,6 +1,7 @@
-
-use GrandAutoBattler_GameEngine::game_result_manager::GameResult;
 use GrandAutoBattler_GameEngine::combatant_manager::Combatant;
+use GrandAutoBattler_GameEngine::{
+    game_instance_manager::GameInstancesManager, game_result_manager::GameResult,
+};
 
 use crossterm::{
     ExecutableCommand,
@@ -394,11 +395,12 @@ enum Action {
 pub fn RunConsoleApp() -> io::Result<()> {
     raw_println("Console App launched");
     raw_println("Trying to request new game instance from game engine");
-    let mut games_manager = GrandAutoBattler_GameEngine::GameInstancesManager::new();
-    let game_instance_id = games_manager.GetNewGameInstanceId();
+    let mut games_manager = GameInstancesManager::new();
+    // let mut games_manager = GrandAutoBattler_GameEngine::GameInstancesManager::new();
+    let game_instance_id = &games_manager.GetNewGameInstanceId();
     raw_println(format!(
         "Game engine generated new game with Id: {}",
-        game_instance_id
+        &game_instance_id
     ));
 
     let game_instance = games_manager.GetGameDataById(&game_instance_id);
@@ -407,21 +409,10 @@ pub fn RunConsoleApp() -> io::Result<()> {
     std::io::stdout().execute(EnterAlternateScreen).unwrap();
     std::io::stdout().execute(Hide).unwrap();
 
-    let mut faction_names: Vec<String> = Vec::new();
-    let mut unittypes_names: BTreeMap<usize, Vec<String>> = BTreeMap::new();
-    for (i, faction) in game_instance.factions.iter().enumerate() {
-        faction_names.push(faction.name.clone());
-
-        let mut unittypes_names_of_faction: Vec<String> = Vec::new();
-        for unit_type in faction.unit_types.clone() {
-            if let Some(pretty_name) = unit_type.unit_type_pretty_name {
-                unittypes_names_of_faction.push(pretty_name);
-            } else {
-                unittypes_names_of_faction.push(unit_type.unit_type_name);
-            }
-        }
-        unittypes_names.insert(i, unittypes_names_of_faction);
-    }
+    //collectin available factions and unittypes from engine
+    let mut faction_names: Vec<String> = games_manager.GetAvailableFactions(&game_instance_id);
+    let mut unittypes_names: BTreeMap<usize, Vec<String>> =
+        games_manager.GetAvailableUnitTypes(&game_instance_id);
 
     // clear any buffered input events
     while event::poll(Duration::from_millis(0))? {
