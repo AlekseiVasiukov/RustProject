@@ -457,9 +457,18 @@ pub fn RunConsoleApp() -> io::Result<()> {
                                 if game.current_stage == Stage::Results {
                                     game.reset_stage_to_preparation();
                                 } else if game.current_stage == Stage::PreparationUnitTypes {
+                                    let mut selected_factions: BTreeMap<usize, usize> =
+                                        BTreeMap::new();
+
+                                    let selected_factions = game
+                                        .conflicting_sides
+                                        .iter()
+                                        .map(|(&index, side)| (index, side.selected_faction))
+                                        .collect();
+
                                     let game_result = games_manager.GetGameResultByIdAndSelection(
                                         &game_instance_id,
-                                        &game.conflicting_sides[&0].selected_faction,
+                                        &selected_factions,
                                         &game.conflicting_sides[&0].selected_units,
                                     );
                                     game.game_result = Some(game_result);

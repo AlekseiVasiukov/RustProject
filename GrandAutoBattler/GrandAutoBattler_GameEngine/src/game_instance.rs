@@ -83,7 +83,7 @@ impl GameInstance {
 
     pub fn calculate_game_result(
         &mut self,
-        selected_faction: &usize,
+        selected_factions: &BTreeMap<usize, usize>,
         selected_unittypes: &BTreeMap<usize, Option<usize>>,
     ) -> Result<GameResult, Box<dyn Error>> {
         //    let mut units: BTreeMap<usize, Option<usize>> = BTreeMap::new();

@@ -60,7 +60,7 @@ impl GameInstancesManager {
     pub fn GetGameResultByIdAndSelection(
         &mut self,
         key: &String,
-        selected_faction: &usize,
+        selected_factions: &BTreeMap<usize, usize>,
         selected_unittypes: &BTreeMap<usize, Option<usize>>,
     ) -> GameResult {
         let game_instance_ref = self
@@ -71,7 +71,7 @@ impl GameInstancesManager {
         // let game_instance: Option<&GameInstance> = self.games_by_ids.get_mut(key).as_deref();
         // let result = GameInstance::calculate_game_result(&mut (game_instance.unwrap()));
         let result = game_instance_ref
-            .calculate_game_result(selected_faction, selected_unittypes)
+            .calculate_game_result(selected_factions, selected_unittypes)
             .expect("Failed to calculate game result");
         result
     }
