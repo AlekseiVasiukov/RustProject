@@ -12,22 +12,26 @@ use std::error::Error;
 use crate::game_data_retriever::IdRegistry;
 
 pub struct GameInstancesManager {
-    pub(crate) game_instances_id: IdRegistry,
+    pub(crate) game_instances_ids: IdRegistry,
     pub games_by_ids: BTreeMap<String, GameInstance>,
+
+    pub(crate) combatants_ids: IdRegistry,
 }
 
 impl GameInstancesManager {
     pub fn new() -> Self {
         Self {
-            game_instances_id: IdRegistry::new(),
+            game_instances_ids: IdRegistry::new(),
             games_by_ids: BTreeMap::new(),
+
+            combatants_ids: IdRegistry::new(),
         }
     }
 
     pub fn GetNewGameInstanceId(&mut self) -> String {
         println!("Trying to initialize new Game Instance");
 
-        let new_game_id = self.game_instances_id.generate_id();
+        let new_game_id = self.game_instances_ids.generate_id();
         let result = match GameInstance::new(&new_game_id) {
             Err(e) => {
                 println!(
@@ -59,15 +63,16 @@ impl GameInstancesManager {
         selected_faction: &usize,
         selected_unittypes: &BTreeMap<usize, Option<usize>>,
     ) -> GameResult {
-        let game_instance_ref = self.games_by_ids.get_mut(key).expect("Game instance not found");
+        let game_instance_ref = self
+            .games_by_ids
+            .get_mut(key)
+            .expect("Game instance not found");
         // let mut game_instance_clone = game_instance_ref.clone();
         // let game_instance: Option<&GameInstance> = self.games_by_ids.get_mut(key).as_deref();
         // let result = GameInstance::calculate_game_result(&mut (game_instance.unwrap()));
         let result = game_instance_ref
-            .calculate_game_result()
+            .calculate_game_result(selected_faction, selected_unittypes)
             .expect("Failed to calculate game result");
         result
     }
 }
-
-

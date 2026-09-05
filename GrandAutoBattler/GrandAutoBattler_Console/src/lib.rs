@@ -119,7 +119,7 @@ impl GameState {
         }
     }
 
-    pub fn reset_to_preparation(&mut self) {
+    pub fn reset_stage_to_preparation(&mut self) {
         self.current_stage = Stage::PreparationFactions;
     }
 
@@ -455,7 +455,7 @@ pub fn RunConsoleApp() -> io::Result<()> {
                         match action {
                             Action::Continue => {
                                 if game.current_stage == Stage::Results {
-                                    game.reset_to_preparation();
+                                    game.reset_stage_to_preparation();
                                 } else if game.current_stage == Stage::PreparationUnitTypes {
                                     let game_result = games_manager.GetGameResultByIdAndSelection(
                                         &game_instance_id,

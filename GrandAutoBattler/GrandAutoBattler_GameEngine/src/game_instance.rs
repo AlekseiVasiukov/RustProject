@@ -81,7 +81,11 @@ impl GameInstance {
         })
     }
 
-    pub fn calculate_game_result(&mut self) -> Result<GameResult, Box<dyn Error>> {
+    pub fn calculate_game_result(
+        &mut self,
+        selected_faction: &usize,
+        selected_unittypes: &BTreeMap<usize, Option<usize>>,
+    ) -> Result<GameResult, Box<dyn Error>> {
         //    let mut units: BTreeMap<usize, Option<usize>> = BTreeMap::new();
         // units.insert(0, Some(0));
         // units.insert(1, None);
@@ -105,6 +109,8 @@ impl GameInstance {
 
         // // );
 
+        
+
         let character1 = Combatant::new(
             "42".to_string(),
             "Humans".to_string(),
@@ -123,14 +129,14 @@ impl GameInstance {
             Some("Imp".to_string()),
             Some("Jujuka".to_string()),
             Some("Minoris".to_string()),
-        );        
+        );
         let mut opponents_units: BTreeMap<usize, Combatant> = BTreeMap::new();
         opponents_units.insert(0, character2);
         let mut sides: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
         sides.insert(0, our_units);
         sides.insert(1, opponents_units);
 
-        let generated_combatants:BTreeMap<usize,BTreeMap<usize,Combatant>> = BTreeMap::new();
+        let generated_combatants: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
         match GameResult::new(sides) {
             Ok(result) => {
                 return Ok(result);
