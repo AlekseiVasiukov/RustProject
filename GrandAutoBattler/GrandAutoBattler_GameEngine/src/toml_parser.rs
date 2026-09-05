@@ -101,7 +101,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
         factions_names.push(f_name);
     }
 
-    if (factions_names.is_empty()) {
+    if factions_names.is_empty() {
         //THis is boxing text for Err return 0_o
         return Err("Factions folder is empty".into());
     }

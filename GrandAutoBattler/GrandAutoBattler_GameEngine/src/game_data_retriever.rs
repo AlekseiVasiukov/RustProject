@@ -5,19 +5,8 @@ use std::error::Error;
 
 use crate::toml_parser;
 
-#[derive(Debug, Deserialize)]
-pub struct Combatant {
-    id: String,
-    faction: Faction,
-    unit_type_name: String,
-    unit_type_pretty_name: Option<String>,
-    parameters: BTreeMap<String, u8>,
-    first_name: Option<String>,
-    last_name: Option<String>,
-}
-
 #[derive(Debug, Deserialize, Clone)]
-pub struct Faction {
+pub(crate) struct Faction {
     pub name: String,
     pub unit_types: Vec<UnitType>,
     pub female_first_names: Vec<String>,
@@ -41,7 +30,7 @@ impl Faction {
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct UnitType {
+pub(crate) struct UnitType {
     pub unit_type_name: String,
     pub unit_type_pretty_name: Option<String>,
     pub females_only: bool,
@@ -81,6 +70,7 @@ impl From<toml_parser::UnitTypesToml> for UnitType {
         )
     }
 }
+
 
 pub fn get_config() -> Result<Config, Box<dyn Error>> {
     let config = toml_parser::load_config()?;

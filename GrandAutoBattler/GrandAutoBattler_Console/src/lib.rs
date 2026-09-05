@@ -1,4 +1,8 @@
-use GrandAutoBattler_GameEngine;
+use GrandAutoBattler_GameEngine::combatant_manager::Combatant;
+use GrandAutoBattler_GameEngine::{
+    game_instance_manager::GameInstancesManager, game_result_manager::GameResult,
+};
+
 use crossterm::{
     ExecutableCommand,
     cursor::{Hide, MoveTo, Show},
@@ -40,12 +44,13 @@ pub struct GameState {
     pub(crate) cursor_on_unit_types: usize,
     pub(crate) available_factions_names: Vec<String>,
     pub(crate) available_unittypes_names: BTreeMap<usize, Vec<String>>,
+    pub(crate) game_result: Option<GameResult>,
 }
 
 #[derive(Debug)]
 pub struct ConflictngSide {
     pub selected_faction: usize,
-    selected_units: BTreeMap<usize, Option<usize>>,
+    pub selected_units: BTreeMap<usize, Option<usize>>,
 }
 
 impl ConflictngSide {
@@ -86,6 +91,7 @@ impl GameState {
             cursor_on_unit_types: 0,
             available_factions_names: default_factions_names,
             available_unittypes_names: default_unittypes_names,
+            game_result: None,
         }
     }
 
@@ -115,7 +121,7 @@ impl GameState {
         }
     }
 
-    pub fn reset_to_preparation(&mut self) {
+    pub fn reset_stage_to_preparation(&mut self) {
         self.current_stage = Stage::PreparationFactions;
     }
 
@@ -135,12 +141,12 @@ impl GameState {
                 raw_println_yellow(" PREPARATION STAGE: CHOOSE YOUR FACTION");
                 raw_println(" YOUR FACTION:");
                 raw_println(format!(" {}", self.get_faction_display(&0)));
-                raw_println(format!(""));
+                raw_println("");
                 raw_println(" OPPONENT'S FACTION:");
                 raw_println(format!(" {}", self.get_faction_display(&1)));
-                raw_println(format!(""));
+                raw_println("");
                 raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
-                raw_println(format!(""));
+                raw_println("");
                 raw_println(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
             }
             Stage::PreparationUnitTypes => {
@@ -150,10 +156,25 @@ impl GameState {
                 raw_println(format!(" {}", self.get_unittype_display(&2)));
                 raw_println(format!(" {}", self.get_unittype_display(&3)));
                 raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
-                raw_println(format!(""));
-                raw_println(format!(
-                    " [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]"
-                ));
+                raw_println("");
+                raw_println(" [ ↕ ] [ ◄ ] [ ► ] [ Continue (spacebar) ] [ Exit (esc) ]");
+            }
+            Stage::UnitsGeneration => {
+                raw_println_yellow(" UNIT GENERATION STAGE: SEE YOUR WARRIORS BEFORE BATTLE");
+                raw_println("");
+                raw_println_green(" |YOUR FACTION");
+                raw_println_green(" |——————————————————————————————————");
+                raw_println_green(format!(" {}", self.get_generated_warriors_display(&0)));
+                raw_println_green(" |——————————————————————————————————");
+                raw_println(" ———————————————————————————————————");
+
+                raw_println_magenta(" |OPPONENT'S FACTION");
+                raw_println_magenta(" |——————————————————————————————————");
+                raw_println_magenta(format!(" {}", self.get_generated_warriors_display(&1)));
+                raw_println_magenta(" |——————————————————————————————————");
+
+                raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
+                raw_println(" [ Continue (spacebar) ] [ EXIT (esc) ]");
             }
             _ => {
                 raw_println("Not implemented stage yet.");
@@ -190,6 +211,25 @@ impl GameState {
         };
         let result = format!(" {}\t[{}]\t{}", marked, unit_index + 1, unit_name);
         result
+    }
+
+    fn get_generated_warriors_display(&self, side_index: &usize) -> String {
+        // if self.game_result == None {
+        //     let result = format!("NO WARRIORS");
+        //     return result
+        // }
+        let a = self
+            .game_result
+            .as_ref()
+            .expect("Game result should be present");
+        let b = &a.generated_combatants[&side_index];
+        let c = &b[&0];
+        let d = format!("{:?}", &c);
+
+        // let side = &self.conflicting_sides[&side_index];
+
+        let result = d;
+        return result;
     }
 
     pub(crate) fn apply_action_to_game_stage(&mut self, action: Action) {
@@ -355,11 +395,12 @@ enum Action {
 pub fn RunConsoleApp() -> io::Result<()> {
     raw_println("Console App launched");
     raw_println("Trying to request new game instance from game engine");
-    let mut games_manager = GrandAutoBattler_GameEngine::GameInstancesManager::new();
-    let game_instance_id = games_manager.GetNewGameInstanceId();
+    let mut games_manager = GameInstancesManager::new();
+    // let mut games_manager = GrandAutoBattler_GameEngine::GameInstancesManager::new();
+    let game_instance_id = &games_manager.GetNewGameInstanceId();
     raw_println(format!(
         "Game engine generated new game with Id: {}",
-        game_instance_id
+        &game_instance_id
     ));
 
     let game_instance = games_manager.GetGameDataById(&game_instance_id);
@@ -368,20 +409,14 @@ pub fn RunConsoleApp() -> io::Result<()> {
     std::io::stdout().execute(EnterAlternateScreen).unwrap();
     std::io::stdout().execute(Hide).unwrap();
 
-    let mut faction_names: Vec<String> = Vec::new();
-    let mut unittypes_names: BTreeMap<usize, Vec<String>> = BTreeMap::new();
-    for (i, faction) in game_instance.factions.iter().enumerate() {
-        faction_names.push(faction.name.clone());
+    //collectin available factions and unittypes from engine
+    let mut faction_names: Vec<String> = games_manager.GetAvailableFactions(&game_instance_id);
+    let mut unittypes_names: BTreeMap<usize, Vec<String>> =
+        games_manager.GetAvailableUnitTypes(&game_instance_id);
 
-        let mut unittypes_names_of_faction: Vec<String> = Vec::new();
-        for unit_type in faction.unit_types.clone() {
-            if let Some(pretty_name) = unit_type.unit_type_pretty_name {
-                unittypes_names_of_faction.push(pretty_name);
-            } else {
-                unittypes_names_of_faction.push(unit_type.unit_type_name);
-            }
-        }
-        unittypes_names.insert(i, unittypes_names_of_faction);
+    // clear any buffered input events
+    while event::poll(Duration::from_millis(0))? {
+        let _ = event::read()?;
     }
 
     let mut game = GameState::new(faction_names, unittypes_names);
@@ -412,7 +447,24 @@ pub fn RunConsoleApp() -> io::Result<()> {
                         match action {
                             Action::Continue => {
                                 if game.current_stage == Stage::Results {
-                                    game.reset_to_preparation();
+                                    game.reset_stage_to_preparation();
+                                } else if game.current_stage == Stage::PreparationUnitTypes {
+                                    let mut selected_factions: BTreeMap<usize, usize> =
+                                        BTreeMap::new();
+
+                                    let selected_factions = game
+                                        .conflicting_sides
+                                        .iter()
+                                        .map(|(&index, side)| (index, side.selected_faction))
+                                        .collect();
+
+                                    let game_result = games_manager.GetGameResultByIdAndSelection(
+                                        &game_instance_id,
+                                        &selected_factions,
+                                        &game.conflicting_sides[&0].selected_units,
+                                    );
+                                    game.game_result = Some(game_result);
+                                    game.next_stage();
                                 } else {
                                     game.next_stage();
                                 }
@@ -452,24 +504,54 @@ fn get_action(event: &Event) -> Option<Action> {
     }
 }
 
-pub fn raw_print(s: impl AsRef<str>) -> io::Result<()> {
+pub fn raw_print(s: impl AsRef<str>) {
     let mut out = io::stdout().lock();
-    write!(out, "{}", s.as_ref())?;
-    out.flush()
+    write!(out, "{}", s.as_ref()).unwrap();
+    out.flush().unwrap()
 }
 
-pub fn raw_println(s: impl AsRef<str>) -> io::Result<()> {
+pub fn raw_println(s: impl AsRef<str>) {
     let mut out = io::stdout().lock();
-    write!(out, "\r\n{}", s.as_ref())?;
-    out.flush()
+    write!(out, "\r\n{}", s.as_ref()).unwrap();
+    out.flush().unwrap()
 }
 
 //Including colors     "\x1b[97mHello \x1b[37mworld\x1b[0m"
 //\x1b[
 //97m color choose (light gray)
 //0m - resetting formatting.
-pub fn raw_println_yellow(s: impl AsRef<str>) -> io::Result<()> {
+pub fn raw_println_yellow(s: impl AsRef<str>) {
     let mut out = io::stdout().lock();
-    write!(out, "\r\n\x1b[33m{}\x1b[0m", s.as_ref())?;
-    out.flush()
+    write!(out, "\r\n\x1b[33m{}\x1b[0m", s.as_ref()).unwrap();
+    out.flush().unwrap()
 }
+pub fn raw_println_green(s: impl AsRef<str>) {
+    let mut out = io::stdout().lock();
+    write!(out, "\r\n\x1b[92m{}\x1b[0m", s.as_ref()).unwrap();
+    out.flush().unwrap()
+}
+
+pub fn raw_println_magenta(s: impl AsRef<str>) {
+    let mut out = io::stdout().lock();
+    write!(out, "\r\n\x1b[95m{}\x1b[0m", s.as_ref()).unwrap();
+    out.flush().unwrap()
+}
+
+// Colors
+// 30 black
+// 31 red
+// 32 green
+// 33 yellow
+// 34 blue
+// 35 magenta
+// 36 cyan
+// 37 white/light gray
+
+// 90 bright black/dark gray
+// 91 bright red
+// 92 bright green
+// 93 bright yellow
+// 94 bright blue
+// 95 bright magenta
+// 96 bright cyan
+// 97 bright white
