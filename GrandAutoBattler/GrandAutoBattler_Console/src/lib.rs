@@ -162,16 +162,14 @@ impl GameState {
             Stage::UnitsGeneration => {
                 raw_println_yellow(" UNIT GENERATION STAGE: SEE YOUR WARRIORS BEFORE BATTLE");
                 raw_println("");
+                raw_println_green(" |——————————————————————————————————");                
                 raw_println_green(" |YOUR FACTION");
                 raw_println_green(" |——————————————————————————————————");
-                raw_println_green(format!(" {}", self.get_generated_warriors_display(&0)));
-                raw_println_green(" |——————————————————————————————————");
-                raw_println(" ———————————————————————————————————");
-
+                raw_println_green(format!("{}", self.get_generated_warriors_display(&0)));
+                raw_println_magenta(" |——————————————————————————————————");
                 raw_println_magenta(" |OPPONENT'S FACTION");
                 raw_println_magenta(" |——————————————————————————————————");
-                raw_println_magenta(format!(" {}", self.get_generated_warriors_display(&1)));
-                raw_println_magenta(" |——————————————————————————————————");
+                raw_println_magenta(format!("{}", self.get_generated_warriors_display(&1)));
 
                 raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
                 raw_println(" [ Continue (spacebar) ] [ EXIT (esc) ]");
@@ -214,10 +212,6 @@ impl GameState {
     }
 
     fn get_generated_warriors_display(&self, side_index: &usize) -> String {
-        // if self.game_result == None {
-        //     let result = format!("NO WARRIORS");
-        //     return result
-        // }
         let a = self
             .game_result
             .as_ref()
@@ -226,15 +220,8 @@ impl GameState {
         let mut line_to_print = "".to_string();
         for combatant in combatants {
             // Use &format!(...) to pass a &str to push_str
-            line_to_print.push_str(&format!("{:?}\r\n", combatant));
+            line_to_print.push_str(&format!("  {:?}\r\n", combatant));
         }
-        // for combatant in combatants {
-        //     line_to_print.push_str(format!("{:?}\r\n", combatant));
-        // }
-        // let c = &b[0];
-        // let d = format!("{:?}", &c);
-
-        // let side = &self.conflicting_sides[&side_index];
 
         let result = line_to_print;
         return result;

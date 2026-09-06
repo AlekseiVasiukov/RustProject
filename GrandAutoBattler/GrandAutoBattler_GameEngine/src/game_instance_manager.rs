@@ -67,7 +67,7 @@ impl GameInstance {
         //5) Genarate Battle journal...
 
         //calculating how much fighters
-        let number_of_ours_non_empty_combatants: usize =
+        let number_of_our_non_empty_combatants: usize =
             selected_unittypes.values().filter(|v| v.is_some()).count();
         let mut our_units: Vec<Combatant> = Vec::new();
 
@@ -80,9 +80,20 @@ impl GameInstance {
 
             our_units.push(new_combatant);
         }
-        let mut sides: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();
-        sides.insert(0, our_units);
 
+
+        let mut their_units: Vec<Combatant> = Vec::new();
+        for n in 0..number_of_our_non_empty_combatants {
+            let new_id = self.combatants_register_id.generate_id();
+            let faction = &self.factions[selected_factions[&1]];
+            let new_combatant = Combatant::generate_based_on_data(new_id, faction.clone()).clone();
+
+            their_units.push(new_combatant);
+        }
+
+                let mut sides: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();
+        sides.insert(0, our_units);
+        sides.insert(1, their_units);
         let generated_combatants: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();
         match GameResult::new(sides) {
             Ok(result) => {
