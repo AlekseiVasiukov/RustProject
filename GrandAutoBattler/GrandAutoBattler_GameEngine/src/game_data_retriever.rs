@@ -71,7 +71,6 @@ impl From<toml_parser::UnitTypesToml> for UnitType {
     }
 }
 
-
 pub fn get_config() -> Result<Config, Box<dyn Error>> {
     let config = toml_parser::load_config()?;
     Ok(config)

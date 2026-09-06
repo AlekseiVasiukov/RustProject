@@ -4,6 +4,7 @@ use crate::game_result_manager::GameResult;
 
 use crate::game_result_manager::*;
 
+use rand::seq::SliceRandom;
 use std::io::{Write, stdout};
 
 use crate::game_data_retriever::IdRegistry;
@@ -76,22 +77,39 @@ impl GameInstance {
         for (key, value) in selected_unittypes.iter().filter(|(_, v)| v.is_some()) {
             let new_id = self.combatants_register_id.generate_id();
             let faction = &self.factions[selected_factions[&0]];
-            let new_combatant = Combatant::generate_based_on_data(new_id, faction.clone()).clone();
+            let unittype = &self.factions[selected_factions[&0]].unit_types[value.unwrap()];
+
+            // for selected_unittype in selected_unittypes{
+            //     let unittype = &self.factions[selected_factions[&0]].unit_types[selected_factions];
+            // }
+            let new_combatant =
+                Combatant::generate_based_on_data(new_id, faction.clone(), unittype.clone())
+                    .clone();
 
             our_units.push(new_combatant);
         }
-
 
         let mut their_units: Vec<Combatant> = Vec::new();
         for n in 0..number_of_our_non_empty_combatants {
             let new_id = self.combatants_register_id.generate_id();
             let faction = &self.factions[selected_factions[&1]];
-            let new_combatant = Combatant::generate_based_on_data(new_id, faction.clone()).clone();
+            let mut rng = rand::thread_rng();
+
+            let unittype = &self.factions[selected_factions[&1]]
+                .unit_types
+                .choose(&mut rng);
+
+            let new_combatant = Combatant::generate_based_on_data(
+                new_id,
+                faction.clone(),
+                unittype.unwrap().clone(),
+            )
+            .clone();
 
             their_units.push(new_combatant);
         }
 
-                let mut sides: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();
+        let mut sides: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();
         sides.insert(0, our_units);
         sides.insert(1, their_units);
         let generated_combatants: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();

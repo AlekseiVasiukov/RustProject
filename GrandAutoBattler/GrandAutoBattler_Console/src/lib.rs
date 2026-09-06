@@ -162,7 +162,7 @@ impl GameState {
             Stage::UnitsGeneration => {
                 raw_println_yellow(" UNIT GENERATION STAGE: SEE YOUR WARRIORS BEFORE BATTLE");
                 raw_println("");
-                raw_println_green(" |——————————————————————————————————");                
+                raw_println_green(" |——————————————————————————————————");
                 raw_println_green(" |YOUR FACTION");
                 raw_println_green(" |——————————————————————————————————");
                 raw_println_green(format!("{}", self.get_generated_warriors_display(&0)));
