@@ -1,4 +1,5 @@
 use rand::seq::SliceRandom;
+use std::collections::BTreeMap;
 use std::error::Error;
 
 // use game_instance::Combatant;
@@ -13,7 +14,7 @@ pub struct Combatant {
     faction_name: String,
     unit_type_name: String,
     unit_type_pretty_name: Option<String>,
-    // parameters: BTreeMap<String, u8>,
+    parameters: BTreeMap<String, u8>,
     first_name: Option<String>,
     last_name: Option<String>,
 }
@@ -64,7 +65,7 @@ impl Combatant {
             faction_name: faction.name,
             unit_type_name: unittype.unit_type_name,
             unit_type_pretty_name: unittype.unit_type_pretty_name,
-            // parameters: BTreeMap<String, u8>,
+            parameters: unittype.parameters_set,
             first_name: first_name,
             last_name: last_name,
         }

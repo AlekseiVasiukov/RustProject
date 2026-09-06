@@ -65,7 +65,7 @@ impl From<toml_parser::UnitTypesToml> for UnitType {
         UnitType::new(
             item.unit_type_name,
             item.unit_type_pretty_name,
-            item.females_only.unwrap_or(false),
+            item.females_only.unwrap_or(false),  //amazing fallback, need to remember that
             parameters_set,
         )
     }
