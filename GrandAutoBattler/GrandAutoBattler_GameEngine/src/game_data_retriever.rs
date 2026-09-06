@@ -7,7 +7,7 @@ use crate::toml_parser;
 
 #[derive(Debug, Deserialize, Clone)]
 pub(crate) struct Faction {
-    pub name: String,
+    pub(crate) name: String,
     pub unit_types: Vec<UnitType>,
     pub female_first_names: Vec<String>,
     pub male_first_names: Vec<String>,
@@ -94,7 +94,7 @@ pub struct Config {
     pub HEALTH_MIDDLE_VALUE_PARAMETER: f32,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub(crate) struct IdRegistry {
     used_ids: BTreeSet<String>,
 }

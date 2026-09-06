@@ -222,13 +222,21 @@ impl GameState {
             .game_result
             .as_ref()
             .expect("Game result should be present");
-        let b = &a.generated_combatants[&side_index];
-        let c = &b[&0];
-        let d = format!("{:?}", &c);
+        let combatants = &a.generated_combatants[&side_index];
+        let mut line_to_print = "".to_string();
+        for combatant in combatants {
+            // Use &format!(...) to pass a &str to push_str
+            line_to_print.push_str(&format!("{:?}\r\n", combatant));
+        }
+        // for combatant in combatants {
+        //     line_to_print.push_str(format!("{:?}\r\n", combatant));
+        // }
+        // let c = &b[0];
+        // let d = format!("{:?}", &c);
 
         // let side = &self.conflicting_sides[&side_index];
 
-        let result = d;
+        let result = line_to_print;
         return result;
     }
 

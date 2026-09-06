@@ -1,4 +1,4 @@
-use crate::combatant_manager::Combatant;
+use crate::combatant_manager::{self, Combatant};
 use crate::game_data_retriever::{self, Config, Faction, UnitType};
 use crate::game_result_manager::GameResult;
 
@@ -12,9 +12,12 @@ use std::{collections::BTreeMap, error::Error};
 #[derive(Debug, Clone)]
 pub struct GameInstance {
     id: String,
-    pub factions: Vec<Faction>,
+
     config: Config,
+    pub factions: Vec<Faction>,
     pub game_result: Option<GameResult>,
+    pub(crate) combatants_register_id: IdRegistry,
+    pub(crate) combatants_by_id: BTreeMap<String, Combatant>,
 }
 
 // #[derive(Debug, Clone)]
@@ -30,12 +33,16 @@ pub struct GameInstance {
 impl GameInstance {
     pub fn new(new_id: &String) -> Result<Self, Box<dyn Error>> {
         let config = game_data_retriever::get_config()?;
-        let factions = game_data_retriever::get_factions()?;
+        let available_factions = game_data_retriever::get_factions()?;
+
         Ok(Self {
             id: new_id.clone(),
-            factions,
             config,
+            factions: available_factions,
             game_result: None,
+
+            combatants_register_id: IdRegistry::new(),
+            combatants_by_id: BTreeMap::new(),
         })
     }
 
@@ -59,32 +66,24 @@ impl GameInstance {
 
         //5) Genarate Battle journal...
 
-        let character1 = Combatant::new(
-            "42".to_string(),
-            "Humans".to_string(),
-            "knight".to_string(),
-            Some("Knight".to_string()),
-            Some("Gorge".to_string()),
-            Some("From Jungle".to_string()),
-        );
-        let mut our_units: BTreeMap<usize, Combatant> = BTreeMap::new();
-        our_units.insert(0, character1);
+        //calculating how much fighters
+        let number_of_ours_non_empty_combatants: usize =
+            selected_unittypes.values().filter(|v| v.is_some()).count();
+        let mut our_units: Vec<Combatant> = Vec::new();
 
-        let character2 = Combatant::new(
-            "666".to_string(),
-            "Demons".to_string(),
-            "imp".to_string(),
-            Some("Imp".to_string()),
-            Some("Jujuka".to_string()),
-            Some("Minoris".to_string()),
-        );
-        let mut opponents_units: BTreeMap<usize, Combatant> = BTreeMap::new();
-        opponents_units.insert(0, character2);
-        let mut sides: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
+        // let mut combatant_manager = combatant_manager::CombatantManager::new();
+
+        for (key, value) in selected_unittypes.iter().filter(|(_, v)| v.is_some()) {
+            let new_id = self.combatants_register_id.generate_id();
+            let faction = &self.factions[selected_factions[&0]];
+            let new_combatant = Combatant::generate_based_on_data(new_id, faction.clone()).clone();
+
+            our_units.push(new_combatant);
+        }
+        let mut sides: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();
         sides.insert(0, our_units);
-        sides.insert(1, opponents_units);
 
-        let generated_combatants: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
+        let generated_combatants: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();
         match GameResult::new(sides) {
             Ok(result) => {
                 return Ok(result);
@@ -93,6 +92,43 @@ impl GameInstance {
                 return Err(e);
             }
         }
+        // sides.insert(1, opponents_units);
+
+        // Ok(None);
+        // let character1 = Combatant::new(
+        //     "42".to_string(),
+        //     "Humans".to_string(),
+        //     "knight".to_string(),
+        //     Some("Knight".to_string()),
+        //     Some("Gorge".to_string()),
+        //     Some("From Jungle".to_string()),
+        // );
+        // let mut our_units: BTreeMap<usize, Combatant> = BTreeMap::new();
+        // our_units.insert(0, character1);
+
+        // let character2 = Combatant::new(
+        //     "666".to_string(),
+        //     "Demons".to_string(),
+        //     "imp".to_string(),
+        //     Some("Imp".to_string()),
+        //     Some("Jujuka".to_string()),
+        //     Some("Minoris".to_string()),
+        // );
+        // let mut opponents_units: BTreeMap<usize, Combatant> = BTreeMap::new();
+        // opponents_units.insert(0, character2);
+        // let mut sides: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
+        // sides.insert(0, our_units);
+        // sides.insert(1, opponents_units);
+
+        // let generated_combatants: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
+        // match GameResult::new(sides) {
+        //     Ok(result) => {
+        //         return Ok(result);
+        //     }
+        //     Err(e) => {
+        //         return Err(e);
+        //     }
+        // }
     }
     //    match GameResult::new(generated_combatants){
     //         Ok(game_result)=>{
@@ -112,7 +148,7 @@ impl GameInstance {
 
 pub struct GameInstancesManager {
     pub(crate) game_instances_ids: IdRegistry,
-    pub games_by_ids: BTreeMap<String, GameInstance>,
+    pub(crate) games_by_ids: BTreeMap<String, GameInstance>,
 }
 
 impl GameInstancesManager {
@@ -183,13 +219,10 @@ impl GameInstancesManager {
     }
 
     pub fn GetAvailableUnitTypes(&self, game_id: &String) -> BTreeMap<usize, Vec<String>> {
-        // let mut faction_names: Vec<String> = Vec::new();
         let game_instance = self.GetGameDataById(&game_id);
 
         let mut unittypes_names: BTreeMap<usize, Vec<String>> = BTreeMap::new();
         for (i, faction) in game_instance.factions.iter().enumerate() {
-            // faction_names.push(faction.name.clone());
-
             let mut unittypes_names_of_faction: Vec<String> = Vec::new();
             for unit_type in faction.unit_types.clone() {
                 if let Some(pretty_name) = unit_type.unit_type_pretty_name {
