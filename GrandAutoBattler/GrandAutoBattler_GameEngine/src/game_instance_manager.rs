@@ -1,3 +1,4 @@
+use crate::battle_journal_manager::{self, *};
 use crate::combatant_manager::{self, Combatant};
 use crate::game_data_retriever::{self, Config, Faction, UnitType};
 use crate::game_result_manager::GameResult;
@@ -117,8 +118,10 @@ impl GameInstance {
         let mut sides: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();
         sides.insert(0, our_units);
         sides.insert(1, their_units);
-        let generated_combatants: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();
-        match GameResult::new(sides) {
+
+        let battle_journal = battle_journal_manager::BattleJournal::generate_based_on_data(&sides);
+
+        match GameResult::new(sides, battle_journal) {
             Ok(result) => {
                 return Ok(result);
             }

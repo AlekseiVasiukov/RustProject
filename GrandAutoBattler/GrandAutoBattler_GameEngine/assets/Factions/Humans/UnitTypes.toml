@@ -2,7 +2,7 @@ title="UnitTypes"
 
 [[UnitTypes]]
 unit_type_name="knight"
-unit_type_pretty_name="Knight"
+unit_type_pretty_name="⚔ Knight"
 health=8
 attack=3
 range=2
@@ -10,7 +10,7 @@ defense=7
 
 [[UnitTypes]]
 unit_type_name="archer"
-unit_type_pretty_name="Archer"
+unit_type_pretty_name="🏹 Archer"
 health=3
 attack=7
 range=8
@@ -18,7 +18,7 @@ defense=2
 
 [[UnitTypes]]
 unit_type_name="witch"
-unit_type_pretty_name="Witch"
+unit_type_pretty_name="🧙‍♀️ Witch"
 females_only=true
 health=3
 attack=9
@@ -27,7 +27,7 @@ defense=1
 
 [[UnitTypes]]
 unit_type_name="paladin"
-unit_type_pretty_name="Paladin"
+unit_type_pretty_name="🛡 Paladin"
 health=6
 attack=5
 range=1
