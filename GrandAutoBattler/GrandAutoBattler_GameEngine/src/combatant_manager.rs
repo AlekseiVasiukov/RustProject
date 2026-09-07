@@ -1,12 +1,8 @@
 use rand::Rng;
-use rand::rngs::ThreadRng;
 use rand::seq::SliceRandom;
-use serde::de::value;
 use std::collections::BTreeMap;
 use std::error::Error;
 
-// use game_instance::Combatant;
-// use game_data_retriever::{Faction, UnitType};
 use crate::game_data_retriever::{self, Config, Faction, UnitType};
 
 pub struct CombatantManager {}
@@ -23,15 +19,7 @@ pub struct Combatant {
 }
 
 impl Combatant {
-    pub fn generate_based_on_data(
-        id: String,
-        faction: Faction,
-        mut unittype: UnitType,
-        // unit_type_name: String,
-        // unit_type_pretty_name: Option<String>,
-        // first_name: Option<String>,
-        // last_name: Option<String>,
-    ) -> Self {
+    pub fn generate_based_on_data(id: String, faction: Faction, mut unittype: UnitType) -> Self {
         //choosing name:
 
         let mut first_name: Option<String> = None;
@@ -97,8 +85,6 @@ impl Combatant {
             bonus_affected_indices[i] = rand::thread_rng().gen_range(0..parameters.len());
         }
 
-        // println!("Indices with bonus points{:?}", bonus_affected_indices);
-
         let keys: Vec<_> = parameters.keys().cloned().collect();
         for &i in &bonus_affected_indices {
             if let Some(key) = keys.get(i) {
@@ -108,40 +94,23 @@ impl Combatant {
                 }
             }
         }
-        // for &i in &bonus_affected_indices {
-        //     if let Some(parameter_value) = parameters.iter_mut().nth(i) {
-        //         if *parameter_value.1 < *maximum {
-        //             *parameter_value.1 += 1u8;
-        //         }
-        //     }
-        // }
+        //the indices withou bonuses, even if it's only one will be randomly chosen for decreasing by 1 as penalty.
+        let mut unaffected_indices: Vec<usize> = Vec::new();
+        for i in 0..parameters.len() {
+            if !bonus_affected_indices.contains(&i) {
+                unaffected_indices.push(i);
+            }
+        }
+        //decreasing left parameter
+        if !unaffected_indices.is_empty() {
+            let random_unaffected = Some(unaffected_indices.choose(&mut rng).unwrap()).unwrap();
 
-        // //the indices withou bonuses, even if it's only one will be randomly chosen for decreasing by 1 as penalty.
-        // let mut unaffected_indices: Vec<usize> = Vec::new();
-        // for i in 0..parameters.len() {
-        //     if !bonus_affected_indices.contains(&i) {
-        //         unaffected_indices.push(i);
-        //     }
-        // }
-
-        // // println!(
-        // //     "Indices left for random one point of penalty{:?}",
-        // //     unaffected_indices
-        // // );
-
-        // if !unaffected_indices.is_empty() {
-        //     let random_unaffected = Some(unaffected_indices.choose(&mut rng).unwrap()).unwrap();
-        //     // let random_index_in_list = rand::thread_rng().gen_range(0..unaffected_indices.len());
-        //     // let actual_index_to_decrease = unaffected_indices[random_index_in_list];
-
-        //     // println!("Chosen index for decrease is {}", actual_index_to_decrease);
-        //     if parameters[*random_unaffected] > minimum {
-        //         parameters[*random_unaffected] -= 1;
-        //     }
-        // }
+            if let Some(key) = keys.get(*random_unaffected) {
+                let val = parameters.get_mut(key).unwrap();
+                if *val < *maximum {
+                    *val = val.saturating_sub(1).max(*minimum);
+                }
+            }
+        }
     }
 }
-
-// pub(crate) fn generate_combatant()
-// pub(crate) combatants_ids: IdRegistry,
-// combatants_ids: IdRegistry::new(),
