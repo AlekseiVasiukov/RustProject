@@ -179,6 +179,10 @@ impl GameState {
                 raw_println(format!(" Counter: {}", self.counter)); // Showing counter for debugging
                 raw_println(" [ Continue (spacebar) ] [ EXIT (esc) ]");
             }
+            Stage::BattleJournal => {
+                raw_println_yellow(" BATTLE JOURNAL STAGE: SEE THE RESULTS OF THE BATTLE");
+                raw_println(format!(" Result:\"{:#?}\"", self.game_result.as_ref().unwrap().battle_journal.clone()));
+            }
             _ => {
                 raw_println("Not implemented stage yet.");
                 raw_println(" [ CONTINUE (spacebar) ] [ EXIT (esc)]");
