@@ -82,10 +82,9 @@ impl GameInstance {
             // for selected_unittype in selected_unittypes{
             //     let unittype = &self.factions[selected_factions[&0]].unit_types[selected_factions];
             // }
+            let mut unittype_clone = unittype.clone();
             let new_combatant =
-                Combatant::generate_based_on_data(new_id, faction.clone(), unittype.clone())
-                    .clone();
-
+                Combatant::generate_based_on_data(new_id, faction.clone(), unittype_clone);
             our_units.push(new_combatant);
         }
 
@@ -95,18 +94,24 @@ impl GameInstance {
             let faction = &self.factions[selected_factions[&1]];
             let mut rng = rand::thread_rng();
 
-            let unittype = &self.factions[selected_factions[&1]]
+            let unittype = self.factions[selected_factions[&1]]
                 .unit_types
                 .choose(&mut rng);
 
-            let new_combatant = Combatant::generate_based_on_data(
-                new_id,
-                faction.clone(),
-                unittype.unwrap().clone(),
-            )
-            .clone();
+            // let new_combatant = Combatant::generate_based_on_data(
+            //     new_id,
+            //     faction.clone(),
+            //     unittype.unwrap().clone(),
+            // )
+            // .clone();
 
-            their_units.push(new_combatant);
+            // their_units.push(new_combatant);
+            if let Some(unittype) = unittype {
+                let mut unittype_clone = unittype.clone();
+                let new_combatant =
+                    Combatant::generate_based_on_data(new_id, faction.clone(), unittype_clone);
+                their_units.push(new_combatant);
+            }
         }
 
         let mut sides: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();

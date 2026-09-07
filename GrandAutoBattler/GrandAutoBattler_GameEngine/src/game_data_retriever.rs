@@ -65,32 +65,34 @@ impl From<toml_parser::UnitTypesToml> for UnitType {
         UnitType::new(
             item.unit_type_name,
             item.unit_type_pretty_name,
-            item.females_only.unwrap_or(false),  //amazing fallback, need to remember that
+            item.females_only.unwrap_or(false), //amazing fallback, need to remember that
             parameters_set,
         )
     }
 }
 
-pub fn get_config() -> Result<Config, Box<dyn Error>> {
+pub(crate) fn get_config() -> Result<Config, Box<dyn Error>> {
     let config = toml_parser::load_config()?;
     Ok(config)
 }
 
-pub fn get_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
+pub(crate) fn get_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     let factions = toml_parser::load_factions()?;
     Ok(factions)
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Config {
-    pub BASIC_HEALTH: f32,
-    pub BASIC_ATTACK: f32,
-    pub ATTACK_PERCENTAGE_PER_POINT: f32,
-    pub DEFENSE_PERCENTAGE_PER_POINT: f32,
-    pub HEALTH_PERCENTAGE_PER_POINT: f32,
-    pub ATTACK_MIDDLE_VALUE_PARAMETER: f32,
-    pub DEFENSE_MIDDLE_VALUE_PARAMETER: f32,
-    pub HEALTH_MIDDLE_VALUE_PARAMETER: f32,
+    pub(crate) PARAMETER_MINIMUM: u8,
+    pub(crate) PARAMETER_MAXIMUM: u8,
+    pub(crate) BASIC_HEALTH: f32,
+    pub(crate) BASIC_ATTACK: f32,
+    pub(crate) ATTACK_PERCENTAGE_PER_POINT: f32,
+    pub(crate) DEFENSE_PERCENTAGE_PER_POINT: f32,
+    pub(crate) HEALTH_PERCENTAGE_PER_POINT: f32,
+    pub(crate) ATTACK_MIDDLE_VALUE_PARAMETER: f32,
+    pub(crate) DEFENSE_MIDDLE_VALUE_PARAMETER: f32,
+    pub(crate) HEALTH_MIDDLE_VALUE_PARAMETER: f32,
 }
 
 #[derive(Clone, Debug)]
