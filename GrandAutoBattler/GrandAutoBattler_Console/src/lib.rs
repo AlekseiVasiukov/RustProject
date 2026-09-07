@@ -239,7 +239,7 @@ impl GameState {
             line_to_print.push_str(&format!("parameters: {} \t", parameters_line));
 
             //HP
-            let hp_line = format!("HP:{}", combatant.health_points);
+            let hp_line = format!("{}", combatant.health_points);
             line_to_print.push_str(&format!("{}HP \t", hp_line));
 
             //Unittype
