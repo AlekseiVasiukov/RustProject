@@ -163,11 +163,11 @@ impl GameState {
                 raw_println_yellow(" UNIT GENERATION STAGE: SEE YOUR WARRIORS BEFORE BATTLE");
                 raw_println("");
                 raw_println_green(" |——————————————————————————————————");
-                raw_println_green(" |YOUR FACTION");
+                raw_println_green(format!(" |Your Faction:\"{}\"", self.get_faction_name(&0)));
                 raw_println_green(" |——————————————————————————————————");
                 raw_println_green(format!("{}", self.get_generated_warriors_display(&0)));
                 raw_println_magenta(" |——————————————————————————————————");
-                raw_println_magenta(" |OPPONENT'S FACTION");
+                raw_println_magenta(format!(" |Opponent's faction: \"{}\"", self.get_faction_name(&1)));
                 raw_println_magenta(" |——————————————————————————————————");
                 raw_println_magenta(format!("{}", self.get_generated_warriors_display(&1)));
 
@@ -212,10 +212,7 @@ impl GameState {
     }
 
     fn get_generated_warriors_display(&self, side_index: &usize) -> String {
-        let a = self
-            .game_result
-            .as_ref()
-            .expect("Game result should be present");
+        let a = self.game_result.as_ref().unwrap();
         let combatants = &a.generated_combatants[&side_index];
         let mut line_to_print = "".to_string();
         for combatant in combatants {
@@ -225,6 +222,14 @@ impl GameState {
 
         let result = line_to_print;
         return result;
+    }
+
+    fn get_faction_name(&self, side_index: &usize) -> String {
+        let faction_name = self.available_factions_names
+            [self.conflicting_sides[side_index].selected_faction]
+            .clone();
+        let result = format!("{}", faction_name);
+        result
     }
 
     pub(crate) fn apply_action_to_game_stage(&mut self, action: Action) {
