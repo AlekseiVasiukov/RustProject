@@ -99,14 +99,22 @@ impl Combatant {
 
         // println!("Indices with bonus points{:?}", bonus_affected_indices);
 
+        let keys: Vec<_> = parameters.keys().cloned().collect();
         for &i in &bonus_affected_indices {
-            if let Some(parameter_value) = parameters.iter_mut().nth(i) {
-                if *parameter_value.1 < *maximum {
-                    // Use += to actually modify the value in the map
-                    *parameter_value.1 += 1u8;
+            if let Some(key) = keys.get(i) {
+                let val = parameters.get_mut(key).unwrap();
+                if *val < *maximum {
+                    *val = val.saturating_add(1).min(*maximum);
                 }
             }
         }
+        // for &i in &bonus_affected_indices {
+        //     if let Some(parameter_value) = parameters.iter_mut().nth(i) {
+        //         if *parameter_value.1 < *maximum {
+        //             *parameter_value.1 += 1u8;
+        //         }
+        //     }
+        // }
 
         // //the indices withou bonuses, even if it's only one will be randomly chosen for decreasing by 1 as penalty.
         // let mut unaffected_indices: Vec<usize> = Vec::new();
