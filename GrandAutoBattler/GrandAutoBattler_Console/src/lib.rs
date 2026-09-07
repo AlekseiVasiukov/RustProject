@@ -162,12 +162,17 @@ impl GameState {
             Stage::UnitsGeneration => {
                 raw_println_yellow(" UNIT GENERATION STAGE: SEE YOUR WARRIORS BEFORE BATTLE");
                 raw_println("");
+                raw_println("info: (H[] A[] R[] D[] is Health, Attack, Range and Defense)");
+                raw_println("");
                 raw_println_green(" |——————————————————————————————————");
-                raw_println_green(" |YOUR FACTION");
+                raw_println_green(format!(" |Your Faction:\"{}\"", self.get_faction_name(&0)));
                 raw_println_green(" |——————————————————————————————————");
                 raw_println_green(format!("{}", self.get_generated_warriors_display(&0)));
                 raw_println_magenta(" |——————————————————————————————————");
-                raw_println_magenta(" |OPPONENT'S FACTION");
+                raw_println_magenta(format!(
+                    " |Opponent's faction: \"{}\"",
+                    self.get_faction_name(&1)
+                ));
                 raw_println_magenta(" |——————————————————————————————————");
                 raw_println_magenta(format!("{}", self.get_generated_warriors_display(&1)));
 
@@ -212,19 +217,60 @@ impl GameState {
     }
 
     fn get_generated_warriors_display(&self, side_index: &usize) -> String {
-        let a = self
-            .game_result
-            .as_ref()
-            .expect("Game result should be present");
-        let combatants = &a.generated_combatants[&side_index];
+        let game_result = self.game_result.as_ref().unwrap();
+        let combatants = &game_result.generated_combatants[&side_index];
+
         let mut line_to_print = "".to_string();
-        for combatant in combatants {
-            // Use &format!(...) to pass a &str to push_str
-            line_to_print.push_str(&format!("  {:?}\r\n", combatant));
+
+        for (i, combatant) in combatants.iter().enumerate() {
+            line_to_print.push_str(&format!("  "));
+
+            //NUMBER
+            line_to_print.push_str(&format!("№{} ", i));
+
+            //PARAMETERS
+            let parameters_line = format!(
+                "H[{}] A[{}] R[{}] D[{}]",
+                combatant.parameters["health"],
+                combatant.parameters["attack"],
+                combatant.parameters["range"],
+                combatant.parameters["defense"]
+            );
+            line_to_print.push_str(&format!("parameters: {} \t", parameters_line));
+
+            //HP
+            let hp_line = format!("HP:{}", combatant.health_points);
+            line_to_print.push_str(&format!("{}HP \t", hp_line));
+
+            //Unittype
+            let mut unittype_name = &combatant.unit_type_name;
+            if let Some(name) = &combatant.unit_type_pretty_name {
+                unittype_name = name;
+            }
+            line_to_print.push_str(&format!("\"{}\" \t \t", unittype_name));
+
+            //NAME
+            if let Some(first_name) = &combatant.first_name {
+                line_to_print.push_str(&format!("{} ", first_name));
+            }
+
+            if let Some(last_name) = &combatant.last_name {
+                line_to_print.push_str(&format!("{}", last_name));
+            }
+
+            line_to_print.push_str(&format!("\r\n"));
         }
 
         let result = line_to_print;
         return result;
+    }
+
+    fn get_faction_name(&self, side_index: &usize) -> String {
+        let faction_name = self.available_factions_names
+            [self.conflicting_sides[side_index].selected_faction]
+            .clone();
+        let result = format!("{}", faction_name);
+        result
     }
 
     pub(crate) fn apply_action_to_game_stage(&mut self, action: Action) {

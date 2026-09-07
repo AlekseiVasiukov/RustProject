@@ -9,13 +9,14 @@ pub struct CombatantManager {}
 
 #[derive(Debug, Clone)]
 pub struct Combatant {
-    id: String,
-    faction_name: String,
-    unit_type_name: String,
-    unit_type_pretty_name: Option<String>,
-    parameters: BTreeMap<String, u8>,
-    first_name: Option<String>,
-    last_name: Option<String>,
+    pub id: String,
+    pub faction_name: String,
+    pub unit_type_name: String,
+    pub unit_type_pretty_name: Option<String>,
+    pub parameters: BTreeMap<String, u8>,
+    pub health_points: u32,
+    pub first_name: Option<String>,
+    pub last_name: Option<String>,
 }
 
 impl Combatant {
@@ -65,6 +66,7 @@ impl Combatant {
             unit_type_name: unittype.unit_type_name.clone(),
             unit_type_pretty_name: unittype.unit_type_pretty_name.clone(),
             parameters: unittype.parameters_set.clone(),
+            health_points: Self::generate_health_points(&config, unittype.parameters_set["health"]),
             first_name: first_name,
             last_name: last_name,
         }
@@ -112,5 +114,18 @@ impl Combatant {
                 }
             }
         }
+    }
+
+    pub(crate) fn generate_health_points(config: &Config, healthParameter: u8) -> u32 {
+        let health_bonus_points = healthParameter as f32 - config.HEALTH_MIDDLE_VALUE_PARAMETER;
+        let health_bonus = config.HEALTH_PERCENTAGE_PER_POINT * health_bonus_points;
+        let health_points = config.BASIC_HEALTH + (config.BASIC_HEALTH * health_bonus) / 100.0;
+
+        if health_points < 0.0 {
+            1
+        } else {
+            health_points.trunc() as u32
+        }
+        
     }
 }
