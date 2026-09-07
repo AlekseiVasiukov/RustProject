@@ -9,14 +9,14 @@ pub struct CombatantManager {}
 
 #[derive(Debug, Clone)]
 pub struct Combatant {
-    id: String,
-    faction_name: String,
-    unit_type_name: String,
-    unit_type_pretty_name: Option<String>,
-    parameters: BTreeMap<String, u8>,
-    health_points: u32,
-    first_name: Option<String>,
-    last_name: Option<String>,
+    pub id: String,
+    pub faction_name: String,
+    pub unit_type_name: String,
+    pub unit_type_pretty_name: Option<String>,
+    pub parameters: BTreeMap<String, u8>,
+    pub health_points: u32,
+    pub first_name: Option<String>,
+    pub last_name: Option<String>,
 }
 
 impl Combatant {
