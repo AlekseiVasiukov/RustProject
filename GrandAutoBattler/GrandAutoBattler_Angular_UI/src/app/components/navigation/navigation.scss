@@ -1,0 +1,33 @@
+@import "../../../styles/variables";
+
+.nav-container {
+  margin-bottom: 2rem;
+
+  .nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 2rem;
+
+    li {
+      a {
+        text-decoration: none;
+        color: $text-color;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        &.active {
+          background-color: $accent-color;
+          color: white;
+        }
+      }
+    }
+  }
+}
