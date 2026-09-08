@@ -1,0 +1,43 @@
+@import "../../../styles/variables";
+
+.game-result-container {
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.winner {
+  color: #4caf50;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.battle-journal {
+  margin-top: 2rem;
+
+  h3 {
+    border-bottom: 1px solid $contour-color;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    li {
+      padding: 0.75rem;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      font-family: monospace;
+    }
+  }
+}
+
+.loading-container {
+  height: 200px;
+  font-style: italic;
+  color: #888;
+}
