@@ -1,0 +1,70 @@
+@import "../../../styles/variables";
+
+.unit-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.faction-section {
+  .faction-title {
+    font-size: 1.5rem;
+    border-bottom: 2px solid $contour-color;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.units-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.unit-card {
+  background-color: $card-bg-color;
+  border: 1px solid $contour-color;
+  border-radius: $border-radius;
+  padding: 1rem;
+  box-shadow: $shadow;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .unit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+
+    .unit-name {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .unit-hp {
+      font-size: 0.9rem;
+      color: #ff5252; // Reddish for HP
+    }
+  }
+
+  .unit-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: monospace;
+
+      .stat-label {
+        color: #888;
+      }
+
+      .stat-value {
+        color: $text-color;
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+<div class="unit-list-container">
+  @for (faction of factions(); track faction) {
+    <section class="faction-section">
+      <h2 class="faction-title">{{ faction }}</h2>
+      <div class="units-grid">
+        @for (unit of getUnitsByFaction(faction); track unit.id) {
+          <div class="unit-card">
+            <div class="unit-header">
+              <span class="unit-name">{{ unit.name }}</span>
+              <span class="unit-hp">{{ unit.hp }}HP</span>
+            </div>
+            <div class="unit-stats">
+              <div class="stat-row">
+                <span class="stat-label">(H)</span>
+                <span class="stat-value">[{{ unit.stats.h }}]</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">(A)</span>
+                <span class="stat-value">[{{ unit.stats.a }}]</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">(R)</span>
+                <span class="stat-value">[{{ unit.stats.r }}]</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">(D)</span>
+                <span class="stat-value">[{{ unit.stats.d }}]</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
+</div>
