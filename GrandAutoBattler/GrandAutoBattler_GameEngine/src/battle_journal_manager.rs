@@ -2,7 +2,8 @@
 //Battle Journal .-.. Turn -<
 //                            .Outcome .-.. Effect ((Enum Effects types))
 use crate::combatant_manager::Combatant;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, btree_map::Keys};
+use rand::seq::SliceRandom;
 
 
 #[derive(Clone, Debug)]
@@ -30,7 +31,20 @@ impl BattleJournal {
     }
 
     pub(crate) fn generate_based_on_data(sides: &BTreeMap<usize, Vec<Combatant>>) -> Self{
-        // let turns = 
+        let mut rng = rand::thread_rng();
+        let turns: Vec<Turn> = Vec::new();
+        let mut opposite_side: usize;
+        let mut turn_by = *[0,1].choose (&mut rng).unwrap();
+        loop{
+            //setting opposing side
+            if turn_by == 1 {opposite_side = 0} else {opposite_side = 1};
+
+            //calculating health 
+
+            //switching side
+            if turn_by == 1 {turn_by = 0} else {turn_by = 1};
+        }
+
         Self{
             winner_side: 0,
             turns: Vec::new(), 
