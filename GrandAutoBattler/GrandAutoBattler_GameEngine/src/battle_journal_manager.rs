@@ -2,9 +2,8 @@
 //Battle Journal .-.. Turn -<
 //                            .Outcome .-.. Effect ((Enum Effects types))
 use crate::combatant_manager::Combatant;
-use std::collections::{BTreeMap, btree_map::Keys};
 use rand::seq::SliceRandom;
-
+use std::collections::{BTreeMap, btree_map::Keys};
 
 #[derive(Clone, Debug)]
 enum IntentionType {
@@ -30,24 +29,41 @@ impl BattleJournal {
         }
     }
 
-    pub(crate) fn generate_based_on_data(sides: &BTreeMap<usize, Vec<Combatant>>) -> Self{
+    pub(crate) fn generate_based_on_data(sides: &BTreeMap<usize, Vec<Combatant>>) -> Self {
         let mut rng = rand::thread_rng();
         let turns: Vec<Turn> = Vec::new();
-        let mut opposite_side: usize;
-        let mut turn_by = *[0,1].choose (&mut rng).unwrap();
-        loop{
-            //setting opposing side
-            if turn_by == 1 {opposite_side = 0} else {opposite_side = 1};
+        let mut our_fighters = sides[&0].clone();
+        let mut their_fighters = sides[&1].clone();
+        let mut turn_by = *[0, 1].choose(&mut rng).unwrap();
 
-            //calculating health 
+        let our_fighters_alive: Vec<_> = our_fighters.iter().filter(|c| c.current_health_points > 0).collect();
+        let their_fighters_alive: Vec<_> = their_fighters.iter().filter(|c| c.current_health_points > 0).collect();
 
-            //switching side
-            if turn_by == 1 {turn_by = 0} else {turn_by = 1};
+        let mut winner_side: usize = 0;
+        loop {
+            //checking win conditions
+            //calculating party health
+            // let turn_side = sides[tu]
+
+            //giving turn to another side
+            if (our_fighters_alive.len() == 0){
+                winner_side = 1;
+            }
+
+            if (their_fighters_alive.len() == 0){
+                winner_side = 0;
+            }
+
+            if turn_by == 1 {
+                turn_by = 0
+            } else {
+                turn_by = 1
+            };
         }
 
-        Self{
-            winner_side: 0,
-            turns: Vec::new(), 
+        Self {
+            winner_side: winner_side,
+            turns: Vec::new(),
         }
     }
 }
