@@ -608,7 +608,7 @@ pub fn RunConsoleApp() -> io::Result<()> {
 
     loop {
         //Checkin user's input with a short timeout
-        if !event::poll(Duration::from_millis(100))? {
+        if !event::poll(Duration::from_millis(20))? {
             continue;
         }
 
