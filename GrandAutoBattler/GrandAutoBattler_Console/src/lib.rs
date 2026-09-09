@@ -1,5 +1,6 @@
 use GrandAutoBattler_GameEngine::combatant_manager::Combatant;
 use GrandAutoBattler_GameEngine::{
+    battle_journal_manager::{Command, GameEvent},
     game_instance_manager::GameInstancesManager, game_result_manager::GameResult,
 };
 
@@ -180,8 +181,73 @@ impl GameState {
                 raw_println(" [ Continue (spacebar) ] [ EXIT (esc) ]");
             }
             Stage::BattleJournal => {
-                raw_println_yellow(" BATTLE JOURNAL STAGE: SEE THE RESULTS OF THE BATTLE");
-                raw_println(format!(" Result:\"{:#?}\"", self.game_result.as_ref().unwrap().battle_journal.clone()));
+                let result = self.game_result.as_ref().unwrap();
+                let journal = &result.battle_journal;
+                let events = &journal.events;
+
+                if events.is_empty() {
+                    raw_println_yellow(" No events recorded in the battle journal.");
+                    return;
+                }
+
+                let current_event = &events[self.journal_index];
+                let (attacker_id, victim_id) = match &current_event.cmd {
+                    Command::Attack { src, dst, .. } => (src, dst),
+                };
+
+                // Header
+                raw_println_yellow(format!(
+                    " BATTLE JOURNAL: ROUND {} | TURN {}",
+                    current_event.round, current_event.turn
+                ));
+                raw_println(" ------------------------------------------------------------");
+
+                // Combatants Display (Two columns)
+                let side0_combatants = &result.generated_combatants[&0];
+                let side1_combatants = &result.generated_combatants[&1];
+                let max_combatants = side0_combatants.len().max(side1_combatants.len());
+
+                for i in 0..max_combatants {
+                    let mut line = String::new();
+
+                    // Side 0 (Left)
+                    if let Some(c) = side0_combatants.get(i) {
+                        line.push_str(&self.format_combatant_line(c, attacker_id, victim_id));
+                    } else {
+                        line.push_str(&" ".repeat(30));
+                    }
+
+                    line.push_str("                "); // Gap
+
+                    // Side 1 (Right)
+                    if let Some(c) = side1_combatants.get(i) {
+                        line.push_str(&self.format_combatant_line(c, attacker_id, victim_id));
+                    } else {
+                        line.push_str(&" ".repeat(30));
+                    }
+
+                    raw_println(&line);
+                }
+
+                raw_println(" ------------------------------------------------------------");
+
+                // Battle Log
+                match &current_event.cmd {
+                    Command::Attack { src, dst, dmg } => {
+                        let attacker_name = self.find_combatant_name(src, result);
+                        let victim_name = self.find_combatant_name(dst, result);
+                        raw_println(format!(
+                            " [LOG] {} attacks {} dealing {} damage",
+                            attacker_name, victim_name, dmg
+                        ));
+                    }
+                    _ => {
+                        raw_println(" [LOG] An unknown event occurred.");
+                    }
+                }
+
+                raw_println("");
+                raw_println(" [ ◄ ] [ ► ] [ Continue (spacebar) ] [ EXIT (esc) ]");
             }
             _ => {
                 raw_println("Not implemented stage yet.");
@@ -275,6 +341,58 @@ impl GameState {
             .clone();
         let result = format!("{}", faction_name);
         result
+    }
+
+    fn find_combatant_name(&self, id: &str, result: &GameResult) -> String {
+        for combatants in result.generated_combatants.values() {
+            for c in combatants {
+                if c.id == id {
+                    return format!(
+                        "{} {}",
+                        c.first_name.as_deref().unwrap_or(""),
+                        c.last_name.as_deref().unwrap_or("")
+                    )
+                    .trim()
+                    .to_string();
+                }
+            }
+        }
+        id.to_string()
+    }
+
+    fn format_combatant_line(&self, c: &Combatant, attacker_id: &String, victim_id: &String) -> String {
+        let color = if c.current_health_points <= 0 {
+            "\x1b[90m"
+        } else if c.id == *attacker_id {
+            "\x1b[93m"
+        } else if c.id == *victim_id {
+            "\x1b[38;5;208m"
+        } else {
+            "\x1b[92m"
+        };
+        let reset = "\x1b[0m";
+
+        let name = format!(
+            "{} {}",
+            c.first_name.as_deref().unwrap_or(""),
+            c.last_name.as_deref().unwrap_or("")
+        )
+        .trim()
+        .to_string();
+        let unittype = c.unit_type_pretty_name.as_deref().unwrap_or(&c.unit_type_name);
+
+        format!(
+            "{}{: <15} H[{}] A[{}] R[{}] D[{}] {}HP \"{}\"{}",
+            color,
+            name,
+            c.parameters["health"],
+            c.parameters["attack"],
+            c.parameters["range"],
+            c.parameters["defense"],
+            c.current_health_points,
+            unittype,
+            reset
+        )
     }
 
     pub(crate) fn apply_action_to_game_stage(&mut self, action: Action) {
@@ -419,6 +537,23 @@ impl GameState {
                             }
                         }
                     }
+                }
+                _ => {}
+            },
+            Stage::BattleJournal => match action {
+                Action::MoveLeft => {
+                    if self.journal_index > 0 {
+                        self.journal_index -= 1;
+                    }
+                }
+                Action::MoveRight => {
+                    let event_count = self.game_result.as_ref().unwrap().battle_journal.events.len();
+                    if self.journal_index < event_count - 1 {
+                        self.journal_index += 1;
+                    }
+                }
+                Action::Continue => {
+                    self.next_stage();
                 }
                 _ => {}
             },
