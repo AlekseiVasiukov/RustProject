@@ -19,8 +19,8 @@ export class MockDataService {
 
   getUnitTypes(): Observable<UnitTypeResponse> {
     return of({
-      '0': ['Knight', 'Archer', 'Mage'],
-      '1': ['Orc', 'Demon', 'Imp']
+      '0': ['Knight', 'Archer', 'Witch'],
+      '1': ['Succubus', 'Demon', 'Imp']
     });
   }
 
