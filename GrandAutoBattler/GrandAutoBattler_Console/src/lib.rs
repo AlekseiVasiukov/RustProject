@@ -217,7 +217,7 @@ impl GameState {
                         line.push_str(&" ".repeat(30));
                     }
 
-                    line.push_str("                "); // Gap
+                    line.push_str(" \t \t \t"); // Gap
 
                     // Side 1 (Right)
                     if let Some(c) = side1_combatants.get(i) {
