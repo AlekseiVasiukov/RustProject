@@ -30,7 +30,7 @@ pub enum Effect {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BattleJournal {
     pub winner_side: usize,
-    events: Vec<GameEvent>,
+    pub events: Vec<GameEvent>,
 }
 
 impl BattleJournal {
@@ -138,17 +138,17 @@ impl BattleJournal {
 
                 if !victims_indices.is_empty() {
                     let mut targets_probs = Vec::new();
-                    let mut total_prob = 0;
+                    let mut total_prob: u32 = 0;
                     for &v_idx in &victims_indices {
                         let v = if side == 0 { &their_fighters[v_idx] } else { &our_fighters[v_idx] };
                         let range = *v.parameters.get("range").unwrap_or(&5) as u32;
-                        let prob = 10.saturating_sub(range);
+                        let prob = 10u32.saturating_sub(range);
                         targets_probs.push((v_idx, prob));
                         total_prob += prob;
                     }
 
                     if total_prob > 0 {
-                        let mut pick = rng.gen_range(0..total_prob);
+                        let mut pick: u32 = rng.gen_range(0..total_prob);
                         let mut chosen_v_idx = victims_indices[0];
                         for (v_idx, prob) in targets_probs {
                             if pick < prob {
