@@ -6,5 +6,5 @@ export const routes: Routes = [
   { path: 'new_game', component: NewGame },
   { path: 'units_selection', component: UnitList },
   { path: 'result', component: GameResult },
-  { path: '', redirectTo: '/units', pathMatch: 'full' }
+  { path: '', redirectTo: '/new_game', pathMatch: 'full' }
 ];
