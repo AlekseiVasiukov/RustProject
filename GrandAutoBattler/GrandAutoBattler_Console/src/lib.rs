@@ -1,7 +1,8 @@
 use GrandAutoBattler_GameEngine::combatant_manager::Combatant;
 use GrandAutoBattler_GameEngine::{
     battle_journal_manager::{Command, GameEvent},
-    game_instance_manager::GameInstancesManager, game_result_manager::GameResult,
+    game_instance_manager::GameInstancesManager,
+    game_result_manager::GameResult,
 };
 
 use crossterm::{
@@ -98,7 +99,6 @@ impl GameState {
 
     pub fn next_stage(&mut self) {
         self.counter += 1;
-
         self.current_stage = match self.current_stage {
             Stage::Title => Stage::PreparationFactions,
             Stage::PreparationFactions => Stage::PreparationUnitTypes,
@@ -108,16 +108,30 @@ impl GameState {
             Stage::BattleJournal => Stage::Results,
             Stage::Results => Stage::PreparationFactions,
         };
-
-        //resetting values
+        if self.current_stage == Stage::BattleJournal {
+            self.journal_index = 0;
+            if let Some(result) = self.game_result.as_mut() {
+                for combatants in result.generated_combatants.values_mut() {
+                    for combatant in combatants {
+                        combatant.current_health_points = combatant.health_points;
+                    }
+                }
+            }
+            let has_events = self
+                .game_result
+                .as_ref()
+                .map(|result| !result.battle_journal.events.is_empty())
+                .unwrap_or(false);
+            if has_events {
+                self.apply_journal_event(0);
+            }
+        }
         if self.current_stage == PreparationFactions {
             self.cursor_on_faction = 0;
             self.cursor_on_unit_types = 0;
-
             let mut default_conflicting_sides: BTreeMap<usize, ConflictngSide> = BTreeMap::new();
             default_conflicting_sides.insert(0, ConflictngSide::default());
             default_conflicting_sides.insert(1, ConflictngSide::default());
-
             self.conflicting_sides = default_conflicting_sides;
         }
     }
@@ -360,8 +374,13 @@ impl GameState {
         id.to_string()
     }
 
-    fn format_combatant_line(&self, c: &Combatant, attacker_id: &String, victim_id: &String) -> String {
-        let color = if c.current_health_points <= 0 {
+    fn format_combatant_line(
+        &self,
+        c: &Combatant,
+        attacker_id: &String,
+        victim_id: &String,
+    ) -> String {
+        let color = if c.current_health_points <= (0 as usize) {
             "\x1b[90m"
         } else if c.id == *attacker_id {
             "\x1b[93m"
@@ -379,7 +398,10 @@ impl GameState {
         )
         .trim()
         .to_string();
-        let unittype = c.unit_type_pretty_name.as_deref().unwrap_or(&c.unit_type_name);
+        let unittype = c
+            .unit_type_pretty_name
+            .as_deref()
+            .unwrap_or(&c.unit_type_name);
 
         format!(
             "{}{: <15} H[{}] A[{}] R[{}] D[{}] {}HP \"{}\"{}",
@@ -543,13 +565,21 @@ impl GameState {
             Stage::BattleJournal => match action {
                 Action::MoveLeft => {
                     if self.journal_index > 0 {
+                        self.undo_journal_event(self.journal_index);
                         self.journal_index -= 1;
                     }
                 }
                 Action::MoveRight => {
-                    let event_count = self.game_result.as_ref().unwrap().battle_journal.events.len();
-                    if self.journal_index < event_count - 1 {
+                    let event_count = self
+                        .game_result
+                        .as_ref()
+                        .unwrap()
+                        .battle_journal
+                        .events
+                        .len();
+                    if self.journal_index + 1 < event_count {
                         self.journal_index += 1;
+                        self.apply_journal_event(self.journal_index);
                     }
                 }
                 Action::Continue => {
@@ -560,6 +590,41 @@ impl GameState {
             _ => return,
         }
         self.render();
+    }
+    fn apply_journal_event(&mut self, event_index: usize) {
+        let (victim_id, damage) = {
+            let result = self.game_result.as_ref().unwrap();
+            let event = &result.battle_journal.events[event_index];
+            match &event.cmd {
+                Command::Attack { dst, dmg, .. } => (dst.clone(), *dmg as usize),
+                _ => return,
+            }
+        };
+        let result = self.game_result.as_mut().unwrap();
+        for combatants in result.generated_combatants.values_mut() {
+            if let Some(victim) = combatants.iter_mut().find(|c| c.id == victim_id) {
+                victim.current_health_points = victim.current_health_points.saturating_sub(damage);
+                break;
+            }
+        }
+    }
+    fn undo_journal_event(&mut self, event_index: usize) {
+        let (victim_id, damage) = {
+            let result = self.game_result.as_ref().unwrap();
+            let event = &result.battle_journal.events[event_index];
+            match &event.cmd {
+                Command::Attack { dst, dmg, .. } => (dst.clone(), *dmg as usize),
+                _ => return,
+            }
+        };
+        let result = self.game_result.as_mut().unwrap();
+        for combatants in result.generated_combatants.values_mut() {
+            if let Some(victim) = combatants.iter_mut().find(|c| c.id == victim_id) {
+                victim.current_health_points =
+                    (victim.current_health_points + damage).min(victim.health_points);
+                break;
+            }
+        }
     }
 }
 
