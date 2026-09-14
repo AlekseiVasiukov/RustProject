@@ -1,3 +1,7 @@
+mod mirror_body_string;
+
+use mirror_body_string::mirror_body_string;
+
 use axum::{
     Router,
     routing::{get, post},
@@ -7,6 +11,7 @@ pub fn create_routes() -> Router {
     Router::new()
         .route("/", get(hello_world))
         .route("/", post(|| async { format!("{:#?}", Faction::new()) }))
+        .route("/mirror", post(mirror_body_string))
 }
 
 async fn hello_world() -> String {
