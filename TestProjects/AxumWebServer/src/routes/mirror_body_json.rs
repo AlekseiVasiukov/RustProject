@@ -7,13 +7,23 @@ use axum::Json;
 pub async fn mirror_body_json(Json(body): Json<Faction>) {
     // body
     dbg!(body);
-    todo!();
+    // Json(body);
+    // todo!();
 }
+
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MirrorMessage{
+    message: String,
+}
+
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Faction {
     unittypes: Vec<UnitType>,
 }
+
+
 
 impl Faction {
     pub fn new() -> Self {

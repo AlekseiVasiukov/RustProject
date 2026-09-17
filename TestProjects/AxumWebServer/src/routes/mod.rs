@@ -1,7 +1,7 @@
 mod mirror_body_json;
 mod mirror_body_string;
 
-use crate::routes::mirror_body_json::Faction;
+use crate::routes::mirror_body_json::{Faction, MirrorMessage};
 use axum::Json;
 use axum::{
     Router,
@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 pub fn create_routes() -> Router {
     Router::new()
         .route("/", get(hello_world))
-        .route("/", post(|| async { format!("{:#?}", Faction::new()) }))
+        .route("/", post(|| async { Json( Faction::new()) }))
         .route("/mirror", post(mirror_body_string))
         .route("/json", post(mirror_body_json))
 }
