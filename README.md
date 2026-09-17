@@ -17,7 +17,8 @@ CURRENT STAGE: BASIC FUNCTIONALITY FOR MAIN PROJECT "GRAND AUTO-BATTLER" IN DEDI
 
 **MAIN PROJECT**:
 NAVIGATE YOURSELF TO \FinalRustProject\GrandAutoBattler\ in VScode, Make the "GrandAutoBattler_Console_Runner" your active directory, then "cargo run".
-- **GrandAutoBattler_Console_Runner** (Just an entry point. In future there will be "runners" for ratatui port and REST API server)
+- **GrandAutoBattler_API_Runner**  (Work-In-Progress REST API server)
+- **GrandAutoBattler_Console_Runner** (An entry point and build.rs launcher, to copy data-driven toml-files.)
 - **GrandAutoBattler_Console**  (Intended to keep States of the game to be presented in console window (using alternate screen/raw_mode/cursor_off) and process user's input. Now it is only requesting new game instance id)
 - **GrandAutoBattler_GameEngine** (Functional engine to parse TOML files of data-driven game files. It now initializing usable data for game. In future: Returning possible playable units. Generating whole gameplay sequence of command-pattern chained events, taking all gameplay calculations and parameters tracking on it. Intented to be agnostic for caller client.)
 
