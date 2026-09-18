@@ -13,6 +13,7 @@ axum = { version = "0.8.9", features = [
     "tokio",
     "tower-log",
     "tracing",
+    "macros",
 ] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
@@ -20,14 +21,21 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 anyhow = "1"
 
 #for serial/deserial
-serde = { version = "1", features = ["json", "rustls-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
 
 #for middleware - cors and so on
 tower-http = { version = "0.5", features = ["trace", "cors"] }
 
 # makin api docs
-utoipa = { version = 4, features = ["axum-extras"] }
-utoipa-swagger-ui = { version = 6, features = ["axum"] }
+utoipa = { version = "4", features = ["axum_extras"] }
+utoipa-swagger-ui = { version = "6", features = ["axum"] }
 
-chrono = { version = "0.4", features = ["serde"] }
+
+#logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
 #for chronology
+chrono = { version = "0.4", features = ["serde"] }
