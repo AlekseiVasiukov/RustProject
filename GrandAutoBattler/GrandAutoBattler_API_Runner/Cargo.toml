@@ -1,12 +1,17 @@
 [package]
-name = "GrandAutoBattler_Console_Runner"
+name = "GrandAutoBattler_Api_Runner"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-GrandAutoBattler_Console = { path = "../GrandAutoBattler_Console" }
-axum = { version = "0.8.9", features = ["json", "tokio", "tower-log", "tracing"] }
-tokio = { version = "1.53.1", features = ["rt-multi-thread"] }
+GrandAutoBattler_GameEngine = { path = "../GrandAutoBattler_GameEngine" }
+axum = { version = "0.8.9", features = [
+    "json",
+    "tokio",
+    "tower-log",
+    "tracing",
+] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 
 [build-dependencies]
