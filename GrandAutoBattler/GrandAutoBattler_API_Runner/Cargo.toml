@@ -1,0 +1,13 @@
+[package]
+name = "GrandAutoBattler_Console_Runner"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+GrandAutoBattler_Console = { path = "../GrandAutoBattler_Console" }
+axum = { version = "0.8.9", features = ["json", "tokio", "tower-log", "tracing"] }
+tokio = { version = "1.53.1", features = ["rt-multi-thread"] }
+
+
+[build-dependencies]
+fs_extra = "1.3"
