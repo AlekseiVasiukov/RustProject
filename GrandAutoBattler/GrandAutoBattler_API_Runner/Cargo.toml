@@ -8,7 +8,7 @@ fs_extra = "1.3"
 
 [dependencies]
 GrandAutoBattler_GameEngine = { path = "../GrandAutoBattler_GameEngine" }
-axum = { version = "0.8.9", features = [
+axum = { version = "0.7", features = [
     "json",
     "tokio",
     "tower-log",
