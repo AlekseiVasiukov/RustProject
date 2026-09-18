@@ -3,6 +3,9 @@ name = "GrandAutoBattler_Api_Runner"
 version = "0.1.0"
 edition = "2024"
 
+[build-dependencies]
+fs_extra = "1.3"
+
 [dependencies]
 GrandAutoBattler_GameEngine = { path = "../GrandAutoBattler_GameEngine" }
 axum = { version = "0.8.9", features = [
@@ -13,6 +16,18 @@ axum = { version = "0.8.9", features = [
 ] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
+##for exceptions to get wrapped into
+anyhow = "1"
 
-[build-dependencies]
-fs_extra = "1.3"
+#for serial/deserial
+serde = { version = "1", features = ["json", "rustls-tls"] }
+
+#for middleware - cors and so on
+tower-http = { version = "0.5", features = ["trace", "cors"] }
+
+# makin api docs
+utoipa = { version = 4, features = ["axum-extras"] }
+utoipa-swagger-ui = { version = 6, features = ["axum"] }
+
+chrono = { version = "0.4", features = ["serde"] }
+#for chronology
