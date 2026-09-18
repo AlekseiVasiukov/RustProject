@@ -6,7 +6,9 @@ use axum::{Json, Router, http::StatusCode, routing::get};
 use crate::types::HealthStatus;
 
 pub fn create_routes() -> Router {
-    Router::new().route("/health", get(health_check()))
+    Router::new()
+        .route("/", get(health_check()))
+        .route("/health", get(health_check()))
 }
 
 #[utoipa::path(
