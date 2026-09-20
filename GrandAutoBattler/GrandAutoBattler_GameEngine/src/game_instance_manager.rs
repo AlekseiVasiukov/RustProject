@@ -183,6 +183,7 @@ impl GameInstance {
     // }
 }
 
+#[derive(Debug, Clone)]
 pub struct GameInstancesManager {
     pub(crate) game_instances_ids: IdRegistry,
     pub(crate) games_by_ids: BTreeMap<String, GameInstance>,
