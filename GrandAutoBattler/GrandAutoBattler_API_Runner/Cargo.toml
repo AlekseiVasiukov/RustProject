@@ -14,6 +14,7 @@ axum = { version = "0.7", features = [
     "tower-log",
     "tracing",
     "macros",
+
 ] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
