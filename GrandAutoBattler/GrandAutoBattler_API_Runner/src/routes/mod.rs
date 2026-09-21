@@ -2,7 +2,7 @@
 
 use GrandAutoBattler_GameEngine::game_instance_manager::GameInstancesManager;
 // use types::HealthStatus;
-use axum::{Extension, Json, Router, extract::State, http::StatusCode, routing::get};
+use axum::{Extension, Json, Router, extract::State, http::{StatusCode, request}, routing::get};
 // use axum::{};
 use utoipa::{OpenApi, ToSchema};
 // use utoipa_swagger_ui::SwaggerUi;
@@ -10,7 +10,7 @@ use chrono::{DateTime, Utc};
 use tokio::sync::mpsc;
 use utoipa_swagger_ui::SwaggerUi;
 
-use crate::types::{HealthStatus, NewGameInstanceIdResponse};
+use crate::types::{HealthStatus, NewGameInstanceIdResponse, GetAvailableFactionsRequest, GetAvailableFactionsResponse};
 
 #[derive(Clone)]
 pub struct ApiState {
@@ -39,7 +39,7 @@ pub struct ApiState {
         contact(name = "https://github.com/AlekseiVasiukov")
     ),
     paths(health_check, new_game_id_retrieve),
-    components(schemas(HealthStatus, NewGameInstanceIdResponse),)
+    components(schemas(HealthStatus, NewGameInstanceIdResponse,GetAvailableFactionsRequest, GetAvailableFactionsResponse, ),)
 )]
 pub struct ApiDoc;
 
@@ -93,7 +93,7 @@ async fn health_check() -> (StatusCode, Json<HealthStatus>) {
 async fn new_game_id_retrieve(
     State(mut state): State<ApiState>,
 ) -> (StatusCode, Json<NewGameInstanceIdResponse>) {
-    let  generation_result =  state.game_manager.GetNewGameInstanceId();
+    let generation_result = state.game_manager.GetNewGameInstanceId();
 
     let response = NewGameInstanceIdResponse {
         game_id: generation_result,
@@ -103,3 +103,25 @@ async fn new_game_id_retrieve(
     };
     (StatusCode::OK, Json(response))
 }
+
+async fn available_factions_retrieve(
+    State(mut state): State<ApiState>,
+    Json(request): Json<GetAvailableFactionsResponse>
+) -> (StatusCode, Json<NewGameInstanceIdResponse>) {
+    let generation_result = state.game_manager.GetNewGameInstanceId();
+
+    let response = NewGameInstanceIdResponse {
+        game_id: generation_result,
+        timestamp: chrono::Utc::now(),
+        success: true,
+        error: None,
+    };
+    (StatusCode::OK, Json(response))
+}
+
+// async fn available_factions_retrieve(
+//     State(mut state): State<ApiState>, Json(request): Json<GetAvailableFactionsRequest)
+// ) -> (StatusCode, Json<GetAvailableFactionsResponse>) {
+//     // let available_factions = State.game_manager.
+//     (StatusCode::OK, Json(response))
+// }
