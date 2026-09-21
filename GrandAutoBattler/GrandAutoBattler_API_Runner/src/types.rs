@@ -22,11 +22,6 @@ pub struct NewGameInstanceIdResponse {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct GetAvailableFactionsRequest {
-    pub game_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct GetAvailableFactionsResponse {
     pub factions: Vec<String>,
     pub success: bool,
