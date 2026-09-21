@@ -8,6 +8,8 @@ use axum::{
     http::{StatusCode, request},
     routing::get,
 };
+use std::sync::Arc;
+use tokio::sync::Mutex;
 // use axum::{};
 use utoipa::{OpenApi, ToSchema};
 // use utoipa_swagger_ui::SwaggerUi;
@@ -19,7 +21,7 @@ use crate::types::{GetAvailableFactionsResponse, HealthStatus, NewGameInstanceId
 
 #[derive(Clone)]
 pub struct ApiState {
-    pub game_manager: GameInstancesManager,
+    pub game_manager: Arc<Mutex<GameInstancesManager>>,
 }
 
 // #[derive(OpenApi)]
@@ -53,7 +55,9 @@ pub fn create_routes() -> Router {
     // let game = game_manager.GetNewGameInstanceId();
     // println!("{:?}", game);
     // println!("YO");
-    let api_state = ApiState { game_manager };
+    let api_state = ApiState {
+        game_manager: Arc::new(Mutex::new(game_manager)),
+    };
 
     // let state = ApiState {api_state};
 
@@ -97,10 +101,11 @@ async fn health_check() -> (StatusCode, Json<HealthStatus>) {
     )
 )]
 async fn new_game_id_retrieve(
-    State(mut state): State<ApiState>,
+    State(state): State<ApiState>,
 ) -> (StatusCode, Json<NewGameInstanceIdResponse>) {
-    let generation_result = state.game_manager.GetNewGameInstanceId();
-
+    let mut game_manager = state.game_manager.lock().await;
+    let generation_result = game_manager.GetNewGameInstanceId();
+    drop(game_manager);
     let response = NewGameInstanceIdResponse {
         game_id: generation_result,
         timestamp: chrono::Utc::now(),
@@ -121,10 +126,11 @@ async fn new_game_id_retrieve(
 )]
 async fn available_factions_retrieve(
     Path(game_id): Path<String>,
-    State(mut state): State<ApiState>,
+    State(state): State<ApiState>,
 ) -> (StatusCode, Json<GetAvailableFactionsResponse>) {
-    let factions = state.game_manager.GetAvailableFactions(&game_id);
-
+    let game_manager = state.game_manager.lock().await;
+    let factions = game_manager.GetAvailableFactions(&game_id);
+    drop(game_manager);
     // let generation_result = state.game_manager.GetNewGameInstanceId();
 
     let response = GetAvailableFactionsResponse {
