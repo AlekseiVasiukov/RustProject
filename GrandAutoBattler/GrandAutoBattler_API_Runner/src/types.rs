@@ -20,3 +20,12 @@ pub struct NewGameInstanceIdResponse {
     pub timestamp: DateTime<Utc>,
     pub error: Option<String>,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct GetAvailableFactionsResponse {
+    pub factions: Vec<String>,
+    pub success: bool,
+    #[schema(value_type = String, format = DateTime)]
+    pub timestamp: DateTime<Utc>,
+    pub error: Option<String>,
+}

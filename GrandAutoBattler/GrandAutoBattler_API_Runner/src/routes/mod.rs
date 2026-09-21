@@ -2,7 +2,14 @@
 
 use GrandAutoBattler_GameEngine::game_instance_manager::GameInstancesManager;
 // use types::HealthStatus;
-use axum::{Extension, Json, Router, extract::State, http::StatusCode, routing::get};
+use axum::{
+    Extension, Json, Router,
+    extract::{Path, State},
+    http::{StatusCode, request},
+    routing::get,
+};
+use std::sync::Arc;
+use tokio::sync::Mutex;
 // use axum::{};
 use utoipa::{OpenApi, ToSchema};
 // use utoipa_swagger_ui::SwaggerUi;
@@ -10,11 +17,11 @@ use chrono::{DateTime, Utc};
 use tokio::sync::mpsc;
 use utoipa_swagger_ui::SwaggerUi;
 
-use crate::types::{HealthStatus, NewGameInstanceIdResponse};
+use crate::types::{GetAvailableFactionsResponse, HealthStatus, NewGameInstanceIdResponse};
 
 #[derive(Clone)]
 pub struct ApiState {
-    pub game_manager: GameInstancesManager,
+    pub game_manager: Arc<Mutex<GameInstancesManager>>,
 }
 
 // #[derive(OpenApi)]
@@ -38,8 +45,8 @@ pub struct ApiState {
         version = "0.0.1",
         contact(name = "https://github.com/AlekseiVasiukov")
     ),
-    paths(health_check, new_game_id_retrieve),
-    components(schemas(HealthStatus, NewGameInstanceIdResponse),)
+    paths(health_check, new_game_id_retrieve, available_factions_retrieve),
+    components(schemas(HealthStatus, NewGameInstanceIdResponse, GetAvailableFactionsResponse,),)
 )]
 pub struct ApiDoc;
 
@@ -48,7 +55,9 @@ pub fn create_routes() -> Router {
     // let game = game_manager.GetNewGameInstanceId();
     // println!("{:?}", game);
     // println!("YO");
-    let api_state = ApiState { game_manager };
+    let api_state = ApiState {
+        game_manager: Arc::new(Mutex::new(game_manager)),
+    };
 
     // let state = ApiState {api_state};
 
@@ -57,6 +66,7 @@ pub fn create_routes() -> Router {
         .route("/", get(health_check))
         .route("/health", get(health_check))
         .route("/new_game_id", get(new_game_id_retrieve))
+        .route("/games/:game_id/factions", get(available_factions_retrieve))
         //Add swagger for interactive api]
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .layer(
@@ -87,14 +97,15 @@ async fn health_check() -> (StatusCode, Json<HealthStatus>) {
     path = "/new_game_id",
     tag = "Game Id",
     responses(
-        (status = 200, description = "Get the id for newly created game instance, body = NewGameInstanceIdResponse"),
+        (status = 200, description = "Get the id for newly created game instance", body = NewGameInstanceIdResponse),
     )
 )]
 async fn new_game_id_retrieve(
-    State(mut state): State<ApiState>,
+    State(state): State<ApiState>,
 ) -> (StatusCode, Json<NewGameInstanceIdResponse>) {
-    let  generation_result =  state.game_manager.GetNewGameInstanceId();
-
+    let mut game_manager = state.game_manager.lock().await;
+    let generation_result = game_manager.GetNewGameInstanceId();
+    drop(game_manager);
     let response = NewGameInstanceIdResponse {
         game_id: generation_result,
         timestamp: chrono::Utc::now(),
@@ -103,3 +114,37 @@ async fn new_game_id_retrieve(
     };
     (StatusCode::OK, Json(response))
 }
+
+#[utoipa::path(
+    get,
+    path = "/games/{game_id}/factions",
+    tag = "Game Data",
+    params(("game_id"= String, Path, description = "Game instance id")),
+    responses(
+        (status = 200, description = "Get the available factions based on particular game_id of a game instance", body = GetAvailableFactionsResponse),
+    )
+)]
+async fn available_factions_retrieve(
+    Path(game_id): Path<String>,
+    State(state): State<ApiState>,
+) -> (StatusCode, Json<GetAvailableFactionsResponse>) {
+    let game_manager = state.game_manager.lock().await;
+    let factions = game_manager.GetAvailableFactions(&game_id);
+    drop(game_manager);
+    // let generation_result = state.game_manager.GetNewGameInstanceId();
+
+    let response = GetAvailableFactionsResponse {
+        factions,
+        timestamp: chrono::Utc::now(),
+        success: true,
+        error: None,
+    };
+    (StatusCode::OK, Json(response))
+}
+
+// async fn available_factions_retrieve(
+//     State(mut state): State<ApiState>, Json(request): Json<GetAvailableFactionsRequest)
+// ) -> (StatusCode, Json<GetAvailableFactionsResponse>) {
+//     // let available_factions = State.game_manager.
+//     (StatusCode::OK, Json(response))
+// }
