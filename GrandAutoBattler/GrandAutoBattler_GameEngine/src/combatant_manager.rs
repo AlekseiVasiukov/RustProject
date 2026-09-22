@@ -1,15 +1,16 @@
 use rand::Rng;
 use rand::seq::SliceRandom;
+use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+
 use std::error::Error;
 
 use crate::game_data_retriever::{self, Config, Faction, UnitType};
 
 pub struct CombatantManager {}
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Combatant {
-    
     pub id: String,
     pub faction_name: String,
     pub unit_type_name: String,
@@ -71,7 +72,7 @@ impl Combatant {
             unit_type_pretty_name: unittype.unit_type_pretty_name.clone(),
             parameters: unittype.parameters_set.clone(),
             health_points: hp.clone(),
-            current_health_points: hp.clone(), 
+            current_health_points: hp.clone(),
             first_name: first_name,
             last_name: last_name,
         }
@@ -131,6 +132,5 @@ impl Combatant {
         } else {
             health_points.trunc() as usize
         }
-        
     }
 }

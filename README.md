@@ -1,4 +1,4 @@
-**Final RUST project** by Aleksei Vasiukov and Mauricio Barros (2026)
+**Final RUST project** by Aleksei Vasiukov (2026)
 
 An Idea of the future project.
 It's the game of two parties fighting each other. 
