@@ -8,7 +8,7 @@ use axum::{
     http::{StatusCode, request},
     routing::{get, post},
 };
-use std::sync::Arc;
+use std::{collections::BTreeMap, sync::Arc};
 use tokio::sync::Mutex;
 // use axum::{};
 use utoipa::{OpenApi, ToSchema};
@@ -18,7 +18,8 @@ use tokio::sync::mpsc;
 use utoipa_swagger_ui::SwaggerUi;
 
 use crate::types::{
-    GetAvailableFactionsResponse, GetAvailableUnitTypesResponse, HealthStatus,
+    GetAvailableFactionsResponse, GetAvailableUnitTypesResponse,
+    GetGameResultByIdAndSelectionRequest, GetGameResultByIdAndSelectionResponse, HealthStatus,
     NewGameInstanceIdResponse,
 };
 
@@ -52,13 +53,16 @@ pub struct ApiState {
         health_check,
         new_game_id_retrieve,
         available_factions_retrieve,
-        available_unittypes_retrieve
+        available_unittypes_retrieve,
+        game_result_retrieve,
     ),
     components(schemas(
         HealthStatus,
         NewGameInstanceIdResponse,
         GetAvailableFactionsResponse,
         GetAvailableUnitTypesResponse,
+        GetGameResultByIdAndSelectionRequest,
+        GetGameResultByIdAndSelectionResponse,
     ),)
 )]
 pub struct ApiDoc;
@@ -84,6 +88,8 @@ pub fn create_routes() -> Router {
             "/games/:game_id/unittypes",
             get(available_unittypes_retrieve),
         )
+                .route("/games/:game_id/result", post(game_result_retrieve))
+
         //Add swagger for interactive api]
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .layer(
@@ -136,7 +142,7 @@ async fn new_game_id_retrieve(
     get,
     path = "/games/{game_id}/factions",
     tag = "Game Data",
-    params(("game_id"= String, Path, description = "Game Available Factions")),
+    params(("game_id"= String, Path, description = "Game Instance Id")),
     responses(
         (status = 200, description = "Get the available factions based on particular game_id of a game instance", body = GetAvailableFactionsResponse),
     )
@@ -163,7 +169,7 @@ async fn available_factions_retrieve(
     get,
     path = "/games/{game_id}/unittypes",
     tag = "Game Data",
-    params(("game_id"= String, Path, description = "Game Available Unit Types")),
+    params(("game_id"= String, Path, description = "Game Instance Id")),
     responses(
         (status = 200, description = "Get the available unit types based on particular game_id of a game instance", body = GetAvailableUnitTypesResponse),
     )
@@ -184,6 +190,60 @@ async fn available_unittypes_retrieve(
         error: None,
     };
     (StatusCode::OK, Json(response))
+}
+
+
+//Example request
+// {
+//   "our_faction_index": 0,
+//   "opponent_faction_index": 1,
+//   "our_unittype_indices": [0, 2, null, 1]
+// }
+
+
+#[utoipa::path(
+    post,
+    path = "/games/{game_id}/result",
+    tag = "Game Data",
+    params(
+        ("game_id" = String, Path, description = "Game Instance Id")
+    ),
+    request_body = GetGameResultByIdAndSelectionRequest,
+    responses(
+        (
+            status = 200, 
+            description = "Calculated game result",
+            body = GetGameResultByIdAndSelectionResponse
+
+        ),
+    )
+    
+)]
+async fn game_result_retrieve(
+    Path(game_id): Path<String>,
+    State(state): State<ApiState>,
+    Json(request): Json<GetGameResultByIdAndSelectionRequest>,
+)->(StatusCode, Json<GetGameResultByIdAndSelectionResponse>){
+    let mut selected_factions = std::collections::BTreeMap::new();
+    selected_factions.insert(0, request.our_faction_index);
+    selected_factions.insert(1, request.opponent_faction_index);
+
+    let mut selected_unittypes: BTreeMap<usize, Option<usize>> = BTreeMap::new();
+    for (index, value) in request.our_unittype_indices.iter().enumerate() {
+        selected_unittypes.insert(index, *value);
+    }
+
+    let mut game_manager = state.game_manager.lock().await;
+    let game_result = game_manager.GetGameResultByIdAndSelection(&game_id, &selected_factions, &selected_unittypes);
+    drop(game_manager);
+    let response = GetGameResultByIdAndSelectionResponse{
+        result: game_result,
+        success: true,
+        timestamp: chrono::Utc::now(),
+        error: None,
+
+    };
+ (StatusCode::OK, Json(response) )
 }
 
 // async fn available_factions_retrieve(

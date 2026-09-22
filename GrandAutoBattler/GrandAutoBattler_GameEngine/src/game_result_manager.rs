@@ -1,9 +1,11 @@
+use serde::{Deserialize, Serialize};
+
 use crate::battle_journal_manager::BattleJournal;
 use crate::combatant_manager::Combatant;
 use std::collections::BTreeMap;
 use std::error::Error;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GameResult {
     pub generated_combatants: BTreeMap<usize, Vec<Combatant>>,
     pub battle_journal: BattleJournal,
