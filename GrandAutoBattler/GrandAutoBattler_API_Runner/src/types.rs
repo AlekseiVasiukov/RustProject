@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use utoipa::{ToSchema, openapi::schema};
@@ -24,6 +26,15 @@ pub struct NewGameInstanceIdResponse {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct GetAvailableFactionsResponse {
     pub factions: Vec<String>,
+    pub success: bool,
+    #[schema(value_type = String, format = DateTime)]
+    pub timestamp: DateTime<Utc>,
+    pub error: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct GetAvailableUnitTypesResponse {
+    pub unittypes: BTreeMap<usize,Vec<String>>,
     pub success: bool,
     #[schema(value_type = String, format = DateTime)]
     pub timestamp: DateTime<Utc>,
