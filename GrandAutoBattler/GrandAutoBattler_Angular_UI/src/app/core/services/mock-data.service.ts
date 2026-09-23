@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { Unit, UnitTypesResponse } from '../models/model';
+import { Unit, UnitTypesResponse } from '../models/game.model';
 
 @Injectable({
   providedIn: 'root'
