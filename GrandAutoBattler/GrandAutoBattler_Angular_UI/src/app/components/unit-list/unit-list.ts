@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MockDataService } from '../../core/services/mock-data.service';
-import { Unit } from '../../core/models/unit.model';
+import { Unit } from '../../core/models/model';
 
 @Component({
   selector: 'app-unit-list',

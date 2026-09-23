@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { Unit, UnitTypeResponse } from '../models/unit.model';
+import { Unit, UnitTypesResponse } from '../models/model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class MockDataService {
     return of(['Humans', 'Demons']);
   }
 
-  getUnitTypes(): Observable<UnitTypeResponse> {
+  getUnitTypes(): Observable<UnitTypesResponse> {
     return of({
       '0': ['Knight', 'Archer', 'Witch'],
       '1': ['Succubus', 'Demon', 'Imp']
