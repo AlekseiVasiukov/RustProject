@@ -4,6 +4,13 @@ mod types;
 // use crate::types;
 #[tokio::main]
 pub async fn main() {
+
+
+//build command for linux 
+//cargo build --release --target x86_64-unknown-linux-gnu
+
+
+
     //Example of using debug/release build commands
     // if cfg!(debug_assertions) {
     //     println!("Debugging enabled");
