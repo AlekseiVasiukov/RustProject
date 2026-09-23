@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'localhost:3000',
+  apiUrl: 'api.grandautobattler.com:3000',
 }
