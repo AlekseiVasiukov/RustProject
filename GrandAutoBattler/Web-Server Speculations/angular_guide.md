@@ -113,8 +113,10 @@ Your Rust API exposes these 4 endpoints:
 {
   "result": {
     "generated_combatants": { ... },
-    "battle_journal": { ... },
-    "winner": "Humans"
+    "battle_journal": {
+      "winner_side": 0,
+      "events": [ ... ]
+    }
   },
   "success": true,
   "timestamp": "2025-01-01T00:00:00Z",
@@ -286,8 +288,9 @@ export interface BattleCommand {
   dmg: number;
 }
 
-/** Battle journal container */
+/** Battle journal container — note: winner_side is INSIDE the journal, not on GameResult */
 export interface BattleJournal {
+  winner_side: number; // 0 = our side won, 1 = opponent won
   events: BattleJournalEvent[];
 }
 
@@ -295,7 +298,6 @@ export interface BattleJournal {
 export interface GameResult {
   generated_combatants: { [side: number]: Combatant[] };
   battle_journal: BattleJournal;
-  winner: number; // 0 = our side won, 1 = opponent won
 }
 
 /** Unit type selection for our warriors (4 slots) */
@@ -401,7 +403,7 @@ This is the **single source of truth** for game state. All components read from 
 
 ```typescript
 import { Injectable, inject } from '@angular/core';
-import { signal, computed, linkedSignal } from '@angular/core';
+import { signal, computed } from '@angular/core';
 import { GameService } from './game.service';
 import type {
   GameResult,
@@ -995,7 +997,7 @@ Create a NEW component:
 ### TypeScript Code
 
 ```typescript
-import { Component, inject, computed, effect } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GameSessionService } from '../../core/services/game-session.service';
@@ -1306,10 +1308,10 @@ export class GameResult {
   session = inject(GameSessionService);
   router = inject(Router);
 
-  /** Determine if we won (winner === 0 means our side) */
+  /** Determine if we won (winner_side === 0 means our side) */
   weWon = computed(() => {
     const result = this.session.gameResult();
-    return result?.winner === 0;
+    return result?.battle_journal?.winner_side === 0;
   });
 
   /** Result message text */
