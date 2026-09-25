@@ -10,12 +10,14 @@
       </a>
     </li>
     <li [class.disabled]="!session.hasGameStarted()">
-      <a [routerLink]="session.hasGameStarted() ? '/selected-warriors' : null" routerLink="active">
+      <a [routerLink]="session.hasGameStarted() ? '/unit-list' : null" routerLinkActive="active">
         Select Warriors
       </a>
     </li>
     <li [class.disabled]="!session.hasGameResult()">
-      <a [routerLink]="session.hasGameResult() ? '/enemies' : null" routerLinkActive="active"> </a>
+      <a [routerLink]="session.hasGameResult() ? '/enemies' : null" routerLinkActive="active">
+        Your Enemies
+      </a>
     </li>
     <li [class.disabled]="!session.hasGameResult()">
       <a
