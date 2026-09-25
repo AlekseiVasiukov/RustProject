@@ -57,20 +57,24 @@ export class BattleJournal {
   previousPage() {
     if (this.currentPage > 0) {
       this.currentPage--;
+      console.log(this.currentPage);
     }
   }
   nextPage() {
     if (this.currentPage < this.totalEvents() - 1) {
       this.currentPage++;
+      console.log(this.currentPage);
     }
   }
 
   goToStart() {
     this.currentPage = 0;
+    console.log(this.currentPage);
   }
 
   goToEnd() {
     this.currentPage = this.totalEvents() - 1;
+    console.log(this.currentPage);
   }
 
   //Kleyborad input navigation
