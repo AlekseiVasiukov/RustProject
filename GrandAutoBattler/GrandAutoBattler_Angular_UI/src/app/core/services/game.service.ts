@@ -19,21 +19,33 @@ export class GameService {
 
   //POST /new_game_id
   startNewGame(): Observable<NewGameIdRepsonse> {
+    console.log('Button was clicked!');
+    console.log(environment.production);
+    console.log(`${this.baseUrl}/new_game_id`);
     return this.http.post<NewGameIdRepsonse>(`${this.baseUrl}/new_game_id`, {});
   }
 
   //GET /games/{gameId}/faction
   getFactions(gameId: string): Observable<FactionResponse> {
+    console.log('Button was clicked!');
+    console.log(environment.production);
+    console.log(`${this.baseUrl}/games/${gameId}/factions`);
     return this.http.get<FactionResponse>(`${this.baseUrl}/games/${gameId}/factions`);
   }
 
   //Get /games/{gameId}/unittypes
   getUnittypes(gameId: string): Observable<UnitTypesResponse> {
+    console.log('Button was clicked!');
+    console.log(environment.production);
+    console.log(`${this.baseUrl}/games/${gameId}/unittypes`);
     return this.http.get<UnitTypesResponse>(`${this.baseUrl}/games/${gameId}/unittypes`);
   }
 
   //POST /games/{gameId}/result
   getGameResult(gameId: string, request: GameResultRequest): Observable<GameResultApiResponse> {
+    console.log('Button was clicked!');
+    console.log(environment.production);
+    console.log(`${this.baseUrl}/games/${gameId}/result`);
     return this.http.post<GameResultApiResponse>(`${this.baseUrl}/games/${gameId}/result`, request);
   }
 }
