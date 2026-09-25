@@ -1,0 +1,41 @@
+.enemies-container {
+  padding: 20px;
+}
+
+.combatants-grid {
+  display: flex;
+  gap: 40px;
+}
+
+.side {
+  flex: 1;
+}
+
+.side-title {
+  &.golden {
+    color: gold;
+  }
+  &.magenta {
+    color: magenta;
+  }
+}
+
+.combatants-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+
+  &.golden {
+    border-left: 4px solid gold;
+  }
+  &.magenta {
+    border-left: 4px solid magenta;
+  }
+}
+
+.combatant-stats {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0;
+}
