@@ -34,7 +34,7 @@
         <label> Warrior {{ slot + 1 }}:</label>
         <select title="warrior-selection-select" (change)="onWarriorTypeChange(slot, $event)">
           <option value="null" [selected]="ourWarriorTypes()[slot] === null">None</option>
-          @for (typeName of availableUnittypes()[ourFactionIndex()] ?? []; track $index) {
+          @for (typeName of availableUnittypes()[ourFactionIndex()]; track $index) {
             <option [value]="$index" [selected]="ourWarriorTypes()[slot] === $index">
               {{ typeName }}
             </option>

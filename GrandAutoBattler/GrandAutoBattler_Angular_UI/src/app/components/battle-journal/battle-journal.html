@@ -5,8 +5,8 @@
   } @else {
     <!-- Event header -->
     <div class="event-headr">
-      <span>Round: {{ currentEvent()?.round }}</span>
-      <span>Turn: {{ currentEvent()?.turn }}</span>
+      <span>Round: {{ currentEvent().round }}</span>
+      <span>Turn: {{ currentEvent().turn }}</span>
       <span>Page: {{ currentPage() + 1 }} / {{ totalEvents() }}</span>
     </div>
 
@@ -15,8 +15,10 @@
       <!-- Our Side -->
       <div class="side our-side">
         @for (combatant of ourCombatants(); track combatant.id) {
-          <div class="unit-card golden {{ getCombatantHightlighClass(combatant) }}">
-            <div class="unit-name">{{ getFullName(combatant) }}</div>
+          <div class="unit-card golden">
+            <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
+              {{ getFullName(combatant) }}
+            </div>
             <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
             <!-- prettier-ignore -->
             <div class="unit-stats">
@@ -37,8 +39,10 @@
       <!-- Opponent Side -->
       <div class="side enemy-side">
         @for (combatant of enemyCombatants(); track combatant.id) {
-          <div class="unit-card magenta {{ getCombatantHightlighClass(combatant) }}">
-            <div class="unit-name">{{ getFullName(combatant) }}</div>
+          <div class="unit-card magenta">
+            <div class="unit-name {{ getCombatantHightlighClass(combatant)}}">
+              {{ getFullName(combatant) }}
+            </div>
             <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
             <!-- prettier-ignore -->
             <div class="unit-stats">

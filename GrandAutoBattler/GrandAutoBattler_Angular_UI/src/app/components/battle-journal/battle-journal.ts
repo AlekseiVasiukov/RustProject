@@ -40,12 +40,17 @@ export class BattleJournal {
   });
 
   attackerId = computed(() => {
-    const evt = this.currentEvent();
+    var evt = this.currentEvent();
+    console.log(evt.cmd.src);
+
     return evt?.cmd?.type === 'Attack' ? evt.cmd.src : '';
   });
 
   victimId = computed(() => {
-    const evt = this.currentEvent();
+    var evt = this.currentEvent();
+    // `${first} ${last}`.trim() || 'Unknown'
+    console.log(`${this.currentEvent().cmd.type} victim`);
+    console.log(evt.cmd.dst);
     return evt?.cmd?.type === 'Attack' ? evt.cmd.dst : '';
   });
 
@@ -98,9 +103,13 @@ export class BattleJournal {
   }
 
   getCombatantHightlighClass(c: Combatant): string {
-    if (c.current_health_points <= 0) return 'dead';
+    var result = '';
+    if (c.current_health_points <= 0) result = 'dead';
     if (c.id === this.attackerId()) return 'attacker';
     if (c.id === this.victimId()) return 'victim';
-    return 'alive';
+    result = 'alive';
+
+    console.log(result);
+    return result;
   }
 }
