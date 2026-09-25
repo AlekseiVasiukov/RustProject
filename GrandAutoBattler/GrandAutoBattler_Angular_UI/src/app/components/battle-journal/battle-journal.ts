@@ -41,17 +41,19 @@ export class BattleJournal {
 
   attackerId = computed(() => {
     var evt = this.currentEvent();
-    console.log(evt.cmd.src);
 
-    return evt?.cmd?.type === 'Attack' ? evt.cmd.src : '';
+    const cmdData = evt?.cmd['Attack'];
+    console.log('Current Cmd Data:', cmdData);
+    return cmdData?.src ?? '';
   });
 
   victimId = computed(() => {
-    var evt = this.currentEvent();
-    // `${first} ${last}`.trim() || 'Unknown'
-    console.log(`${this.currentEvent().cmd.type} victim`);
-    console.log(evt.cmd.dst);
-    return evt?.cmd?.type === 'Attack' ? evt.cmd.dst : '';
+    const evt = this.currentEvent();
+    const cmdData = evt?.cmd['Attack'];
+
+    console.log('Current Cmd Data:', cmdData);
+
+    return cmdData?.dst ?? '';
   });
 
   //navigating to results

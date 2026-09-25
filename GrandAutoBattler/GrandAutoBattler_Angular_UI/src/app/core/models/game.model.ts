@@ -58,19 +58,28 @@ export interface Combatant {
   current_health_points: number;
 }
 
-export interface BattleJournalEvent {
-  round: number;
-  turn: number;
-  cmd: BattleCommand;
-}
-
-//command for battle journal
-export interface BattleCommand {
-  type: 'Attack';
+export interface AttackCommand {
   src: string;
   dst: string;
   dmg: number;
 }
+
+export interface BattleJournalEvent {
+  round: number;
+  turn: number;
+  cmd: {
+    [key: string]: AttackCommand;
+  };
+  // cmd: AttackCommand;
+}
+
+//command for battle journal
+// export interface BattleCommand {
+//   type: 'Attack';
+//   src: string;
+//   dst: string;
+//   dmg: number;
+// }
 
 export interface BattleJournal {
   winner_side: number; // 0 - our side, 1 - theirs

@@ -40,7 +40,7 @@
       <div class="side enemy-side">
         @for (combatant of enemyCombatants(); track combatant.id) {
           <div class="unit-card magenta">
-            <div class="unit-name {{ getCombatantHightlighClass(combatant)}}">
+            <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
               {{ getFullName(combatant) }}
             </div>
             <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
@@ -61,13 +61,12 @@
       </div>
       <!-- Event log -->
       @if (currentEvent(); as event) {
-        @if (event.cmd.type === 'Attack') {
-          <div class="event-log">
-            <p>
-              Unit {{ event.cmd.src }} attacks {{ event.cmd.dst }} for {{ event.cmd.dmg }} damage.
-            </p>
-          </div>
-        }
+        <div class="event-log">
+          <p>
+            Unit {{ event.cmd['Attack'].dst }} attacks {{ event.cmd['Attack'].src }} for
+            {{ event.cmd['Attack'].dmg }} damage.
+          </p>
+        </div>
       }
       <!-- prettier-ignore -->
       <div class="navigation-constrols">
