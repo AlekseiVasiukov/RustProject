@@ -27,20 +27,23 @@
       border-left: 4px solid magenta;
     }
 
-    &.attacker {
-      background-color: white;
-    }
+    // &.alive {
+    //   background-color: #f0f0f0;
+    // }
+    .unit-name {
+      // background-color: green;
 
-    &.victim {
-      background-color: red;
-    }
+      &.attacker {
+        background-color: white;
+      }
 
-    &.dead {
-      background-color: gray;
-    }
+      &.victim {
+        background-color: red;
+      }
 
-    &.alive {
-      background-color: #f0f0f0;
+      &.dead {
+        background-color: gray;
+      }
     }
   }
 

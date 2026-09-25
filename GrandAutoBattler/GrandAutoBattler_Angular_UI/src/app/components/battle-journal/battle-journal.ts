@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GameSessionService } from '../../core/services/game-session.service';
@@ -16,7 +16,7 @@ export class BattleJournal {
   router = inject(Router);
 
   //Current page index of battle journal
-  currentPage = 0;
+  currentPage = signal(0);
 
   //All battle events
   events = computed(() => {
@@ -25,7 +25,7 @@ export class BattleJournal {
 
   //Current event (we display this one)
   currentEvent = computed(() => {
-    return this.events()[this.currentPage];
+    return this.events()[this.currentPage()];
   });
 
   totalEvents = computed(() => this.events().length);
@@ -40,13 +40,20 @@ export class BattleJournal {
   });
 
   attackerId = computed(() => {
-    const evt = this.currentEvent();
-    return evt?.cmd?.type === 'Attack' ? evt.cmd.src : '';
+    var evt = this.currentEvent();
+
+    const cmdData = evt?.cmd['Attack'];
+    console.log('Current Cmd Data:', cmdData);
+    return cmdData?.src ?? '';
   });
 
   victimId = computed(() => {
     const evt = this.currentEvent();
-    return evt?.cmd?.type === 'Attack' ? evt.cmd.dst : '';
+    const cmdData = evt?.cmd['Attack'];
+
+    console.log('Current Cmd Data:', cmdData);
+
+    return cmdData?.dst ?? '';
   });
 
   //navigating to results
@@ -55,22 +62,26 @@ export class BattleJournal {
   }
 
   previousPage() {
-    if (this.currentPage > 0) {
-      this.currentPage--;
+    if (this.currentPage() > 0) {
+      this.currentPage.update((v) => v - 1);
+      console.log(this.currentPage());
     }
   }
   nextPage() {
-    if (this.currentPage < this.totalEvents() - 1) {
-      this.currentPage++;
+    if (this.currentPage() < this.totalEvents() - 1) {
+      this.currentPage.update((v) => v + 1);
+      console.log(this.currentPage());
     }
   }
 
   goToStart() {
-    this.currentPage = 0;
+    this.currentPage.set(0);
+    console.log(this.currentPage());
   }
 
   goToEnd() {
-    this.currentPage = this.totalEvents() - 1;
+    this.currentPage.set(this.totalEvents() - 1);
+    console.log(this.currentPage());
   }
 
   //Kleyborad input navigation
@@ -94,9 +105,13 @@ export class BattleJournal {
   }
 
   getCombatantHightlighClass(c: Combatant): string {
-    if (c.current_health_points <= 0) return 'dead';
+    var result = '';
+    if (c.current_health_points <= 0) result = 'dead';
     if (c.id === this.attackerId()) return 'attacker';
     if (c.id === this.victimId()) return 'victim';
-    return 'alive';
+    result = 'alive';
+
+    console.log(result);
+    return result;
   }
 }

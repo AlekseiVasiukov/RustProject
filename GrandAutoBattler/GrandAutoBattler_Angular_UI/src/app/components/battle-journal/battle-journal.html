@@ -5,9 +5,9 @@
   } @else {
     <!-- Event header -->
     <div class="event-headr">
-      <span>Round: {{ currentEvent()?.round }}</span>
-      <span>Turn: {{ currentEvent()?.turn }}</span>
-      <span>Page: {{ currentPage + 1 }} / {{ totalEvents() }}</span>
+      <span>Round: {{ currentEvent().round }}</span>
+      <span>Turn: {{ currentEvent().turn }}</span>
+      <span>Page: {{ currentPage() + 1 }} / {{ totalEvents() }}</span>
     </div>
 
     <!-- Battle Presentation -->
@@ -15,8 +15,10 @@
       <!-- Our Side -->
       <div class="side our-side">
         @for (combatant of ourCombatants(); track combatant.id) {
-          <div class="unit-card golden {{ getCombatantHightlighClass(combatant) }}">
-            <div class="unit-name">{{ getFullName(combatant) }}</div>
+          <div class="unit-card golden">
+            <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
+              {{ getFullName(combatant) }}
+            </div>
             <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
             <!-- prettier-ignore -->
             <div class="unit-stats">
@@ -37,8 +39,10 @@
       <!-- Opponent Side -->
       <div class="side enemy-side">
         @for (combatant of enemyCombatants(); track combatant.id) {
-          <div class="unit-card magenta {{ getCombatantHightlighClass(combatant) }}">
-            <div class="unit-name">{{ getFullName(combatant) }}</div>
+          <div class="unit-card magenta">
+            <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
+              {{ getFullName(combatant) }}
+            </div>
             <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
             <!-- prettier-ignore -->
             <div class="unit-stats">
@@ -57,26 +61,25 @@
       </div>
       <!-- Event log -->
       @if (currentEvent(); as event) {
-        @if (event.cmd.type === 'Attack') {
-          <div class="event-log">
-            <p>
-              Unit {{ event.cmd.src }} attacks {{ event.cmd.dst }} for {{ event.cmd.dmg }} damage.
-            </p>
-          </div>
-        }
+        <div class="event-log">
+          <p>
+            Unit {{ event.cmd['Attack'].dst }} attacks {{ event.cmd['Attack'].src }} for
+            {{ event.cmd['Attack'].dmg }} damage.
+          </p>
+        </div>
       }
       <!-- prettier-ignore -->
       <div class="navigation-constrols">
-        <button (click)="(goToStart)" [disabled]="currentPage === 0" title="Go to first event">
-          &#9964;&#9964;
+        <button (click)="(goToStart())" [disabled]="currentPage() === 0" title="Go to first event">
+          &#9664;&#9664;
         </button>
-        <button (click)="(previousPage)" [disabled]="currentPage === 0" title="Previous event">
-          &#9964;
+        <button (click)="(previousPage())" [disabled]="currentPage() === 0" title="Previous event">
+          &#9664;
         </button>
-        <button (click)="(nextPage)" [disabled]="currentPage >= totalEvents()-1" title="Next event">
+        <button (click)="(nextPage())" [disabled]="currentPage() >= totalEvents()-1" title="Next event">
           &#9654;
         </button>
-        <button (click)="(goToEnd)" [disabled]="currentPage >= totalEvents()-1" title="Go to last event">
+        <button (click)="(goToEnd())" [disabled]="currentPage() >= totalEvents()-1" title="Go to last event">
           &#9654;
         </button>
       </div>

@@ -7,7 +7,7 @@ import { Enemies } from './components/enemies/enemies';
 
 export const routes: Routes = [
   { path: 'new-game', component: NewGame },
-  { path: 'select-warriors', component: UnitList },
+  { path: 'unit-list', component: UnitList },
   { path: 'battle-journal', component: BattleJournal },
   { path: 'results', component: GameResult },
   { path: 'enemies', component: Enemies },

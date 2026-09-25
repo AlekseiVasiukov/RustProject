@@ -17,9 +17,9 @@ export class NewGame {
     this.session.startNewGame();
 
     //by this command, we are starting the timer.
-    //if data arive - we switch to /select-warriors
+    //if data arive - we switch to /unit-list
     setTimeout(() => {
-      this.router.navigate(['/select-warriors']);
+      this.router.navigate(['/unit-list']);
     }, 100);
   }
 }

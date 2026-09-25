@@ -25,7 +25,7 @@ export class GameSessionService {
   opponentFactionIndex = signal<number>(0);
   ourWarriorTypes = signal<UnitTypeSelection>([0, null, null, null]);
 
-  hasGameStarted = computed(() => this.gameInstanceId !== null);
+  hasGameStarted = computed(() => this.gameInstanceId() !== null);
 
   hasGameResult = computed(() => this.gameResult() !== null);
 
