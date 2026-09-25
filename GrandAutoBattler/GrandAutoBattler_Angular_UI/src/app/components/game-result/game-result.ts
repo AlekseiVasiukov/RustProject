@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, computed, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MockDataService } from '../../core/services/mock-data.service';
+import { Router } from '@angular/router';
+import { GameSessionService } from '../../core/services/game-session.service';
 
 @Component({
   selector: 'app-game-result',
@@ -10,14 +11,20 @@ import { MockDataService } from '../../core/services/mock-data.service';
   styleUrl: './game-result.scss',
 })
 export class GameResult {
-  private mockDataService = inject(MockDataService);
+  session = inject(GameSessionService);
+  router = inject(Router);
+  //0 -we, 1 - they
+  weWon = computed(() => {
+    const result = this.session.gameResult();
+    return result?.battle_journal?.winner_side === 0;
+  });
 
-  result = signal<any>(null);
+  resultMessage = computed(() => {
+    return this.weWon() ? 'You won!' : 'You lose!';
+  });
 
-  constructor() {
-    // For demonstration, we fetch a result for a mock game ID
-    this.mockDataService.getGameResult('mock-game-id-123').subscribe(res => {
-      this.result.set(res);
-    });
+  onStartNewGame() {
+    this.session.startNewGame();
+    this.router.navigate(['/new-game']);
   }
 }

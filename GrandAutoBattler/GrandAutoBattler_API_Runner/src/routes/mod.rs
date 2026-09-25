@@ -109,7 +109,7 @@ pub fn create_routes() -> Router {
 async fn health_check() -> (StatusCode, Json<HealthStatus>) {
     let status = HealthStatus {
         status: "ok".to_string(),
-        message: "Game Engine server is running".to_string(),
+        message: "Game Engine server is running. For API documentation use /swagger-ui path".to_string(),
         timestamp: chrono::Utc::now(),
     };
     (StatusCode::OK, Json(status))

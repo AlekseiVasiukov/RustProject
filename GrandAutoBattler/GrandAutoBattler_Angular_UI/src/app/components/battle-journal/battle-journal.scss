@@ -1,0 +1,65 @@
+.journal-container {
+  padding: 20px;
+  outline: none;
+
+  .battle-presentation {
+    display: flex;
+    gap: 40px;
+    margin: 20px 0;
+  }
+
+  .side {
+    flex: 1;
+  }
+
+  .unit-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+
+    &.golden {
+      border-left: 4px solid gold;
+    }
+
+    &.magenta {
+      border-left: 4px solid magenta;
+    }
+
+    &.attacker {
+      background-color: white;
+    }
+
+    &.victim {
+      background-color: red;
+    }
+
+    &.dead {
+      background-color: gray;
+    }
+
+    &.alive {
+      background-color: #f0f0f0;
+    }
+  }
+
+  .navigation-controls {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+    }
+  }
+
+  .result-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+}

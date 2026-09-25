@@ -1,13 +1,34 @@
 <nav class="nav-container card">
   <ul class="nav-links">
     <li>
-      <a routerLink="/new_game" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">New Game</a>
+      <a
+        routerLink="/new-game"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        New Game
+      </a>
     </li>
-    <li>
-      <a routerLink="/units_selection" routerLinkActive="active">Units Selection</a>
+    <li [class.disabled]="!session.hasGameStarted()">
+      <a [routerLink]="session.hasGameStarted() ? '/selected-warriors' : null" routerLink="active">
+        Select Warriors
+      </a>
     </li>
-    <li>
-      <a routerLink="/result" routerLinkActive="active">Game Result</a>
+    <li [class.disabled]="!session.hasGameResult()">
+      <a [routerLink]="session.hasGameResult() ? '/enemies' : null" routerLinkActive="active"> </a>
+    </li>
+    <li [class.disabled]="!session.hasGameResult()">
+      <a
+        [routerLink]="session.hasGameResult() ? '/battle-journal' : null"
+        routerLinkActive="active"
+      >
+        Battle Journal
+      </a>
+    </li>
+    <li [class.disabled]="!session.hasGameResult()">
+      <a [routerLink]="session.hasGameResult() ? '/results' : null" routerLinkActive="active">
+        Results
+      </a>
     </li>
   </ul>
 </nav>
