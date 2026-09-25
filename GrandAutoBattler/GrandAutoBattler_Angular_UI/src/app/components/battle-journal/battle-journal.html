@@ -7,7 +7,7 @@
     <div class="event-headr">
       <span>Round: {{ currentEvent()?.round }}</span>
       <span>Turn: {{ currentEvent()?.turn }}</span>
-      <span>Page: {{ currentPage + 1 }} / {{ totalEvents() }}</span>
+      <span>Page: {{ currentPage() + 1 }} / {{ totalEvents() }}</span>
     </div>
 
     <!-- Battle Presentation -->
@@ -67,16 +67,16 @@
       }
       <!-- prettier-ignore -->
       <div class="navigation-constrols">
-        <button (click)="(goToStart())" [disabled]="currentPage === 0" title="Go to first event">
+        <button (click)="(goToStart())" [disabled]="currentPage() === 0" title="Go to first event">
           &#9664;&#9664;
         </button>
-        <button (click)="(previousPage())" [disabled]="currentPage === 0" title="Previous event">
+        <button (click)="(previousPage())" [disabled]="currentPage() === 0" title="Previous event">
           &#9664;
         </button>
-        <button (click)="(nextPage())" [disabled]="currentPage >= totalEvents()-1" title="Next event">
+        <button (click)="(nextPage())" [disabled]="currentPage() >= totalEvents()-1" title="Next event">
           &#9654;
         </button>
-        <button (click)="(goToEnd())" [disabled]="currentPage >= totalEvents()-1" title="Go to last event">
+        <button (click)="(goToEnd())" [disabled]="currentPage() >= totalEvents()-1" title="Go to last event">
           &#9654;
         </button>
       </div>

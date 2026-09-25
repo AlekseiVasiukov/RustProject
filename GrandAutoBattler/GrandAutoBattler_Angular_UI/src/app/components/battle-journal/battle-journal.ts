@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GameSessionService } from '../../core/services/game-session.service';
@@ -16,7 +16,7 @@ export class BattleJournal {
   router = inject(Router);
 
   //Current page index of battle journal
-  currentPage = 0;
+  currentPage = signal(0);
 
   //All battle events
   events = computed(() => {
@@ -25,7 +25,7 @@ export class BattleJournal {
 
   //Current event (we display this one)
   currentEvent = computed(() => {
-    return this.events()[this.currentPage];
+    return this.events()[this.currentPage()];
   });
 
   totalEvents = computed(() => this.events().length);
@@ -55,26 +55,26 @@ export class BattleJournal {
   }
 
   previousPage() {
-    if (this.currentPage > 0) {
-      this.currentPage--;
-      console.log(this.currentPage);
+    if (this.currentPage() > 0) {
+      this.currentPage.update((v) => v - 1);
+      console.log(this.currentPage());
     }
   }
   nextPage() {
-    if (this.currentPage < this.totalEvents() - 1) {
-      this.currentPage++;
-      console.log(this.currentPage);
+    if (this.currentPage() < this.totalEvents() - 1) {
+      this.currentPage.update((v) => v + 1);
+      console.log(this.currentPage());
     }
   }
 
   goToStart() {
-    this.currentPage = 0;
-    console.log(this.currentPage);
+    this.currentPage.set(0);
+    console.log(this.currentPage());
   }
 
   goToEnd() {
-    this.currentPage = this.totalEvents() - 1;
-    console.log(this.currentPage);
+    this.currentPage.set(this.totalEvents() - 1);
+    console.log(this.currentPage());
   }
 
   //Kleyborad input navigation
