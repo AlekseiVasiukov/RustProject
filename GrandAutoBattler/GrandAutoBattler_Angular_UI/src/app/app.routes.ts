@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { NewGame } from './components/new-game/new-game';
 import { UnitList } from './components/unit-list/unit-list';
-import { BattleJournal } from './core/battle-journal/battle-journal';
+import { BattleJournal } from './components/battle-journal/battle-journal';
 import { GameResult } from './components/game-result/game-result';
 import { Enemies } from './components/enemies/enemies';
 

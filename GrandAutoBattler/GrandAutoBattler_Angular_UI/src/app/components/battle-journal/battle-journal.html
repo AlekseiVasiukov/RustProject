@@ -1,0 +1,87 @@
+<div class="journal-container" (keydown)="handleKeyDown($event)" tabindex="0">
+  <h2>Battle Journal</h2>
+  @if (totalEvents() == 0) {
+    <p>No battle events recorded</p>
+  } @else {
+    <!-- Event header -->
+    <div class="event-headr">
+      <span>Round: {{ currentEvent()?.round }}</span>
+      <span>Turn: {{ currentEvent()?.turn }}</span>
+      <span>Page: {{ currentPage + 1 }} / {{ totalEvents() }}</span>
+    </div>
+
+    <!-- Battle Presentation -->
+    <div class="battle-presentation">
+      <!-- Our Side -->
+      <div class="side our-side">
+        @for (combatant of ourCombatants(); track combatant.id) {
+          <div class="unit-card golden {{ getCombatantHightlighClass(combatant) }}">
+            <div class="unit-name">{{ getFullName(combatant) }}</div>
+            <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
+            <!-- prettier-ignore -->
+            <div class="unit-stats">
+             <p>
+              H[{{combatant.parameters.health}}]
+              A[{{combatant.parameters.attack}}]
+              R[{{combatant.parameters.range}}]
+              D[{{combatant.parameters.defense}}]
+            </p>
+            </div>
+            <div class="unit-hp">
+              HP: {{ combatant.current_health_points }}/ {{ combatant.health_points }}
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Opponent Side -->
+      <div class="side enemy-side">
+        @for (combatant of enemyCombatants(); track combatant.id) {
+          <div class="unit-card magenta {{ getCombatantHightlighClass(combatant) }}">
+            <div class="unit-name">{{ getFullName(combatant) }}</div>
+            <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
+            <!-- prettier-ignore -->
+            <div class="unit-stats">
+             <p>
+              H[{{combatant.parameters.health}}]
+              A[{{combatant.parameters.attack}}]
+              R[{{combatant.parameters.range}}]
+              D[{{combatant.parameters.defense}}]
+            </p>
+            </div>
+            <div class="unit-hp">
+              HP: {{ combatant.current_health_points }}/ {{ combatant.health_points }}
+            </div>
+          </div>
+        }
+      </div>
+      <!-- Event log -->
+      @if (currentEvent(); as event) {
+        @if (event.cmd.type === 'Attack') {
+          <div class="event-log">
+            <p>
+              Unit {{ event.cmd.src }} attacks {{ event.cmd.dst }} for {{ event.cmd.dmg }} damage.
+            </p>
+          </div>
+        }
+      }
+      <!-- prettier-ignore -->
+      <div class="navigation-constrols">
+        <button (click)="(goToStart)" [disabled]="currentPage === 0" title="Go to first event">
+          &#9964;&#9964;
+        </button>
+        <button (click)="(previousPage)" [disabled]="currentPage === 0" title="Previous event">
+          &#9964;
+        </button>
+        <button (click)="(nextPage)" [disabled]="currentPage >= totalEvents()-1" title="Next event">
+          &#9654;
+        </button>
+        <button (click)="(goToEnd)" [disabled]="currentPage >= totalEvents()-1" title="Go to last event">
+          &#9654;
+        </button>
+      </div>
+
+      <button class="results-button" (click)="goToResults()">To Results</button>
+    </div>
+  }
+</div>

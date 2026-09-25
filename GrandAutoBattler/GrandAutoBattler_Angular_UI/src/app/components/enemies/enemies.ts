@@ -29,7 +29,7 @@ export class Enemies {
   getFullName(combatant: Combatant): string {
     const first = combatant.first_name ?? '';
     const last = combatant.last_name ?? '';
-    return '${first} ${last}'.trim() || 'Unknown';
+    return `${first} ${last}`.trim() || 'Unknown';
   }
 
   //get pretty name of unit

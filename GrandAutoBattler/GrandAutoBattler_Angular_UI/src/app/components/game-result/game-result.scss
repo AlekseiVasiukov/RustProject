@@ -1,43 +1,20 @@
-@import "../../../styles/variables";
+.result-container {
+  text-align: center;
+  padding: 60px 20px;
 
-.game-result-container {
-  max-width: 800px;
-  margin: 2rem auto;
-}
-
-.winner {
-  color: #4caf50;
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-}
-
-.battle-journal {
-  margin-top: 2rem;
-
-  h3 {
-    border-bottom: 1px solid $contour-color;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
+  .result-message {
+    color: white;
+    background-color: #333;
+    display: inline-block;
+    padding: 30px 60px;
+    border-radius: 12px;
+    font-size: 48px;
+    margin-bottom: 30px;
   }
 
-  ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    li {
-      padding: 0.75rem;
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 4px;
-      font-family: monospace;
-    }
+  .new-game-button {
+    padding: 12px 24px;
+    font-size: 18px;
+    cursor: pointer;
   }
-}
-
-.loading-container {
-  height: 200px;
-  font-style: italic;
-  color: #888;
 }
