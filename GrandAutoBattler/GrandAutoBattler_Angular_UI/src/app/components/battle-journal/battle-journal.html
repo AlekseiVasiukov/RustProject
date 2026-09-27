@@ -30,7 +30,7 @@
             </p>
             </div>
             <div class="unit-hp">
-              HP: {{ combatant.current_health_points }}/ {{ combatant.health_points }}
+              HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
             </div>
           </div>
         }
@@ -54,7 +54,7 @@
             </p>
             </div>
             <div class="unit-hp">
-              HP: {{ combatant.current_health_points }}/ {{ combatant.health_points }}
+              HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
             </div>
           </div>
         }
@@ -63,8 +63,8 @@
       @if (currentEvent(); as event) {
         <div class="event-log">
           <p>
-            Unit {{ event.cmd['Attack'].dst }} attacks {{ event.cmd['Attack'].src }} for
-            {{ event.cmd['Attack'].dmg }} damage.
+            Unit {{ event.cmd['Attack']?.src }} attacks {{ event.cmd['Attack']?.dst }} for
+            {{ event.cmd['Attack']?.dmg }} damage.
           </p>
         </div>
       }

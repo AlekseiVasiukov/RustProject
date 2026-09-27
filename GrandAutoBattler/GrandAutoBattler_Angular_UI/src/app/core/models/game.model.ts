@@ -1,5 +1,7 @@
 //Api wrappers
 
+import { NgModel } from '@angular/forms';
+
 //Response from /new_game_id
 export interface NewGameIdRepsonse {
   game_id: string;
@@ -64,22 +66,24 @@ export interface AttackCommand {
   dmg: number;
 }
 
+export interface DamageEffect {
+  src: string;
+  dst: string;
+  dmg: number;
+  dst_hp_before: number;
+  dst_hp_after: number;
+}
+
 export interface BattleJournalEvent {
   round: number;
   turn: number;
   cmd: {
     [key: string]: AttackCommand;
   };
-  // cmd: AttackCommand;
+  effects: {
+    [key: string]: DamageEffect;
+  }[];
 }
-
-//command for battle journal
-// export interface BattleCommand {
-//   type: 'Attack';
-//   src: string;
-//   dst: string;
-//   dmg: number;
-// }
 
 export interface BattleJournal {
   winner_side: number; // 0 - our side, 1 - theirs

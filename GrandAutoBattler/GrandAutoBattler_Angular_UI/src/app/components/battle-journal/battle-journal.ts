@@ -51,10 +51,44 @@ export class BattleJournal {
     const evt = this.currentEvent();
     const cmdData = evt?.cmd['Attack'];
 
-    console.log('Current Cmd Data:', cmdData);
+    console.log('Current effect Data:', cmdData);
 
     return cmdData?.dst ?? '';
   });
+
+  combatantHp = computed(() => {
+    const combatants = [
+      ...(this.session.gameResult()?.generated_combatants?.[0] ?? []),
+      ...(this.session.gameResult()?.generated_combatants?.[1] ?? []),
+    ];
+
+    const hpMap: Record<string, number> = {};
+
+    combatants.forEach((c) => {
+      hpMap[c.id] = c.health_points;
+    });
+
+    const events = this.events();
+
+    for (let i = 0; i <= this.currentPage(); i++) {
+      const evt = events[i];
+      if (!evt) continue;
+
+      for (const effectEntry of evt.effects) {
+        const damageEffect = effectEntry['Damage'];
+
+        if (damageEffect?.dst && damageEffect.dst_hp_after !== undefined) {
+          hpMap[damageEffect.dst] = damageEffect.dst_hp_after;
+        }
+      }
+    }
+
+    return hpMap;
+  });
+
+  getCombatantHp(combatant: Combatant): number {
+    return this.combatantHp()[combatant.id] ?? combatant.current_health_points;
+  }
 
   //navigating to results
   goToResults() {
@@ -105,13 +139,11 @@ export class BattleJournal {
   }
 
   getCombatantHightlighClass(c: Combatant): string {
-    var result = '';
-    if (c.current_health_points <= 0) result = 'dead';
     if (c.id === this.attackerId()) return 'attacker';
     if (c.id === this.victimId()) return 'victim';
-    result = 'alive';
 
-    console.log(result);
-    return result;
+    const hp = this.getCombatantHp(c);
+
+    return hp <= 0 ? 'dead' : 'alive';
   }
 }
