@@ -1,7 +1,9 @@
 import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameSessionService } from '../../core/services/game-session.service';
+import { Router } from '@angular/router';
 import type { Combatant } from '../../core/models/game.model';
+
 
 @Component({
   selector: 'app-enemies',
@@ -12,6 +14,7 @@ import type { Combatant } from '../../core/models/game.model';
 })
 export class Enemies {
   session = inject(GameSessionService);
+  router = inject(Router);
 
   //our combatants (side 0)
   ourCombatants = computed(() => {
@@ -35,5 +38,9 @@ export class Enemies {
   //get pretty name of unit
   getUnitType(combatant: Combatant): string {
     return combatant.unit_type_pretty_name || combatant.unit_type_name;
+  }
+
+  goToBattleJournal(){
+    this.router.navigate(['/battle-journal'])
   }
 }
