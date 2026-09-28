@@ -1,7 +1,5 @@
 //Api wrappers
 
-import { NgModel } from '@angular/forms';
-
 //Response from /new_game_id
 export interface NewGameIdRepsonse {
   game_id: string;

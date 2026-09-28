@@ -1,0 +1,46 @@
+
+@import '../styles/styles.scss';
+
+
+.header-div {
+  max-height: 5rem;
+  // grid-template-columns: auto auto auto;
+  display: flex;
+  justify-content: space-between;
+
+  .game-title {
+    // font-size: larger;
+    font-weight: bolder;
+  }
+
+  .technologies-text {
+    font-size: smaller;
+    font-weight: lighter;
+  }
+
+  .developed-by-div {
+    min-height: 1rem;
+    max-height: 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    // text-align: end;
+    text-align: right;
+    padding: 0.5rem 0.3rem 0.3rem 0.3rem;
+    // flex-grow: 0;
+    // flex-shrink: 1 ;
+    // flex-basis: 20%;
+    // border: 1px solid gold;
+    border-radius: 1rem;
+
+
+  }
+
+  .developed-by {
+    margin: 0;
+    // border: 1px solid magenta;
+    font-size: smaller;
+    line-height: 1.1;
+    font-style: italic;
+  }
+}

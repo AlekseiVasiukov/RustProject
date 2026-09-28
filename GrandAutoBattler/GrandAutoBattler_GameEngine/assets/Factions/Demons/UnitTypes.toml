@@ -2,7 +2,7 @@ title="UnitTypes"
 
 [[UnitTypes]]
 unit_type_name="imp"
-unit_type_pretty_name="😈 Imp"
+unit_type_pretty_name="Imp"
 health=8
 attack=2
 range=8
@@ -10,7 +10,7 @@ defense=2
 
 [[UnitTypes]]
 unit_type_name="succubus"
-unit_type_pretty_name="💖 Succubus"
+unit_type_pretty_name="Succubus"
 females_only=true
 health=3
 attack=3
@@ -19,7 +19,7 @@ defense=8
 
 [[UnitTypes]]
 unit_type_name="demonologist"
-unit_type_pretty_name="🧙‍♂️ Demonologist"
+unit_type_pretty_name="Demonologist"
 health=6
 attack=9
 range=4
@@ -27,7 +27,7 @@ defense=1
 
 [[UnitTypes]]
 unit_type_name="abomination"
-unit_type_pretty_name="👹 Abomination"
+unit_type_pretty_name="Abomination"
 health=9
 attack=3
 range=2

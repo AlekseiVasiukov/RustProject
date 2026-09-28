@@ -1,0 +1,125 @@
+// GrandAutoBattler Global Styles
+@import './variables.scss'; // Base Styles
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: $bg-color;
+  color: $text-color;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+// Reusable Components/Layout Styles
+
+// A container that acts as a "card" or "panel"
+.card {
+  background-color: $card-bg-color;
+  border: 1px solid $contour-color;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+  padding: 1.5rem;
+  margin: 1rem;
+}
+
+// A container for the whole app content to ensure it's centered or appropriately padded
+.app-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Typography
+h1,
+h2,
+h3,
+h4 {
+  color: #ffffff;
+  margin-top: 0;
+}
+
+// Utility classes for common layout needs
+// .flex-center {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
+
+// .flex-column {
+//   display: flex;
+//   flex-direction: column;
+// }
+
+// .spacer {
+//   flex: 1;
+// }
+.btn-advance-stage {
+  background-color: $button-advance-stage-bg-color;
+  color: white;
+  border-radius: 12;
+  transition:
+    background-color 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+    // opacity 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+    transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  &:hover {
+    background-color: $button-advance-stage-bg-color-accented;
+    // opacity: 0.85;
+    transform: scale(1.12);
+
+    transition:
+      background-color 0.1.5s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+      // opacity 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+      transform 0.25s cubic-bezier(0, 1.6, 0.7, 5);
+  }
+
+  &:active {
+    transform: scale(0.94);
+    transition-duration: 0.12s;
+  }
+}
+
+// Simple Button style (for future use)
+// .btn {
+//   padding: 0.5rem 1rem;
+//   border-radius: 4px;
+//   border: none;
+//   background-color: $accent-color;
+//   color: white;
+//   cursor: pointer;
+//   transition: opacity 0.2s;
+
+//   &:hover {
+//     opacity: 0.8;
+//   }
+
+//   &:disabled {
+//     background-color: #555;
+//     cursor: not-allowed;
+//   }
+// }
+
+// .btn_select {
+//   padding: 0.5rem 1rem;
+//   border-radius: 4px;
+//   border: none;
+//   background-color: $card-bg-color;
+//   color: white;
+//   cursor: pointer;
+//   transition: opacity 0.2s;
+
+//   &:hover {
+//     opacity: 0.8;
+//   }
+
+//   &:disabled {
+//     background-color: #555;
+//     cursor: not-allowed;
+//   }
+// }
