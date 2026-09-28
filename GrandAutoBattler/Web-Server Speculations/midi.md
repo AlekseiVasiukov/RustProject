@@ -1,184 +1,599 @@
-Yes, it is absolutely possible to use **MidiPlayerJS** in an Angular project. The library includes TypeScript definitions (`index.d.ts`), making it fully compatible with Angular's TypeScript environment [[11]]. 
+# Complete Guide: MIDI Player in Angular with Injectable Services
 
-However, there is one **crucial detail** you must know: **MidiPlayerJS does not generate any audio** [[1]]. It only reads MIDI files and emits JSON events (like "Note on", "Note off") in real time. To actually hear sound, you must connect these events to an audio synthesizer (like the Web Audio API, `soundfont-player`, or `Tone.js`).
+## Architecture Overview
 
-Here is a complete, step-by-step guide to integrating it, loading from assets, controlling playback, and implementing a volume slider.
+This guide covers how to implement a fully functional MIDI player in your Angular project using **two separate injectable services** and a **component** that ties them together.
+
+```mermaid
+graph TD
+    A[AppComponent / Navigation] --> B[MidiPlayerComponent]
+    B --> C[MidiPlayerService]
+    B --> D[SoundfontService]
+    C --> E[midi-player-js library]
+    D --> F[soundfont-player library]
+    E --> G[assets/midi/*.mid files]
+    D --> H[AudioContext + Soundfont Instruments]
+```
 
 ---
 
-### 1. Installation
-Install the package via npm in your Angular project:
-```bash
-npm install midi-player-js
+## Prerequisites: Asset Configuration
+
+**CRITICAL:** Your current [`angular.json`](GrandAutoBattler_Angular_UI/angular.json:27) only maps the `public` folder as an asset. Your MIDI files live in `src/app/assets/midi/`, which is **not** served by Angular's dev server.
+
+**Fix:** Add the `src/app/assets` folder to the assets array in [`angular.json`](GrandAutoBattler_Angular_UI/angular.json:27):
+
+```json
+"assets": [
+  {
+    "glob": "**/*",
+    "input": "public"
+  },
+  {
+    "glob": "**/*",
+    "input": "src/app/assets"
+  }
+],
 ```
 
-### 2. Angular Component Integration
-Below is a complete, copy-paste-ready Angular component that demonstrates how to initialize the player, load a file from the `assets` folder, control playback, and handle volume.
+This ensures files like `/assets/midi/all_as_one.mid` are accessible via HTTP at runtime.
+
+---
+
+## Step 1: Install Dependencies
+
+```bash
+npm install midi-player-js soundfont-player
+```
+
+**Note on `soundfont-player`:** The original `soundfont-player` library by `danigb` is **archived** (read-only since May 2023). The author recommends [`smplr`](https://github.com/danigb/smplr) as a modern alternative. However, `soundfont-player` still works and is simpler for MIDI use cases. If you encounter issues, consider `smplr`.
+
+---
+
+## Step 2: Create the MidiPlayerService
+
+**Location:** `src/app/core/services/midi-player.service.ts`
+
+This service wraps `midi-player-js` and handles MIDI file parsing, playback control, and emitting events. It does **NOT** produce sound — that is the job of `SoundfontService`.
+
+### Key Responsibilities:
+- Initialize `MidiPlayer.Player` instance
+- Load MIDI files from assets via `fetch()` + `loadArrayBuffer()`
+- Emit `Subject`s for note events, playback state changes
+- Expose `play()`, `pause()`, `stop()` methods
+
+### Implementation Guide:
 
 ```typescript
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import * as MidiPlayer from 'midi-player-js'; 
-// Note: If you have "esModuleInterop": true in tsconfig.json, 
-// you can also use: import MidiPlayer from 'midi-player-js';
+import { Injectable, signal, DestroyRef, inject } from '@angular/core';
+import { Subject, Observable } from 'rxjs';
+import * as MidiPlayer from 'midi-player-js';
 
-@Component({
-  selector: 'app-midi-player',
-  template: `
-    <div class="player-controls">
-      <button (click)="play()" [disabled]="isPlaying">Play</button>
-      <button (click)="pause()" [disabled]="!isPlaying">Pause</button>
-      <button (click)="stop()">Stop</button>
+export interface MidiNoteEvent {
+  note: number;       // MIDI note number (0-127)
+  velocity: number;   // 0-127
+  noteName: string;   // e.g., "C4", "D#5"
+  isNoteOn: boolean;  // true = Note on, false = Note off
+}
 
-      <div class="volume-control">
-        <label for="volume">Volume: {{ volume | percent:'1.0-0' }}</label>
-        <input 
-          id="volume"
-          type="range" 
-          min="0" 
-          max="1" 
-          step="0.01" 
-          [value]="volume" 
-          (input)="onVolumeChange($event)"
-        >
-      </div>
-      
-      <p>Status: {{ status }}</p>
-    </div>
-  `,
-  styles: [`
-    .player-controls { display: flex; flex-direction: column; gap: 10px; padding: 20px; }
-    .volume-control { display: flex; align-items: center; gap: 10px; }
-  `]
+@Injectable({
+  providedIn: 'root'
 })
-export class MidiPlayerComponent implements OnInit, OnDestroy {
-  private player!: MidiPlayer.Player;
-  public volume = 0.5;
-  public isPlaying = false;
-  public status = 'Idle';
+export class MidiPlayerService {
+  private destroyRef = inject(DestroyRef);
 
-  // IMPORTANT: You need an audio source to actually hear sound.
-  // This is a placeholder for whatever synth you choose (e.g., soundfont-player, Tone.js)
-  // private synth: any; 
+  // Reactive state using signals (Angular v16+)
+  private _isPlaying = signal<boolean>(false);
+  private _isPaused = signal<boolean>(false);
+  isPlaying = this._isPlaying.asReadonly();
+  isPaused = this._isPaused.asReadonly();
 
-  ngOnInit() {
-    // 1. Initialize the player with an event handler
+  // Event stream for note-on / note-off
+  private noteSubject = new Subject<MidiNoteEvent>();
+  noteEvents$: Observable<MidiNoteEvent> = this.noteSubject.asObservable();
+
+  // Internal player instance
+  private player: MidiPlayer.Player | null = null;
+
+  constructor() {
+    this.initPlayer();
+  }
+
+  private initPlayer(): void {
     this.player = new MidiPlayer.Player((event: any) => {
-      // This callback fires for every MIDI event in real-time
-      // Example: if (event.name === 'Note on' && event.velocity > 0) {
-      //   this.synth.play(event.noteName, this.volume); // <-- Apply volume here!
-      // }
-      console.log('MIDI Event:', event.name, event.noteName, event.velocity);
+      if (event.name === 'Note on' || event.name === 'Note off') {
+        this.noteSubject.next({
+          note: event.note.number,
+          velocity: event.velocity,
+          noteName: event.note.name,
+          isNoteOn: event.name === 'Note on' && event.velocity > 0
+        });
+      }
     });
 
-    // 2. Subscribe to player state events
-    this.player.on('fileLoaded', () => {
-      this.status = 'File loaded, ready to play';
-    });
-
-    this.player.on('playing', (currentTick: number) => {
-      this.isPlaying = true;
-      this.status = `Playing... (Tick: ${currentTick})`;
+    this.player.on('playing', () => {
+      this._isPlaying.set(true);
+      this._isPaused.set(false);
     });
 
     this.player.on('endOfFile', () => {
-      this.isPlaying = false;
-      this.status = 'End of file reached';
+      this._isPlaying.set(false);
+      this._isPaused.set(false);
     });
 
-    // 3. Load the MIDI file from Angular assets
-    this.loadMidiFromAssets('/assets/your-song.mid');
+    this.player.on('paused', () => {
+      this._isPaused.set(true);
+    });
   }
 
   /**
-   * Best practice for Angular: Fetch as ArrayBuffer and load.
-   * This avoids Node.js path resolution issues that `loadFile` can sometimes have in browser builds.
+   * Load a MIDI file from an asset path.
+   * Uses fetch() + ArrayBuffer, which is the most reliable method in browsers.
    */
-  private loadMidiFromAssets(assetPath: string) {
-    fetch(assetPath)
+  loadMidi(assetPath: string): Promise<void> {
+    return fetch(assetPath)
       .then(response => {
-        if (!response.ok) throw new Error('Failed to load MIDI file');
+        if (!response.ok) throw new Error(`Failed to load MIDI: ${assetPath}`);
         return response.arrayBuffer();
       })
-      .then(arrayBuffer => {
-        this.player.loadArrayBuffer(arrayBuffer);
-      })
-      .catch(error => {
-        console.error('Error loading MIDI:', error);
-        this.status = 'Error loading file';
+      .then(buffer => {
+        this.player?.loadArrayBuffer(buffer);
       });
   }
 
-  // --- Playback Controls ---
-
-  play() {
-    this.player.play();
+  play(): void {
+    this.player?.play();
   }
 
-  pause() {
-    this.player.pause();
-    this.isPlaying = false;
-    this.status = 'Paused';
+  pause(): void {
+    this.player?.pause();
   }
 
-  stop() {
-    this.player.stop();
-    this.isPlaying = false;
-    this.status = 'Stopped';
+  stop(): void {
+    this.player?.stop();
+    this._isPlaying.set(false);
+    this._isPaused.set(false);
   }
 
-  // --- Volume Control ---
-
-  onVolumeChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.volume = parseFloat(target.value);
-    
-    // IMPORTANT: Update the volume of your AUDIO SYNTH here, not the MidiPlayer.
-    // Example: if (this.synth) { this.synth.volume = this.volume; }
-    console.log('Volume updated to:', this.volume);
-  }
-
-  ngOnDestroy() {
-    // Clean up to prevent memory leaks or background audio
-    if (this.player) {
-      this.player.stop();
-    }
+  // Cleanup on component destruction
+  destroy(): void {
+    this.stop();
+    this.noteSubject.complete();
   }
 }
 ```
 
+### Important Notes:
+- Use `inject(DestroyRef)` instead of implementing `OnDestroy` — this is modern Angular (v16+).
+- `signal()` is used for reactive state (Angular v16+). You can use `BehaviorSubject` if you prefer RxJS-only.
+- The `noteEvents$` Observable is what the `SoundfontService` will subscribe to.
+
 ---
 
-### Key Explanations:
+## Step 3: Create the SoundfontService
 
-1. **Choosing a MIDI file from assets**: 
-   While the library has a `loadFile()` method, it is primarily designed for Node.js environments. In Angular (a browser environment), the most robust and reliable method is to use the native `fetch()` API to get the file from `/assets/` as an `ArrayBuffer`, and then pass it to `player.loadArrayBuffer()` [[11]].
+**Location:** `src/app/core/services/soundfont.service.ts`
 
-2. **Pause / Play / Stop**: 
-   The `Player` class has built-in, straightforward methods: `.play()`, `.pause()`, and `.stop()` [[11]]. You can bind these directly to Angular button clicks.
+This service manages Web Audio API context and soundfont instruments. It subscribes to the MIDI note events and triggers actual audio synthesis.
 
-3. **Implementing the Volume Slider**:
-   Because `midi-player-js` **does not generate audio**, it has no internal volume control. The slider in the template above updates a `volume` property, but **you must apply this value to your audio synthesizer** inside the `midiEvent` callback or on the synth object itself. 
-   
-   *Recommended Audio Pairings:*
-   - **`soundfont-player`**: Great for realistic instrument sounds (piano, guitar, etc.).
-   - **`Tone.js`**: A powerful, professional-grade Web Audio framework that can be triggered by the MIDI events.
-   - **Native Web Audio API**: For lightweight, custom oscillator-based beeps/boops.
+### Key Responsibilities:
+- Create and manage `AudioContext`
+- Load soundfont instruments (piano, strings, drums, etc.) via `soundfont-player`
+- Subscribe to `MidiPlayerService.noteEvents$` and play corresponding notes
+- Handle volume control via gain
 
-### Example of connecting volume to `soundfont-player`:
+### Implementation Guide:
+
 ```typescript
+import { Injectable, inject, signal } from '@angular/core';
+import { MidiPlayerService, MidiNoteEvent } from './midi-player.service';
 import * as Soundfont from 'soundfont-player';
 
-// Inside ngOnInit:
-Soundfont.instrument(new (window.AudioContext || window.webkitAudioContext)(), 'acoustic_grand_piano').then(piano => {
-  this.synth = piano;
-  
-  this.player = new MidiPlayer.Player((event: any) => {
-    if (event.name === 'Note on' && event.velocity > 0) {
-      // Play the note, using the current volume slider value
-      this.synth.play(event.noteName, this.synth.context.currentTime, { 
-        gain: this.volume * (event.velocity / 127) // Velocity also affects volume
-      });
+@Injectable({
+  providedIn: 'root'
+})
+export class SoundfontService {
+  private midiPlayer = inject(MidiPlayerService);
+  private audioContext: AudioContext | null = null;
+  private piano: any = null;
+
+  // Volume control (0.0 to 1.0), defaults to 50%
+  private _volume = signal<number>(0.5);
+  volume = this._volume.asReadonly();
+
+  constructor() {
+    this.initAudioContext();
+    this.subscribeToMidiEvents();
+  }
+
+  private initAudioContext(): void {
+    // AudioContext must be created after user gesture in some browsers
+    this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+
+  /**
+   * Load the soundfont instrument.
+   * Call this once at app bootstrap or on first user interaction.
+   */
+  async loadInstrument(): Promise<void> {
+    if (!this.audioContext || this.piano) return;
+
+    // Load acoustic_grand_piano from Benjamin Gleitzman's soundfont
+    this.piano = await Soundfont.instrument(this.audioContext, 'acoustic_grand_piano', {
+      gain: this._volume()
+    });
+  }
+
+  private subscribeToMidiEvents(): void {
+    this.midiPlayer.noteEvents$.subscribe((event: MidiNoteEvent) => {
+      if (!this.piano) return;
+
+      if (event.isNoteOn) {
+        // Calculate gain: combine slider volume with MIDI velocity
+        const gain = this._volume() * (event.velocity / 127);
+        this.piano.play(event.noteName, this.audioContext?.currentTime, {
+          gain: gain
+        });
+      }
+      // Note off - soundfont-player notes decay naturally via ADSR envelope
+    });
+  }
+
+  setVolume(value: number): void {
+    this._volume.set(Math.max(0, Math.min(1, value)));
+  }
+
+  /**
+   * Resume audio context if suspended (required by browsers on first user gesture).
+   * Call this from your component's play button click handler.
+   */
+  async resumeContext(): Promise<void> {
+    if (this.audioContext?.state === 'suspended') {
+      await this.audioContext.resume();
     }
-  });
-});
+  }
+
+  destroy(): void {
+    this.piano?.stop();
+    this.audioContext?.close();
+  }
+}
 ```
+
+### Important Notes:
+- `AudioContext` is **suspended** by default in modern browsers until a user gesture (click/tap). You must call `resumeContext()` from your play button handler.
+- `soundfont-player` loads instruments from a remote CDN (`gleitz.github.io`). The first load may take time — consider **preloading** on app bootstrap or showing a loading indicator.
+- The `gain` option controls per-note volume. Combine it with the slider volume and MIDI velocity for expressive playback.
+- `soundfont-player` does not have fine-grained per-note stop. Notes decay naturally via the ADSR envelope.
+
+---
+
+## Step 4: Register Services in App Config
+
+**Location:** [`app.config.ts`](GrandAutoBattler_Angular_UI/src/app/app.config.ts:1)
+
+Since both services use `providedIn: 'root'`, they are **automatically available** as singletons. No extra registration needed.
+
+However, preload the soundfont instrument at app startup to avoid delays on first play.
+
+In your [`app.ts`](GrandAutoBattler_Angular_UI/src/app/app.ts:1) or a dedicated app initializer, inject and call:
+
+```typescript
+import { SoundfontService } from './core/services/soundfont.service';
+
+// Somewhere early in app lifecycle (e.g., in AppComponent.ngOnInit):
+this.soundfontService.loadInstrument();
+```
+
+---
+
+## Step 5: Create the MidiPlayerComponent
+
+**Location:** `src/app/components/midi-player/midi-player.component.ts`
+
+This component orchestrates the two services and provides UI controls.
+
+### Template (`midi-player.component.html`):
+
+```html
+<div class="midi-player">
+  <button class="play-btn" (click)="togglePlayPause()" [disabled]="isLoading">
+    {{ isPlaying() && !isPaused() ? 'Pause' : 'Play' }}
+  </button>
+
+  <button class="next-btn" (click)="playNextRandom()">
+    Next >>
+  </button>
+
+  <div class="volume-control">
+    <span>Volume</span>
+    <input
+      type="range"
+      min="0"
+      max="1"
+      step="0.01"
+      [value]="soundfontService.volume()"
+      (input)="onVolumeChange($event)"
+    />
+    <span>{{ (soundfontService.volume() * 100) | number:'1.0' }}%</span>
+  </div>
+
+  <p class="current-song">{{ currentSongName }}</p>
+</div>
+```
+
+### Styles (`midi-player.component.scss`):
+
+```scss
+.midi-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface-color, #1e1e2e);
+  border-radius: 8px;
+
+  .play-btn, .next-btn {
+    border: none;
+    background: var(--primary-color, #4a90d9);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--primary-hover, #357abd);
+    }
+  }
+
+  .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+
+    input[type="range"] {
+      width: 100px;
+    }
+  }
+
+  .current-song {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted, #888);
+  }
+}
+```
+
+### Component Class:
+
+```typescript
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+  signal
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+
+import { MidiPlayerService } from '../../core/services/midi-player.service';
+import { SoundfontService } from '../../core/services/soundfont.service';
+
+// List of available MIDI files in assets/midi/
+const MIDI_FILES = [
+  'all_as_one.mid',
+  'away.mid',
+  'despair.mid',
+  'grand.mid',
+  'jakusha.mid',
+  'kaijuu.mid',
+  'sensou_to_sensou.mid'
+];
+
+@Component({
+  selector: 'app-midi-player',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './midi-player.component.html',
+  styleUrl: './midi-player.component.scss'
+})
+export class MidiPlayerComponent implements OnInit, OnDestroy {
+  midiPlayer = inject(MidiPlayerService);
+  soundfontService = inject(SoundfontService);
+
+  // Reactive signals from services
+  isPlaying = this.midiPlayer.isPlaying;
+  isPaused = this.midiPlayer.isPaused;
+
+  // Local state
+  isLoading = signal(false);
+  currentSongName = '';
+  private playedIndices = new Set<number>();
+
+  private destroy$ = new Subject<void>();
+
+  ngOnInit(): void {
+    // Pick initial random song
+    this.playRandomSong();
+  }
+
+  /**
+   * Pick a random MIDI file and load it.
+   */
+  async playRandomSong(): Promise<void> {
+    this.isLoading.set(true);
+
+    // Pick random index not yet played, or reset if all played
+    if (this.playedIndices.size >= MIDI_FILES.length) {
+      this.playedIndices.clear();
+    }
+
+    let index: number;
+    do {
+      index = Math.floor(Math.random() * MIDI_FILES.length);
+    } while (this.playedIndices.has(index));
+
+    this.playedIndices.add(index);
+    const fileName = MIDI_FILES[index];
+    this.currentSongName = fileName.replace('.mid', '').replace(/_/g, ' ');
+
+    await this.midiPlayer.loadMidi(`/assets/midi/${fileName}`);
+    this.isLoading.set(false);
+  }
+
+  /**
+   * Play next random song (triggered by "next" button).
+   */
+  async playNextRandom(): Promise<void> {
+    this.midiPlayer.stop();
+    await this.playRandomSong();
+    this.togglePlayPause();
+  }
+
+  /**
+   * Toggle between play and pause.
+   * IMPORTANT: Resume AudioContext on first play (browser requirement).
+   */
+  async togglePlayPause(): Promise<void> {
+    if (this.isPlaying() && !this.isPaused()) {
+      this.midiPlayer.pause();
+    } else {
+      // Resume AudioContext from suspended state (browser policy)
+      await this.soundfontService.resumeContext();
+      this.midiPlayer.play();
+    }
+  }
+
+  onVolumeChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const value = parseFloat(target.value);
+    this.soundfontService.setVolume(value);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.midiPlayer.stop();
+  }
+}
+```
+
+### Key Design Decisions:
+1. **Random selection without immediate repeats:** Uses a `Set` to track played indices. Resets after all songs have played once.
+2. **`playNextRandom()` stops current song before loading next.** Prevents audio overlap.
+3. **`resumeContext()` on play:** Browsers suspend `AudioContext` until user gesture. The play button click satisfies this requirement.
+4. **Volume defaults to 50%:** The signal is initialized to `0.5` in `SoundfontService`.
+
+---
+
+## Step 6: Embed in Navigation or Main Page
+
+The component is **standalone** (not in an NgModule), so import it wherever you need:
+
+**Option A: Inside the Navigation component**
+
+In [`navigation.ts`](GrandAutoBattler_Angular_UI/src/app/components/navigation/navigation.ts:8), add `MidiPlayerComponent` to the `imports` array:
+
+```typescript
+@Component({
+  selector: 'app-navigation',
+  standalone: true,
+  imports: [RouterLink, RouterLinkActive, MidiPlayerComponent],
+  // ...
+})
+```
+
+Then in `navigation.html`, place `<app-midi-player />` where you want it.
+
+**Option B: In the main app shell**
+
+In [`app.html`](GrandAutoBattler_Angular_UI/src/app/app.html:1), add `<app-midi-player />` directly if it should be visible on all pages.
+
+---
+
+## MIDI File Caching Strategy
+
+MIDI files are static binary assets that do not change frequently. Caching them reduces load time and bandwidth on subsequent visits. Unlike images, MIDI files are smaller (typically 5-50 KB) but still benefit from caching, especially on slow connections.
+
+### Option 1: Browser HTTP Caching (Simplest)
+
+Configure your production web server to send long cache headers for `.mid` files:
+
+```
+Cache-Control: public, max-age=31536000, immutable
+```
+
+- `max-age=31536000` = 1 year
+- `immutable` = browser will not send revalidation requests
+
+This works automatically with `fetch()` — the browser will serve from cache if the URL has not changed.
+
+### Option 2: Service Worker with Angular PWA (Recommended)
+
+Use Angular's built-in service worker for robust caching:
+
+1. Install:
+   ```bash
+   ng add @angular/service-worker
+   ```
+
+2. In the generated `ngsw-config.json`, add MIDI files to the **asset groups**:
+   ```json
+   {
+     "index": "/index.html",
+     "assetGroups": [
+       {
+         "name": "midi-assets",
+         "installMode": "prefetch",
+         "resources": {
+           "urls": ["/assets/midi/**/*.mid"]
+         }
+       }
+     ]
+   }
+   ```
+
+This **prefetches** all MIDI files at install time and serves them from cache on subsequent loads. The `prefetch` mode ensures all songs are available offline after first visit.
+
+### Option 3: Manual Cache API in Custom Service Worker
+
+If you want fine-grained control, register a custom service worker that intercepts `/assets/midi/` requests and uses the Cache API directly. This gives you stale-while-revalidate behavior but requires more boilerplate.
+
+### Recommendation
+
+For your project: **Use Angular's built-in service worker** (Option 2). It integrates seamlessly, requires minimal configuration, and handles cache versioning automatically. MIDI files are ideal for prefetch because they are small, static, and known upfront.
+
+---
+
+## Summary Checklist
+
+| Step | Action |
+|------|--------|
+| 1 | Add `src/app/assets` to `angular.json` assets |
+| 2 | `npm install midi-player-js soundfont-player` |
+| 3 | Create `MidiPlayerService` with `fetch()` + `loadArrayBuffer()` |
+| 4 | Create `SoundfontService` with `AudioContext` + instrument loading |
+| 5 | Create `MidiPlayerComponent` with random song selection |
+| 6 | Wire play/pause, next song, volume slider UI |
+| 7 | Embed component in navigation or main page |
+| 8 | Configure Service Worker for MIDI caching |
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| No sound on first play | Call `soundfontService.resumeContext()` inside the play button handler. Browsers suspend AudioContext until user gesture. |
+| `fetch()` fails with 404 | Verify `angular.json` asset configuration. Test by navigating to `http://localhost:4200/assets/midi/all_as_one.mid` — it should download. |
+| Notes sound out of tune | `midi-player-js` emits note names like `C4`. `soundfont-player` expects the same format. If notes sound wrong, log `event.note.name` to verify. |
+| Soundfont loads slowly | Preload `loadInstrument()` at app bootstrap. First instrument load downloads ~2-5 MB from CDN. |
+| Memory leaks on route change | Call `midiPlayer.stop()` in `ngOnDestroy`. |
