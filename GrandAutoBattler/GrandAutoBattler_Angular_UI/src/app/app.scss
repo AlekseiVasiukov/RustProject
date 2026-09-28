@@ -1,6 +1,4 @@
-
 @import '../styles/styles.scss';
-
 
 .header-div {
   max-height: 5rem;
@@ -31,9 +29,7 @@
     // flex-shrink: 1 ;
     // flex-basis: 20%;
     // border: 1px solid gold;
-    border-radius: 1rem;
-
-
+    // border-radius: 0.5rem;
   }
 
   .developed-by {
@@ -42,5 +38,29 @@
     font-size: smaller;
     line-height: 1.1;
     font-style: italic;
+  }
+}
+
+footer {
+  // background-color: yellow;
+  display: flex;
+  align-self: flex-end;
+  justify-self: flex-end;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+
+  // navigation{
+  //   ;
+  // }
+}
+
+@media (max-width: 800px) {
+  .main-content {
+    display: flex;
+
+    flex-direction: row;
   }
 }

@@ -9,10 +9,10 @@ body {
   color: $text-color;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-}
+// body {
+//   // display: flex;
+//   // flex-direction: column;
+// }
 
 // Reusable Components/Layout Styles
 
@@ -28,10 +28,10 @@ body {
 
 // A container for the whole app content to ensure it's centered or appropriately padded
 .app-container {
-  padding: 2rem;
-  max-width: 1200px;
+  // padding: 2rem;
+  max-width: 1000px;
   margin: 0 auto;
-  width: 100%;
+  width: 96%;
   box-sizing: border-box;
 }
 

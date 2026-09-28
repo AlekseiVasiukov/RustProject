@@ -1,3 +1,5 @@
+<!-- <link rel="stylesheet" media="screen and (min-width: 900px)" href="widescreen.css" />
+<link rel="stylesheet" media="screen and (max-width: 600px)" href="smallscreen.css" /> -->
 <div class="app-container">
   <header>
     <div class="header-div">
@@ -8,14 +10,17 @@
         <a href="http://linkedin.com/in/AlekseiVasiukov">
           <p class="developed-by">Aleksei Vasiukov</p>
         </a>
-
       </div>
-
     </div>
   </header>
 
-  <app-navigation></app-navigation>
-  <main>
-    <router-outlet></router-outlet>
-  </main>
+  <div class="main-content">
+    <app-navigation></app-navigation>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+  <footer>
+    <p>— 2026</p>
+  </footer>
 </div>
