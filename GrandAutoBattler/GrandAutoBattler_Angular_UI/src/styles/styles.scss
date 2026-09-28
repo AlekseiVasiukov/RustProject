@@ -17,14 +17,14 @@ body {
 // Reusable Components/Layout Styles
 
 // A container that acts as a "card" or "panel"
-.card {
-  background-color: $card-bg-color;
-  border: 1px solid $contour-color;
-  border-radius: $border-radius;
-  box-shadow: $shadow;
-  padding: 1.5rem;
-  margin: 1rem;
-}
+// .shadowed_bordered_card {
+//   background-color: $card-bg-color;
+//   border: 1px solid $contour-color;
+//   border-radius: $border-radius;
+//   box-shadow: $shadow;
+//   // padding: 1.5rem;
+//   // margin: 1rem;
+// }
 
 // A container for the whole app content to ensure it's centered or appropriately padded
 .app-container {

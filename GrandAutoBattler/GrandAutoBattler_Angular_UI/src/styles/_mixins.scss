@@ -1,0 +1,7 @@
+@use './variables';
+@mixin shadowed_bordered_card {
+  background-color: $card-bg-color;
+  border: 1px solid $contour-color;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+}
