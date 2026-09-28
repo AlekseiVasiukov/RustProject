@@ -61,28 +61,31 @@ h4 {
 // }
 .btn-advance-stage {
   background-color: $button-advance-stage-bg-color;
+  padding: 0.3rem;
   color: $text-color;
   border-radius: $border-radius;
+  border-color: $contour-color;
+  // box-shadow: $shadow;
   transition:
     background-color 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045),
     // opacity 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045),
-    transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   &:hover {
     background-color: $button-advance-stage-bg-color-accented;
     // opacity: 0.85;
-    transform: scale(1.12);
+    transform: scale(1.05);
 
     transition:
-      background-color 0.1.5s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+      background-color 0.1s cubic-bezier(0.6, -0.28, 0.735, 0.045),
       // opacity 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045),
       transform 0.25s cubic-bezier(0, 1.6, 0.7, 5);
   }
 
-  &:active {
-    transform: scale(0.94);
-    transition-duration: 0.12s;
-  }
+  // &:active {
+  //   transform: scale(0.94);
+  //   transition-duration: 0.12s;
+  // }
 }
 
 // Simple Button style (for future use)
