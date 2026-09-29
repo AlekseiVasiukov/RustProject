@@ -16,10 +16,12 @@
 // }
 
 .journal-container {
+  @include game-container-style;
   // background-color: yellow;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: end;
+
   // padding: 20px;
   // outline: none;
 

@@ -6,11 +6,18 @@
   box-shadow: $shadow;
 }
 
-@mixin game-zone-style{
+@mixin game-zone-style {
   height: $game-zone-height;
 
   @media (max-width: 800px) {
     height: auto;
     min-height: $game-zone-width;
   }
+}
+
+@mixin game-container-style {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: 0.5rem;
 }

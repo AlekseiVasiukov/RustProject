@@ -30,7 +30,8 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles/styles.scss"]
+
+            "styles": ["src/styles/styles.scss", "src/styles/mixins.scss"]
           },
           "configurations": {
             "production": {

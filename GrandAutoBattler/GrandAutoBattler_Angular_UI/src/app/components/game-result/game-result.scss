@@ -15,11 +15,12 @@
 //   justify-content: end;
 // }
 .result-container {
+  @include game-container-style;
   text-align: center;
   // background-color: yellow;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: end;
   // padding: 60px 20px;
 
   .result-message {

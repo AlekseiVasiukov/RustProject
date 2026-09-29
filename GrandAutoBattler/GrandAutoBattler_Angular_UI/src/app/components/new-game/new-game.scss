@@ -8,10 +8,12 @@
 }
 
 .new-game-container{
+  @include game-container-style;
   // background-color: yellow;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: end;
+  // gap: 0.5rem;
 
 }
 // @import '../../../styles/variables.scss';

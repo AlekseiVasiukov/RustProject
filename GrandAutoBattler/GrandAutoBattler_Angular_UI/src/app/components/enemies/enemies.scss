@@ -10,13 +10,14 @@
   @include shadowed_bordered_card;
 }
 .enemies-container {
+  @include game-container-style;
   // display: flex;
   // flex-direction: column;
   // gap: 2rem;
   // background-color: yellow;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: end;
 }
 
 .combatants-grid {
