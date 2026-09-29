@@ -4,6 +4,25 @@
 .game-zone {
   @include game-zone-style;
   @include shadowed_bordered_card;
+  // background-color: yellow;
+}
+
+.battle-journal-header {
+  // border-bottom-color: $accent-color;
+  // border-width: 1px;
+
+  // background-color: yellow;
+  display: flex;
+  // justify-content: space-between;
+
+  // flex-direction: column;
+  // border: 0px solid #ccc;
+  margin: 0 0.5rem 0 0.5rem;
+  border-radius: 1rem;
+  border-bottom: 1px solid $contour-color;
+  text-align: center;
+
+  justify-content: space-around;
 }
 // .enemies-container {
 //   // display: flex;

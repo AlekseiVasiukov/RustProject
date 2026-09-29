@@ -1,15 +1,22 @@
 <div class="journal-container" (keydown)="handleKeyDown($event)" tabindex="0">
   <div class="game-zone">
-    <h2>Battle Journal</h2>
+    @if (totalEvents() == 0) {
+      <p>No battle journal</p>
+    } @else {
+      <div class="battle-journal-header">
+        <h2>Battle Journal</h2>
+        <div class="event-header">
+          <span>Round: {{ currentEvent().round }}</span>
+          <span>Turn: {{ currentEvent().turn }}</span>
+          <span>Page: {{ currentPage() + 1 }} / {{ totalEvents() }}</span>
+        </div>
+      </div>
+    }
+
     @if (totalEvents() == 0) {
       <p>No battle events recorded</p>
     } @else {
       <!-- Event header -->
-      <div class="event-headr">
-        <span>Round: {{ currentEvent().round }}</span>
-        <span>Turn: {{ currentEvent().turn }}</span>
-        <span>Page: {{ currentPage() + 1 }} / {{ totalEvents() }}</span>
-      </div>
 
       <!-- Battle Presentation -->
       <div class="battle-presentation">
