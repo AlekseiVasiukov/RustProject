@@ -23,8 +23,8 @@
         <!-- Our Side -->
         <div class="side our-side">
           @for (combatant of ourCombatants(); track combatant.id) {
-            <div class="unit-card golden">
-              <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
+            <div class="unit-card {{ getCombatantHightlighClass(combatant) }} golden">
+              <div class="unit-name">
                 {{ getFullName(combatant) }}
               </div>
               <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
@@ -47,8 +47,8 @@
         <!-- Opponent Side -->
         <div class="side enemy-side">
           @for (combatant of enemyCombatants(); track combatant.id) {
-            <div class="unit-card magenta">
-              <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
+            <div class="unit-card {{ getCombatantHightlighClass(combatant) }} magenta">
+              <div class="unit-name">
                 {{ getFullName(combatant) }}
               </div>
               <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->

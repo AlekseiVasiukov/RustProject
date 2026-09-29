@@ -74,6 +74,7 @@
     display: flex;
     gap: 40px;
     margin: 20px 0;
+    // text-align: center;
   }
 
   .side {
@@ -83,14 +84,31 @@
   .unit-card {
     display: flex;
     flex-direction: row;
-    border: 1px solid #ccc;
+    border: 1px solid transparent;
     border-radius: 8px;
     padding: 10px;
     margin-bottom: 10px;
-    transition: background-color 0.5s;
+    // transition: border- 0.5s;
+    transition: background-color  0.5s;
 
+    &.attacker {
+      border: 1px solid white;
+
+      // background-color: white;
+      // color: black;
+    }
+
+    &.victim {
+      // background-color: red;
+      border: 1px solid red;
+    }
+
+    &.dead {
+      background-color: gray;
+    }
     &.golden {
-      border-left: 4px solid gold;
+      border-right: 4px solid gold;
+      text-align: right;
     }
 
     &.magenta {
@@ -100,21 +118,21 @@
     // &.alive {
     //   background-color: #f0f0f0;
     // }
-    .unit-name {
-      // background-color: green;
+    // .unit-name {
 
-      &.attacker {
-        background-color: white;
-      }
+    //   &.attacker {
+    //     background-color: white;
+    //     color: black;
+    //   }
 
-      &.victim {
-        background-color: red;
-      }
+    //   &.victim {
+    //     background-color: red;
+    //   }
 
-      &.dead {
-        background-color: gray;
-      }
-    }
+    //   &.dead {
+    //     background-color: gray;
+    //   }
+    // }
   }
 
   .navigation-constrols {
