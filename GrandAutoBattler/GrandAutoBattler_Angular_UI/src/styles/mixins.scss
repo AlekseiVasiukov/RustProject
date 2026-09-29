@@ -17,6 +17,8 @@
 
 @mixin game-container-style {
   display: flex;
+
+  // margin: 1rem;
   flex-direction: column;
   justify-content: end;
   gap: 0.5rem;
