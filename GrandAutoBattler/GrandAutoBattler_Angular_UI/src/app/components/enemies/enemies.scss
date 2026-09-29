@@ -22,7 +22,10 @@
 
 .combatants-grid {
   display: flex;
-  gap: 40px;
+  flex-direction: row;
+
+  // gap: 40px;
+  justify-content: space-around;
 }
 
 .side {
