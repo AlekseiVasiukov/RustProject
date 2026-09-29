@@ -1,5 +1,37 @@
 // @import '../../../styles/variables';
 @import '../../../styles/styles.scss';
+@import '../../../styles/mixins';
+
+.game-zone {
+  @include game-zone-style;
+  @include shadowed_bordered_card;
+}
+
+.new-game-container {
+  @include game-container-style;
+  // background-color: yellow;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: end;
+  // gap: 0.5rem;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+
+  // justify-items: ;
+  // flex-shrink: 0;
+  text-align: center;
+  justify-content: flex-end;
+  // flex-flow: i;
+  // flex-wrap: 0;
+  // flex-grow: 0;
+  // flex-basis: 0;
+  padding: 0 0.5rem;
+  margin: 0;
+}
 // @import '../../../styles/variables.scss';
 
 // .div-selection {

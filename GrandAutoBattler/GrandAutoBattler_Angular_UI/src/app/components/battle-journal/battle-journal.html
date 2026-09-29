@@ -1,27 +1,28 @@
 <div class="journal-container" (keydown)="handleKeyDown($event)" tabindex="0">
-  <h2>Battle Journal</h2>
-  @if (totalEvents() == 0) {
-    <p>No battle events recorded</p>
-  } @else {
-    <!-- Event header -->
-    <div class="event-headr">
-      <span>Round: {{ currentEvent().round }}</span>
-      <span>Turn: {{ currentEvent().turn }}</span>
-      <span>Page: {{ currentPage() + 1 }} / {{ totalEvents() }}</span>
-    </div>
+  <div class="game-zone">
+    <h2>Battle Journal</h2>
+    @if (totalEvents() == 0) {
+      <p>No battle events recorded</p>
+    } @else {
+      <!-- Event header -->
+      <div class="event-headr">
+        <span>Round: {{ currentEvent().round }}</span>
+        <span>Turn: {{ currentEvent().turn }}</span>
+        <span>Page: {{ currentPage() + 1 }} / {{ totalEvents() }}</span>
+      </div>
 
-    <!-- Battle Presentation -->
-    <div class="battle-presentation">
-      <!-- Our Side -->
-      <div class="side our-side">
-        @for (combatant of ourCombatants(); track combatant.id) {
-          <div class="unit-card golden">
-            <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
-              {{ getFullName(combatant) }}
-            </div>
-            <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
-            <!-- prettier-ignore -->
-            <div class="unit-stats">
+      <!-- Battle Presentation -->
+      <div class="battle-presentation">
+        <!-- Our Side -->
+        <div class="side our-side">
+          @for (combatant of ourCombatants(); track combatant.id) {
+            <div class="unit-card golden">
+              <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
+                {{ getFullName(combatant) }}
+              </div>
+              <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
+              <!-- prettier-ignore -->
+              <div class="unit-stats">
              <p>
               H[{{combatant.parameters.health}}]
               A[{{combatant.parameters.attack}}]
@@ -29,47 +30,47 @@
               D[{{combatant.parameters.defense}}]
             </p>
             </div>
-            <div class="unit-hp">
-              HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
+              <div class="unit-hp">
+                HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
+              </div>
             </div>
-          </div>
-        }
-      </div>
-
-      <!-- Opponent Side -->
-      <div class="side enemy-side">
-        @for (combatant of enemyCombatants(); track combatant.id) {
-          <div class="unit-card magenta">
-            <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
-              {{ getFullName(combatant) }}
-            </div>
-            <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
-            <!-- prettier-ignore -->
-            <div class="unit-stats">
-             <p>
-              H[{{combatant.parameters.health}}]
-              A[{{combatant.parameters.attack}}]
-              R[{{combatant.parameters.range}}]
-              D[{{combatant.parameters.defense}}]
-            </p>
-            </div>
-            <div class="unit-hp">
-              HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
-            </div>
-          </div>
-        }
-      </div>
-      <!-- Event log -->
-      @if (currentEvent(); as event) {
-        <div class="event-log">
-          <p>
-            Unit {{ event.cmd['Attack']?.src }} attacks {{ event.cmd['Attack']?.dst }} for
-            {{ event.cmd['Attack']?.dmg }} damage.
-          </p>
+          }
         </div>
-      }
-      <!-- prettier-ignore -->
-      <div class="navigation-constrols">
+
+        <!-- Opponent Side -->
+        <div class="side enemy-side">
+          @for (combatant of enemyCombatants(); track combatant.id) {
+            <div class="unit-card magenta">
+              <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
+                {{ getFullName(combatant) }}
+              </div>
+              <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
+              <!-- prettier-ignore -->
+              <div class="unit-stats">
+             <p>
+              H[{{combatant.parameters.health}}]
+              A[{{combatant.parameters.attack}}]
+              R[{{combatant.parameters.range}}]
+              D[{{combatant.parameters.defense}}]
+            </p>
+            </div>
+              <div class="unit-hp">
+                HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
+              </div>
+            </div>
+          }
+        </div>
+        <!-- Event log -->
+        @if (currentEvent(); as event) {
+          <div class="event-log">
+            <p>
+              Unit {{ event.cmd['Attack']?.src }} attacks {{ event.cmd['Attack']?.dst }} for
+              {{ event.cmd['Attack']?.dmg }} damage.
+            </p>
+          </div>
+        }
+        <!-- prettier-ignore -->
+        <div class="navigation-constrols">
         <button (click)="(goToStart())" [disabled]="currentPage() === 0" title="Go to first event">
           &#9664;&#9664;
         </button>
@@ -83,8 +84,8 @@
           &#9654;&#9654;
         </button>
       </div>
-
-      <button class="results-button" (click)="goToResults()">To Results</button>
-    </div>
-  }
+      </div>
+    }
+  </div>
+  <button class="btn-advance-stage" (click)="goToResults()">To Results</button>
 </div>

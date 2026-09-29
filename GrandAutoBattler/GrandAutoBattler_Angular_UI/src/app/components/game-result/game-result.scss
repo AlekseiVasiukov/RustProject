@@ -1,6 +1,27 @@
+@import './../../../styles/styles.scss';
+@import '../../../styles/mixins.scss';
+
+.game-zone {
+  @include game-zone-style;
+  @include shadowed_bordered_card;
+}
+// .unit-list-container {
+//   // display: flex;
+//   // flex-direction: column;
+//   // gap: 2rem;
+//   background-color: yellow;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: end;
+// }
 .result-container {
+  @include game-container-style;
   text-align: center;
-  padding: 60px 20px;
+  // background-color: yellow;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: end;
+  // padding: 60px 20px;
 
   .result-message {
     color: white;
