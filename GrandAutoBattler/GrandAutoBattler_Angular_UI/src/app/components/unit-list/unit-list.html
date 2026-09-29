@@ -1,47 +1,49 @@
 <div class="unit-list-container">
-  <h2>Select Warriors</h2>
+  <div class="game-zone">
+    <h2>Select Warriors</h2>
 
-  <!-- Faction selection -->
-  <div class="facton-selection">
-    <div class="faction-group">
-      <label for="our-faction"> Our Faction: </label>
-      <select id="our-faction" (change)="onOurFactionChange($event)">
-        @for (faction of availableFactions(); track $index) {
-          <option [value]="$index" [selected]="$index === ourFactionIndex()">
-            {{ faction }}
-          </option>
-        }
-      </select>
-    </div>
-
-    <div class="faction-group">
-      <label for="opponent-faction"> Opponent Faction </label>
-      <select id="opponent-faction" (change)="onOpponentFactionChange($event)">
-        @for (faction of availableFactions(); track $index) {
-          <option [value]="$index" [selected]="$index === opponentFactionIndex()">
-            {{ faction }}
-          </option>
-        }
-      </select>
-    </div>
-  </div>
-
-  <!-- Warrior Selection -->
-  <div class="warrior-selection">
-    <h3>Our Warriors</h3>
-    @for (slot of [0, 1, 2, 3]; track slot) {
-      <div class="warrior-slot">
-        <label> Warrior {{ slot + 1 }}:</label>
-        <select title="warrior-selection-select" (change)="onWarriorTypeChange(slot, $event)">
-          <option value="null" [selected]="ourWarriorTypes()[slot] === null">None</option>
-          @for (typeName of availableUnittypes()[ourFactionIndex()]; track $index) {
-            <option [value]="$index" [selected]="ourWarriorTypes()[slot] === $index">
-              {{ typeName }}
+    <!-- Faction selection -->
+    <div class="facton-selection">
+      <div class="faction-group">
+        <label for="our-faction"> Our Faction: </label>
+        <select id="our-faction" (change)="onOurFactionChange($event)">
+          @for (faction of availableFactions(); track $index) {
+            <option [value]="$index" [selected]="$index === ourFactionIndex()">
+              {{ faction }}
             </option>
           }
         </select>
       </div>
-    }
+
+      <div class="faction-group">
+        <label for="opponent-faction"> Opponent Faction </label>
+        <select id="opponent-faction" (change)="onOpponentFactionChange($event)">
+          @for (faction of availableFactions(); track $index) {
+            <option [value]="$index" [selected]="$index === opponentFactionIndex()">
+              {{ faction }}
+            </option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Warrior Selection -->
+    <div class="warrior-selection">
+      <h3>Our Warriors</h3>
+      @for (slot of [0, 1, 2, 3]; track slot) {
+        <div class="warrior-slot">
+          <label> Warrior {{ slot + 1 }}:</label>
+          <select title="warrior-selection-select" (change)="onWarriorTypeChange(slot, $event)">
+            <option value="null" [selected]="ourWarriorTypes()[slot] === null">None</option>
+            @for (typeName of availableUnittypes()[ourFactionIndex()]; track $index) {
+              <option [value]="$index" [selected]="ourWarriorTypes()[slot] === $index">
+                {{ typeName }}
+              </option>
+            }
+          </select>
+        </div>
+      }
+    </div>
   </div>
 
   <!-- button to Confirm -->

@@ -9,6 +9,7 @@
   .game-title {
     // font-size: larger;
     font-weight: bolder;
+    font-size: 1.1rem;
   }
 
   .technologies-text {
@@ -51,7 +52,7 @@ footer {
 .main-content {
   display: flex;
   flex-direction: column;
-
+  gap: 0.5rem;
   // navigation{
   //   ;
   // }

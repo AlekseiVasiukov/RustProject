@@ -5,3 +5,12 @@
   border-radius: $border-radius;
   box-shadow: $shadow;
 }
+
+@mixin game-zone-style{
+  height: $game-zone-height;
+
+  @media (max-width: 800px) {
+    height: auto;
+    min-height: $game-zone-width;
+  }
+}

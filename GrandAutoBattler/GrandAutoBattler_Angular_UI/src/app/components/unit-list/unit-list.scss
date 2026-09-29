@@ -1,9 +1,18 @@
-@import "../../../styles/styles.scss";
+@import '../../../styles/styles.scss';
+@import '../../../styles/mixins.scss';
 
+.game-zone {
+  @include game-zone-style;
+  @include shadowed_bordered_card;
+}
 .unit-list-container {
+  // display: flex;
+  // flex-direction: column;
+  // gap: 2rem;
+  // background-color: yellow;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  justify-content: end;
 }
 
 .faction-section {

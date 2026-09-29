@@ -1,44 +1,44 @@
-
 <div class="enemies-container">
-  <h2>Your Enemies</h2>
+  <div class="game-zone">
+    <h2>Your Enemies</h2>
 
-  <div class="combatants-grid">
-    <!-- our side GOLDEN -->
-    <div class="side our-side">
-      <h3 class="side-title golden">Our Forces</h3>
-      @for (combatant of ourCombatants(); track combatant.id) {
-        <div class="combatant-card golden">
-          <div class="combatant-name">{{ getFullName(combatant) }}</div>
-          <div class="combatant-type">{{ getUnitType(combatant) }}</div>
-          <div class="combatant-stats">
-            <span>H[{{ combatant.parameters.health }}]</span>
-            <span>A[{{ combatant.parameters.attack }}]</span>
-            <span>R[{{ combatant.parameters.range }}]</span>
-            <span>D[{{ combatant.parameters.defense }}]</span>
+    <div class="combatants-grid">
+      <!-- our side GOLDEN -->
+      <div class="side our-side">
+        <h3 class="side-title golden">Our Forces</h3>
+        @for (combatant of ourCombatants(); track combatant.id) {
+          <div class="combatant-card golden">
+            <div class="combatant-name">{{ getFullName(combatant) }}</div>
+            <div class="combatant-type">{{ getUnitType(combatant) }}</div>
+            <div class="combatant-stats">
+              <span>H[{{ combatant.parameters.health }}]</span>
+              <span>A[{{ combatant.parameters.attack }}]</span>
+              <span>R[{{ combatant.parameters.range }}]</span>
+              <span>D[{{ combatant.parameters.defense }}]</span>
+            </div>
+            <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
           </div>
-          <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
-        </div>
-      }
-    </div>
-    <!-- enemy side MAGENTA -->
-    <div class="side enemy-side">
-      <h3 class="side-title magenta">Enemy Forces</h3>
-      @for (combatant of enemyCombatants(); track combatant.id) {
-        <div class="combatant-card magenta">
-          <div class="combatant-name">{{ getFullName(combatant) }}</div>
-          <div class="combatant-type">{{ getUnitType(combatant) }}</div>
-          <div class="combatant-stats">
-            <span>H[{{ combatant.parameters.health }}]</span>
-            <span>A[{{ combatant.parameters.attack }}]</span>
-            <span>R[{{ combatant.parameters.range }}]</span>
-            <span>D[{{ combatant.parameters.defense }}]</span>
+        }
+      </div>
+      <!-- enemy side MAGENTA -->
+      <div class="side enemy-side">
+        <h3 class="side-title magenta">Enemy Forces</h3>
+        @for (combatant of enemyCombatants(); track combatant.id) {
+          <div class="combatant-card magenta">
+            <div class="combatant-name">{{ getFullName(combatant) }}</div>
+            <div class="combatant-type">{{ getUnitType(combatant) }}</div>
+            <div class="combatant-stats">
+              <span>H[{{ combatant.parameters.health }}]</span>
+              <span>A[{{ combatant.parameters.attack }}]</span>
+              <span>R[{{ combatant.parameters.range }}]</span>
+              <span>D[{{ combatant.parameters.defense }}]</span>
+            </div>
+            <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
           </div>
-          <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
-        </div>
-      }
+        }
+      </div>
     </div>
   </div>
 
-        <button class="btn-advance-stage" (click)="goToBattleJournal()">TO THE BATTLE!!</button>
-
+  <button class="btn-advance-stage" (click)="goToBattleJournal()">TO THE BATTLE!!</button>
 </div>

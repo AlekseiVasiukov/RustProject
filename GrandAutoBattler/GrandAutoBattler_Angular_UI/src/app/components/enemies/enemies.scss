@@ -1,7 +1,22 @@
 @import '../../../styles/styles.scss';
+@import '../../../styles/mixins.scss';
 
+// .enemies-container {
+//   padding: 20px;
+// }
+
+.game-zone {
+  @include game-zone-style;
+  @include shadowed_bordered_card;
+}
 .enemies-container {
-  padding: 20px;
+  // display: flex;
+  // flex-direction: column;
+  // gap: 2rem;
+  // background-color: yellow;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
 }
 
 .combatants-grid {
