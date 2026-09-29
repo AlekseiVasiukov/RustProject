@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { Route, Router } from '@angular/router';
 import { GameSessionService } from '../../core/services/game-session.service';
+import { PixelPicture } from '../pixel-picture/pixel-picture';
 
 @Component({
   selector: 'app-new-game',
   standalone: true,
-  imports: [],
+  imports: [PixelPicture],
   templateUrl: './new-game.html',
   styleUrl: './new-game.scss',
 })

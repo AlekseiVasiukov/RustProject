@@ -1,35 +1,42 @@
 <div class="journal-container" (keydown)="handleKeyDown($event)" tabindex="0">
   <div class="game-zone">
-    <h2>Battle Journal</h2>
+    @if (totalEvents() == 0) {
+      <p>No battle journal</p>
+    } @else {
+      <div class="battle-journal-header">
+        <h2 class="battle-journal-text">Battle Journal</h2>
+        <div class="event-header">
+          <span>Round: {{ currentEvent().round }}</span>
+          <span>Turn: {{ currentEvent().turn }}</span>
+          <span>Page: {{ currentPage() + 1 }} / {{ totalEvents() }}</span>
+        </div>
+      </div>
+    }
+
     @if (totalEvents() == 0) {
       <p>No battle events recorded</p>
     } @else {
       <!-- Event header -->
-      <div class="event-headr">
-        <span>Round: {{ currentEvent().round }}</span>
-        <span>Turn: {{ currentEvent().turn }}</span>
-        <span>Page: {{ currentPage() + 1 }} / {{ totalEvents() }}</span>
-      </div>
 
       <!-- Battle Presentation -->
       <div class="battle-presentation">
         <!-- Our Side -->
         <div class="side our-side">
           @for (combatant of ourCombatants(); track combatant.id) {
-            <div class="unit-card golden">
-              <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
+            <div class="unit-card {{ getCombatantHightlighClass(combatant) }} golden">
+              <div class="unit-name">
                 {{ getFullName(combatant) }}
               </div>
               <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
               <!-- prettier-ignore -->
-              <div class="unit-stats">
+              <!-- <div class="unit-stats">
              <p>
               H[{{combatant.parameters.health}}]
               A[{{combatant.parameters.attack}}]
               R[{{combatant.parameters.range}}]
               D[{{combatant.parameters.defense}}]
             </p>
-            </div>
+            </div> -->
               <div class="unit-hp">
                 HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
               </div>
@@ -40,26 +47,34 @@
         <!-- Opponent Side -->
         <div class="side enemy-side">
           @for (combatant of enemyCombatants(); track combatant.id) {
-            <div class="unit-card magenta">
-              <div class="unit-name {{ getCombatantHightlighClass(combatant) }}">
+            <div class="unit-card {{ getCombatantHightlighClass(combatant) }} magenta">
+              <div class="unit-name">
                 {{ getFullName(combatant) }}
               </div>
               <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
               <!-- prettier-ignore -->
-              <div class="unit-stats">
+              <!-- <div class="unit-stats">
              <p>
               H[{{combatant.parameters.health}}]
               A[{{combatant.parameters.attack}}]
               R[{{combatant.parameters.range}}]
               D[{{combatant.parameters.defense}}]
             </p>
-            </div>
+            </div> -->
               <div class="unit-hp">
                 HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
               </div>
             </div>
           }
         </div>
+      </div>
+    }
+
+    @if (totalEvents() == 0) {
+      <p>No battle log</p>
+    } @else {
+      <div class="battle-journal-footer">
+        <!-- <h2 class="battle-journal-text">Battle Journal</h2> -->
         <!-- Event log -->
         @if (currentEvent(); as event) {
           <div class="event-log">
@@ -77,6 +92,17 @@
         <button (click)="(previousPage())" [disabled]="currentPage() === 0" title="Previous event">
           &#9664;
         </button>
+        <button (click)="toggleAutoplay()" [disabled]="currentPage() >= totalEvents()-1" title="Auto Play">
+           @if (isAutoplayActive()) {
+    &#9724;&#9724;  <!-- pause icon (two vertical bars) -->
+  } @else {
+    &#10704;       <!-- play icon (triangle) -->
+  }
+          <!-- &#10704; -->
+          <!-- &#10161; -->
+          <!-- &#9760; -->
+          <!-- &#9673; -->
+        </button>
         <button (click)="(nextPage())" [disabled]="currentPage() >= totalEvents()-1" title="Next event">
           &#9654;
         </button>
@@ -87,5 +113,5 @@
       </div>
     }
   </div>
-  <button class="btn-advance-stage" (click)="goToResults()">To Results</button>
+  <button class="btn-advance-stage" (click)="goToResults()">Results</button>
 </div>

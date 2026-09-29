@@ -4,6 +4,51 @@
 .game-zone {
   @include game-zone-style;
   @include shadowed_bordered_card;
+  // background-color: yellow;
+  display: grid;
+  // flex-direction: grid;
+
+  grid-template-rows: min-content auto min-content;
+}
+
+.battle-journal-header {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0.5rem 0 0.5rem;
+  border-radius: 1rem;
+  border-bottom: 1px solid $contour-color;
+  text-align: center;
+
+  justify-content: space-around;
+}
+
+.battle-journal-footer {
+  // background-color: yellow;
+  display: flex;
+  flex-direction: column;
+  margin: 0 0.5rem 0 0.5rem;
+  border-radius: 1rem;
+  border-top: 1px solid $contour-color;
+  text-align: center;
+
+  justify-content: space-around;
+}
+.battle-journal-text {
+  // background-color: yellow;
+  align-self: center;
+  justify-self: center;
+  display: block;
+  align-items: center;
+  text-align: center;
+}
+.event-header {
+  // background-color: yellow
+  display: grid;
+  // grid-template-columns: auto auto;
+  // grid-column-end: 1 / span 2;
+  grid-auto-flow: column;
+  align-items: center;
+  text-align: center;
 }
 // .enemies-container {
 //   // display: flex;
@@ -29,6 +74,7 @@
     display: flex;
     gap: 40px;
     margin: 20px 0;
+    // text-align: center;
   }
 
   .side {
@@ -36,14 +82,33 @@
   }
 
   .unit-card {
-    border: 1px solid #ccc;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid transparent;
     border-radius: 8px;
     padding: 10px;
     margin-bottom: 10px;
-    transition: background-color 0.3s;
+    // transition: border- 0.5s;
+    transition: background-color  0.5s;
 
+    &.attacker {
+      border: 1px solid white;
+
+      // background-color: white;
+      // color: black;
+    }
+
+    &.victim {
+      // background-color: red;
+      border: 1px solid red;
+    }
+
+    &.dead {
+      background-color: gray;
+    }
     &.golden {
-      border-left: 4px solid gold;
+      border-right: 4px solid gold;
+      text-align: right;
     }
 
     &.magenta {
@@ -53,24 +118,24 @@
     // &.alive {
     //   background-color: #f0f0f0;
     // }
-    .unit-name {
-      // background-color: green;
+    // .unit-name {
 
-      &.attacker {
-        background-color: white;
-      }
+    //   &.attacker {
+    //     background-color: white;
+    //     color: black;
+    //   }
 
-      &.victim {
-        background-color: red;
-      }
+    //   &.victim {
+    //     background-color: red;
+    //   }
 
-      &.dead {
-        background-color: gray;
-      }
-    }
+    //   &.dead {
+    //     background-color: gray;
+    //   }
+    // }
   }
 
-  .navigation-controls {
+  .navigation-constrols {
     display: flex;
     gap: 10px;
     margin: 20px 0;

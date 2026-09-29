@@ -1,8 +1,11 @@
-import { Component, inject, computed, signal } from '@angular/core';
+import { Component, inject, computed, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GameSessionService } from '../../core/services/game-session.service';
 import type { Combatant, BattleJournalEvent } from '../../core/models/game.model';
+
+const AUTOPLAY_TICK_MS = 500;
+const DEATH_DRAMATIC_TICKS = 1;
 
 @Component({
   selector: 'app-battle-journal',
@@ -11,9 +14,13 @@ import type { Combatant, BattleJournalEvent } from '../../core/models/game.model
   templateUrl: './battle-journal.html',
   styleUrl: './battle-journal.scss',
 })
-export class BattleJournal {
+export class BattleJournal implements OnDestroy {
   session = inject(GameSessionService);
   router = inject(Router);
+
+  isAutoplayActive = signal(false);
+  private autoplayTimer: ReturnType<typeof setInterval> | null = null;
+  private dramaticTicksLeft = 0;
 
   //Current page index of battle journal
   currentPage = signal(0);
@@ -118,6 +125,24 @@ export class BattleJournal {
     console.log(this.currentPage());
   }
 
+  toggleAutoplay() {
+    if (this.currentPage() >= this.totalEvents() - 1) {
+      this.isAutoplayActive.set(false);
+      this.clearAutoplayTimer();
+      return;
+    }
+
+    if (this.isAutoplayActive()) {
+      // Turn OFF
+      this.isAutoplayActive.set(false);
+      this.clearAutoplayTimer();
+    } else {
+      // Turn ON
+      this.isAutoplayActive.set(true);
+      this.startAutoplayTimer();
+    }
+  }
+
   //Kleyborad input navigation
 
   handleKeyDown(event: KeyboardEvent) {
@@ -145,5 +170,60 @@ export class BattleJournal {
     const hp = this.getCombatantHp(c);
 
     return hp <= 0 ? 'dead' : 'alive';
+  }
+
+  private startAutoplayTimer() {
+    this.clearAutoplayTimer(); // Safety: clear any existing timer
+    this.autoplayTimer = setInterval(() => {
+      this.autoplayTick();
+    }, AUTOPLAY_TICK_MS);
+  }
+
+  private clearAutoplayTimer() {
+    if (this.autoplayTimer !== null) {
+      clearInterval(this.autoplayTimer);
+      this.autoplayTimer = null;
+    }
+  }
+
+  private autoplayTick() {
+    // If we are in a dramatic delay, decrement counter and skip this tick
+    if (this.dramaticTicksLeft > 0) {
+      this.dramaticTicksLeft--;
+      return;
+    }
+
+    // If we are already on the last page, stop autoplay
+    if (this.currentPage() >= this.totalEvents() - 1) {
+      this.isAutoplayActive.set(false);
+      this.clearAutoplayTimer();
+      return;
+    }
+
+    // Advance to next page
+    this.currentPage.update((v) => v + 1);
+
+    // Check if the new currentEvent causes a death
+    if (this.isCurrentEventLethal()) {
+      this.dramaticTicksLeft = DEATH_DRAMATIC_TICKS;
+    }
+  }
+
+  private isCurrentEventLethal(): boolean {
+    const evt = this.currentEvent();
+    if (!evt) return false;
+
+    for (const effectEntry of evt.effects) {
+      const damageEffect = effectEntry['Damage'];
+      if (damageEffect && damageEffect.dst_hp_after === 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  ngOnDestroy() {
+    this.clearAutoplayTimer();
   }
 }
