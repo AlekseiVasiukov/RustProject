@@ -118,6 +118,13 @@ export class BattleJournal {
     console.log(this.currentPage());
   }
 
+  toggleAutoplay() {
+    // if (this.currentPage() < this.totalEvents() - 1) {
+    //   this.currentPage.update((v) => v + 1);
+    //   console.log(this.currentPage());
+    // }
+  }
+
   //Kleyborad input navigation
 
   handleKeyDown(event: KeyboardEvent) {

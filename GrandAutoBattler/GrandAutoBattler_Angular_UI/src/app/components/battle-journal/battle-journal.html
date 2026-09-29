@@ -4,7 +4,7 @@
       <p>No battle journal</p>
     } @else {
       <div class="battle-journal-header">
-        <h2>Battle Journal</h2>
+        <h2 class="battle-journal-text">Battle Journal</h2>
         <div class="event-header">
           <span>Round: {{ currentEvent().round }}</span>
           <span>Turn: {{ currentEvent().turn }}</span>
@@ -67,6 +67,14 @@
             </div>
           }
         </div>
+      </div>
+    }
+
+    @if (totalEvents() == 0) {
+      <p>No battle log</p>
+    } @else {
+      <div class="battle-journal-footer">
+        <!-- <h2 class="battle-journal-text">Battle Journal</h2> -->
         <!-- Event log -->
         @if (currentEvent(); as event) {
           <div class="event-log">
@@ -83,6 +91,10 @@
         </button>
         <button (click)="(previousPage())" [disabled]="currentPage() === 0" title="Previous event">
           &#9664;
+        </button>
+        <button (click)="(toggleAutoplay())" [disabled]="currentPage() >= totalEvents()-1" title="Auto Play">
+          &#9760;
+          <!-- &#9673; -->
         </button>
         <button (click)="(nextPage())" [disabled]="currentPage() >= totalEvents()-1" title="Next event">
           &#9654;

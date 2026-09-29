@@ -8,21 +8,43 @@
 }
 
 .battle-journal-header {
-  // border-bottom-color: $accent-color;
-  // border-width: 1px;
-
-  // background-color: yellow;
   display: flex;
-  // justify-content: space-between;
-
-  // flex-direction: column;
-  // border: 0px solid #ccc;
+  flex-direction: column;
   margin: 0 0.5rem 0 0.5rem;
   border-radius: 1rem;
   border-bottom: 1px solid $contour-color;
   text-align: center;
 
   justify-content: space-around;
+}
+
+.battle-journal-footer {
+  // background-color: yellow;
+  display: flex;
+  flex-direction: column;
+  margin: 0 0.5rem 0 0.5rem;
+  border-radius: 1rem;
+  border-top: 1px solid $contour-color;
+  text-align: center;
+
+  justify-content: space-around;
+}
+.battle-journal-text {
+  // background-color: yellow;
+  align-self: center;
+  justify-self: center;
+  display: block;
+  align-items: center;
+  text-align: center;
+}
+.event-header {
+  // background-color: yellow
+  display: grid;
+  // grid-template-columns: auto auto;
+  // grid-column-end: 1 / span 2;
+  grid-auto-flow: column;
+  align-items: center;
+  text-align: center;
 }
 // .enemies-container {
 //   // display: flex;
@@ -89,7 +111,7 @@
     }
   }
 
-  .navigation-controls {
+  .navigation-constrols {
     display: flex;
     gap: 10px;
     margin: 20px 0;
