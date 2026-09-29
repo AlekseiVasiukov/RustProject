@@ -16,6 +16,17 @@
   // justify-content: end;
 }
 
+.factions-layout {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  // grid-template-columns: auto auto;
+  // background-color: yellow;
+
+  // flex-direction: column;
+}
+
 .faction-section {
   .faction-title {
     font-size: 1.5rem;
@@ -26,6 +37,7 @@
 }
 
 .units-grid {
+  margin-top: 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
