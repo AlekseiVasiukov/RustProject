@@ -29,14 +29,14 @@
               </div>
               <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
               <!-- prettier-ignore -->
-              <div class="unit-stats">
+              <!-- <div class="unit-stats">
              <p>
               H[{{combatant.parameters.health}}]
               A[{{combatant.parameters.attack}}]
               R[{{combatant.parameters.range}}]
               D[{{combatant.parameters.defense}}]
             </p>
-            </div>
+            </div> -->
               <div class="unit-hp">
                 HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
               </div>
@@ -53,14 +53,14 @@
               </div>
               <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
               <!-- prettier-ignore -->
-              <div class="unit-stats">
+              <!-- <div class="unit-stats">
              <p>
               H[{{combatant.parameters.health}}]
               A[{{combatant.parameters.attack}}]
               R[{{combatant.parameters.range}}]
               D[{{combatant.parameters.defense}}]
             </p>
-            </div>
+            </div> -->
               <div class="unit-hp">
                 HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
               </div>
@@ -93,7 +93,9 @@
           &#9664;
         </button>
         <button (click)="(toggleAutoplay())" [disabled]="currentPage() >= totalEvents()-1" title="Auto Play">
-          &#9760;
+          &#10704;
+          <!-- &#10161; -->
+          <!-- &#9760; -->
           <!-- &#9673; -->
         </button>
         <button (click)="(nextPage())" [disabled]="currentPage() >= totalEvents()-1" title="Next event">

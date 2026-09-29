@@ -5,6 +5,10 @@
   @include game-zone-style;
   @include shadowed_bordered_card;
   // background-color: yellow;
+  display: grid;
+  // flex-direction: grid;
+
+  grid-template-rows: min-content auto min-content;
 }
 
 .battle-journal-header {
@@ -77,11 +81,13 @@
   }
 
   .unit-card {
+    display: flex;
+    flex-direction: row;
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 10px;
     margin-bottom: 10px;
-    transition: background-color 0.3s;
+    transition: background-color 0.5s;
 
     &.golden {
       border-left: 4px solid gold;
