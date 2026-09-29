@@ -32,6 +32,45 @@
   padding: 0 0.5rem;
   margin: 0;
 }
+
+.game-bg {
+  position: relative;
+  // overflow: hidden;
+  overflow: hidden;
+}
+
+.game-bg img,
+.game-bg video {
+  // width: ;
+  // height: auto;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.game-bg::after {
+  align-self: normal;
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.3) 0,
+      // rgba(0, 0, 0, 0.35) 1px,
+      // transparent 2px,
+      transparent 1px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.3) 0,
+      // rgba(0, 0, 0, 0.2) 1px,
+      // transparent 2px,
+      transparent 1px
+    );
+  mix-blend-mode: normal;
+}
+
 // @import '../../../styles/variables.scss';
 
 // .div-selection {
