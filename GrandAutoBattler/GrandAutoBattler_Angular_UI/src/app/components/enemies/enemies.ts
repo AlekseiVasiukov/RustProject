@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { GameSessionService } from '../../core/services/game-session.service';
 import { Router } from '@angular/router';
 import type { Combatant } from '../../core/models/game.model';
-
+import { UnitImageService } from '../../core/services/unit-image.service';
 
 @Component({
   selector: 'app-enemies',
@@ -14,6 +14,7 @@ import type { Combatant } from '../../core/models/game.model';
 })
 export class Enemies {
   session = inject(GameSessionService);
+  imageService = inject(UnitImageService);
   router = inject(Router);
 
   //our combatants (side 0)
@@ -35,12 +36,16 @@ export class Enemies {
     return `${first} ${last}`.trim() || 'Unknown';
   }
 
+  getCombatantImage = (combatant: Combatant, side: 0 | 1): string => {
+    return this.imageService.getCombatantImagePath(combatant.unit_type_name, side);
+  };
+
   //get pretty name of unit
   getUnitType(combatant: Combatant): string {
     return combatant.unit_type_pretty_name || combatant.unit_type_name;
   }
 
-  goToBattleJournal(){
-    this.router.navigate(['/battle-journal'])
+  goToBattleJournal() {
+    this.router.navigate(['/battle-journal']);
   }
 }

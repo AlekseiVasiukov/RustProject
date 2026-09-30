@@ -8,6 +8,13 @@
         <h3 class="side-title golden">Our Forces</h3>
         @for (combatant of ourCombatants(); track combatant.id) {
           <div class="combatant-card golden">
+            <img
+              [src]="getCombatantImage(combatant, 0)"
+              [alt]="combatant.unit_type_pretty_name"
+              alt=""
+              class="unit-icon"
+              loading="lazy"
+            />
             <div class="combatant-name">{{ getFullName(combatant) }}</div>
             <div class="combatant-type">{{ getUnitType(combatant) }}</div>
             <div class="combatant-stats">
@@ -25,6 +32,13 @@
         <h3 class="side-title magenta">Enemy Forces</h3>
         @for (combatant of enemyCombatants(); track combatant.id) {
           <div class="combatant-card magenta">
+            <img
+              [src]="getCombatantImage(combatant, 1)"
+              [alt]="combatant.unit_type_pretty_name"
+              alt=""
+              class="unit-icon"
+              loading="lazy"
+            />
             <div class="combatant-name">{{ getFullName(combatant) }}</div>
             <div class="combatant-type">{{ getUnitType(combatant) }}</div>
             <div class="combatant-stats">
