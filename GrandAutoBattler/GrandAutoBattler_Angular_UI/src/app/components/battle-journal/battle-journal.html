@@ -24,12 +24,13 @@
         <div class="side our-side">
           @for (combatant of ourCombatants(); track combatant.id) {
             <div class="unit-card {{ getCombatantHightlighClass(combatant) }} golden">
-              <div class="unit-name">
-                {{ getFullName(combatant) }}
-              </div>
-              <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
-              <!-- prettier-ignore -->
-              <!-- <div class="unit-stats">
+              <div class="unit-picture-and-text">
+                <div class="unit-name">
+                  {{ getFullName(combatant) }}
+                </div>
+                <!-- Adding this comment here for the formatter to ignore this my beautiful column  -->
+                <!-- prettier-ignore -->
+                <!-- <div class="unit-stats">
              <p>
               H[{{combatant.parameters.health}}]
               A[{{combatant.parameters.attack}}]
@@ -37,8 +38,16 @@
               D[{{combatant.parameters.defense}}]
             </p>
             </div> -->
-              <div class="unit-hp">
-                HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
+                <div class="unit-hp">
+                  HP: {{ getCombatantHp(combatant) }}/ {{ combatant.health_points }}
+                </div>
+                <img
+                  [src]="getCombatantImage(combatant, 0)"
+                  [alt]="combatant.unit_type_pretty_name"
+                  class="unit-icon"
+                  alt=""
+                  loading="lazy"
+                />
               </div>
             </div>
           }
@@ -48,6 +57,13 @@
         <div class="side enemy-side">
           @for (combatant of enemyCombatants(); track combatant.id) {
             <div class="unit-card {{ getCombatantHightlighClass(combatant) }} magenta">
+              <img
+                [src]="getCombatantImage(combatant, 1)"
+                [alt]="combatant.unit_type_pretty_name"
+                class="unit-icon inverted"
+                alt=""
+                loading="lazy"
+              />
               <div class="unit-name">
                 {{ getFullName(combatant) }}
               </div>

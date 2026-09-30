@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GameSessionService } from '../../core/services/game-session.service';
 import type { Combatant, BattleJournalEvent } from '../../core/models/game.model';
+import { UnitImageService } from '../../core/services/unit-image.service';
 
 const AUTOPLAY_TICK_MS = 500;
 const DEATH_DRAMATIC_TICKS = 1;
@@ -17,6 +18,7 @@ const DEATH_DRAMATIC_TICKS = 1;
 export class BattleJournal implements OnDestroy {
   session = inject(GameSessionService);
   router = inject(Router);
+  imageService = inject(UnitImageService);
 
   isAutoplayActive = signal(false);
   private autoplayTimer: ReturnType<typeof setInterval> | null = null;
@@ -172,8 +174,9 @@ export class BattleJournal implements OnDestroy {
     return hp <= 0 ? 'dead' : 'alive';
   }
 
+  //AUTOPLAY
   private startAutoplayTimer() {
-    this.clearAutoplayTimer(); // Safety: clear any existing timer
+    this.clearAutoplayTimer();
     this.autoplayTimer = setInterval(() => {
       this.autoplayTick();
     }, AUTOPLAY_TICK_MS);
@@ -187,20 +190,17 @@ export class BattleJournal implements OnDestroy {
   }
 
   private autoplayTick() {
-    // If we are in a dramatic delay, decrement counter and skip this tick
     if (this.dramaticTicksLeft > 0) {
       this.dramaticTicksLeft--;
       return;
     }
 
-    // If we are already on the last page, stop autoplay
     if (this.currentPage() >= this.totalEvents() - 1) {
       this.isAutoplayActive.set(false);
       this.clearAutoplayTimer();
       return;
     }
 
-    // Advance to next page
     this.currentPage.update((v) => v + 1);
 
     // Check if the new currentEvent causes a death
@@ -223,6 +223,13 @@ export class BattleJournal implements OnDestroy {
     return false;
   }
 
+  getCombatantImage = (combatant: Combatant, side: 0 | 1): string => {
+    return this.imageService.getCombatantImagePath(combatant.unit_type_name, side);
+  };
+
+  ngOnInit() {
+    this.imageService.updateConfig({ basePath: '/assets/images/128px' });
+  }
   ngOnDestroy() {
     this.clearAutoplayTimer();
   }
