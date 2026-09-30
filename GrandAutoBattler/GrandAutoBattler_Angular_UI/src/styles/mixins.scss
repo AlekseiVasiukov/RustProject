@@ -10,8 +10,9 @@
   height: $game-zone-height;
 
   @media (max-width: 800px) {
-    height: auto;
-    min-height: $game-zone-width-mobile;
+    // width: auto;
+    // justify-self: stretch;
+    min-width: $game-zone-width-mobile;
   }
 }
 

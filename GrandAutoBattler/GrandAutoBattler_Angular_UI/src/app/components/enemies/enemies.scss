@@ -40,6 +40,13 @@
     color: magenta;
   }
 }
+.combatant-name {
+  font-style: italic;
+}
+
+.combatant-type {
+  font-size: small;
+}
 
 .combatants-card {
   border: 3px solid #ccc;
@@ -55,8 +62,33 @@
   }
 }
 
-.combatant-stats {
+.hard-and-hp {
   display: flex;
-  gap: 10px;
+  flex-direction: row;
+}
+
+.combatant-hp {
+  color: green;
+}
+.combatant-stats {
+  font-size: small;
+  display: flex;
+  gap: 0.1rem;
   margin: 8px 0;
+}
+
+.unit-picture-and-text {
+  display: flex;
+  flex-direction: row;
+}
+
+.unit-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain; //scales to fit without distortion
+  // background-color: var(--color-placeholder-bg,);
+
+  &.inverted{
+    transform: scaleX(-1);
+  }
 }
