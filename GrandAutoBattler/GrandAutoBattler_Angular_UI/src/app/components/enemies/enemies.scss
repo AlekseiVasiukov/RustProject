@@ -29,7 +29,11 @@
 }
 
 .side {
-  flex: 1;
+  // background-color: yellow;
+  // flex: 0;
+  display: flex;
+  flex-direction: column;
+  // justify-content: space-around;
 }
 
 .side-title {
@@ -71,6 +75,7 @@
   color: green;
 }
 .combatant-stats {
+  color: $gray-unimportant-text;
   font-size: small;
   display: flex;
   gap: 0.1rem;
