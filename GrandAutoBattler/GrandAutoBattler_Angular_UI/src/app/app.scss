@@ -44,15 +44,30 @@
 
 footer {
   // background-color: yellow;
-  display: flex;
-  align-self: flex-end;
-  justify-self: flex-end;
+  // display: flex;
+  // align-self: flex-end;
+  // justify-self: flex-end;
+
+  display: block;
+  align-items: end;
+  flex-direction: column;
+  max-height: 1rem;
+
+  gap: 0;
+  font-size: small;
+  // justify-content: flex-end;
+  // background-color: yellow;
+  // flex-grow: 0;
+  // flex-shrink: 0;
+  padding-right: 1rem;
+  text-align: right;
 }
 
 .main-content {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
   // navigation{
   //   ;
   // }
