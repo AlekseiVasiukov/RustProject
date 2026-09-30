@@ -85,11 +85,12 @@
     display: flex;
     flex-direction: row;
     border: 1px solid transparent;
+    justify-content: center;
     border-radius: 8px;
     padding: 10px;
     margin-bottom: 10px;
     // transition: border- 0.5s;
-    transition: background-color  0.5s;
+    transition: background-color 0.5s;
 
     &.attacker {
       border: 1px solid white;
@@ -152,5 +153,20 @@
     margin: 20px auto;
     padding: 10px 20px;
     font-size: 16px;
+  }
+}
+
+.unit-picture-and-text {
+  display: flex;
+  flex-direction: row;
+}
+
+.unit-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+
+  &.inverted {
+    transform: scaleX(-1);
   }
 }

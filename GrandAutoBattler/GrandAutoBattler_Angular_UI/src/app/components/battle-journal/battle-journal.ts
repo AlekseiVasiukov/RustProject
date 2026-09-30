@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GameSessionService } from '../../core/services/game-session.service';
 import type { Combatant, BattleJournalEvent } from '../../core/models/game.model';
+import { UnitImageService } from '../../core/services/unit-image.service';
 
 const AUTOPLAY_TICK_MS = 500;
 const DEATH_DRAMATIC_TICKS = 1;
@@ -17,6 +18,7 @@ const DEATH_DRAMATIC_TICKS = 1;
 export class BattleJournal implements OnDestroy {
   session = inject(GameSessionService);
   router = inject(Router);
+  imageService = inject(UnitImageService);
 
   isAutoplayActive = signal(false);
   private autoplayTimer: ReturnType<typeof setInterval> | null = null;
@@ -172,7 +174,6 @@ export class BattleJournal implements OnDestroy {
     return hp <= 0 ? 'dead' : 'alive';
   }
 
-
   //AUTOPLAY
   private startAutoplayTimer() {
     this.clearAutoplayTimer();
@@ -222,6 +223,13 @@ export class BattleJournal implements OnDestroy {
     return false;
   }
 
+  getCombatantImage = (combatant: Combatant, side: 0 | 1): string => {
+    return this.imageService.getCombatantImagePath(combatant.unit_type_name, side);
+  };
+
+  ngOnInit() {
+    this.imageService.updateConfig({ basePath: '/assets/images/128px' });
+  }
   ngOnDestroy() {
     this.clearAutoplayTimer();
   }
