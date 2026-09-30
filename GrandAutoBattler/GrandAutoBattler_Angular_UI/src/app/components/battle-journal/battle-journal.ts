@@ -172,8 +172,10 @@ export class BattleJournal implements OnDestroy {
     return hp <= 0 ? 'dead' : 'alive';
   }
 
+
+  //AUTOPLAY
   private startAutoplayTimer() {
-    this.clearAutoplayTimer(); // Safety: clear any existing timer
+    this.clearAutoplayTimer();
     this.autoplayTimer = setInterval(() => {
       this.autoplayTick();
     }, AUTOPLAY_TICK_MS);
@@ -187,20 +189,17 @@ export class BattleJournal implements OnDestroy {
   }
 
   private autoplayTick() {
-    // If we are in a dramatic delay, decrement counter and skip this tick
     if (this.dramaticTicksLeft > 0) {
       this.dramaticTicksLeft--;
       return;
     }
 
-    // If we are already on the last page, stop autoplay
     if (this.currentPage() >= this.totalEvents() - 1) {
       this.isAutoplayActive.set(false);
       this.clearAutoplayTimer();
       return;
     }
 
-    // Advance to next page
     this.currentPage.update((v) => v + 1);
 
     // Check if the new currentEvent causes a death
