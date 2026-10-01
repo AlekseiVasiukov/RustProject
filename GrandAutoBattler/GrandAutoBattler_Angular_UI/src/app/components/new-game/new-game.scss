@@ -1,10 +1,11 @@
-// @import '../../../styles/variables';
+@import '../../../styles/variables.scss';
 @import '../../../styles/styles.scss';
 @import '../../../styles/mixins';
 
 .game-zone {
   @include game-zone-style;
   @include shadowed_bordered_card;
+  position: relative;
 }
 
 .new-game-container {
@@ -15,61 +16,90 @@
   // justify-content: end;
   // gap: 0.5rem;
 }
-
+.bg-picture {
+  // align-content: stretch;
+  object-fit: cover;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
 .description {
+  // z-index: 1;
+  justify-self: center;
+
+  // align-content: center;
+  position: relative;
+  // background-color: yellow;
+  z-index: 1;
   display: flex;
+  justify-content: center;
+  text-align: center;
+  // height: 100%^;
+  height: 100%;
+  width: 100%;
   flex-direction: column;
   // align-items: center;
 
   // justify-items: ;
   // flex-shrink: 0;
-  text-align: center;
-  justify-content: flex-end;
+  // text-align: center;
+  // justify-content: space-around;
+  // align-items: center;
+
   // flex-flow: i;
   // flex-wrap: 0;
   // flex-grow: 0;
   // flex-basis: 0;
-  padding: 0 0.5rem;
-  margin: 0;
+  // padding: 0 0.5rem;
+  // margin: 0;
+}
+.game-title {
+  background-color: #0009;
+  font-size: large;
+  font-weight: bold;
+  // text-shadow: 22 11px 8px rgba(0, 0, 0, 0.5);
 }
 
-.game-bg {
-  position: relative;
-  // overflow: hidden;
-  overflow: hidden;
-}
+// .game-bg {
+//   position: relative;
+//   // overflow: hidden;
+//   overflow: hidden;
+// }
 
-.game-bg img,
-.game-bg video {
-  // width: ;
-  // height: auto;
-  object-fit: cover;
-  image-rendering: pixelated;
-}
+// .game-bg img,
+// .game-bg video {
+//   // width: ;
+//   // height: auto;
+//   object-fit: cover;
+//   image-rendering: pixelated;
+// }
 
-.game-bg::after {
-  align-self: normal;
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0.3) 0,
-      // rgba(0, 0, 0, 0.35) 1px,
-      // transparent 2px,
-      transparent 1px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.3) 0,
-      // rgba(0, 0, 0, 0.2) 1px,
-      // transparent 2px,
-      transparent 1px
-    );
-  mix-blend-mode: normal;
-}
+// .game-bg::after {
+//   align-self: normal;
+//   content: '';
+//   position: absolute;
+//   inset: 0;
+//   pointer-events: none;
+//   background:
+//     repeating-linear-gradient(
+//       to right,
+//       rgba(0, 0, 0, 0.3) 0,
+//       // rgba(0, 0, 0, 0.35) 1px,
+//       // transparent 2px,
+//       transparent 1px
+//     ),
+//     repeating-linear-gradient(
+//       to bottom,
+//       rgba(0, 0, 0, 0.3) 0,
+//       // rgba(0, 0, 0, 0.2) 1px,
+//       // transparent 2px,
+//       transparent 1px
+//     );
+//   mix-blend-mode: normal;
+// }
 
 // @import '../../../styles/variables.scss';
 
