@@ -1,6 +1,6 @@
 <div class="pixel-picture" [style.max-width]="width()" [style.max-height]="height()">
   <div class="pixel-picture__image-wrapper">
-    <img [src]="src()" [alt]="alt()" class="pixel-picture__image" />
+    <img [src]="src()" [alt]="alt()" class="pixel-picture__image" loading="lazy" />
     <div class="pixel-picture__grid" [style.--pixel-size]="pixelSize()"></div>
   </div>
 </div>
