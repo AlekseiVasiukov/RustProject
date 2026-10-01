@@ -6,7 +6,6 @@
   @include game-zone-style;
   @include shadowed_bordered_card;
   position: relative;
-
 }
 
 .new-game-container {
@@ -59,6 +58,8 @@
 }
 .game-title {
   background-color: #0009;
+  font-size: large;
+  font-weight: bold;
   // text-shadow: 22 11px 8px rgba(0, 0, 0, 0.5);
 }
 
