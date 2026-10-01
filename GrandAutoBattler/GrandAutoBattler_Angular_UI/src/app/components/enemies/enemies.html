@@ -1,3 +1,7 @@
+@if (selectedCombatant()) {
+  <app-combatant-details [combatant]="selectedCombatant()"></app-combatant-details>
+  <!-- (closed)="selectedCombatant(null)" -->
+}
 <div class="enemies-container">
   <div class="game-zone">
     <!-- <h2>Your Enemies</h2> -->
@@ -7,7 +11,7 @@
       <div class="side our-side">
         <h3 class="side-title golden">Our Forces</h3>
         @for (combatant of ourCombatants(); track combatant.id) {
-          <div class="unit-picture-and-text">
+          <div class="unit-picture-and-text" click="onCombatantClick(combatant">
             <div class="combatant-card golden">
               <div class="combatant-name">{{ getFullName(combatant) }}</div>
               <div class="combatant-type">{{ getUnitType(combatant) }}</div>
