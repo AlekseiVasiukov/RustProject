@@ -1,5 +1,5 @@
 import { Injectable, inject, signal, DestroyRef } from '@angular/core';
-import { MidiPlayerService } from './src/app/core/services/midi-player.service';
+import { MidiPlayerService } from './midi-player.service';
 import * as SoundFont from 'soundfont-player';
 
 @Injectable({
