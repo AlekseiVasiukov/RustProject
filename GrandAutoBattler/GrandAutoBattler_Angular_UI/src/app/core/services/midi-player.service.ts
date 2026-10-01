@@ -3,14 +3,15 @@ import { Subject, Observable } from 'rxjs';
 // import * as MidiPlayer from 'midi-player-js';
 // import Player from 'midi-player-js';
 // import Event from 'midi-player-js';
-import * as MidiPlayer from 'midi-player-js';
-import { EventType } from '@angular/router';
+// import * as MidiPlayer from 'midi-player-js';
+import MidiPlayer from 'midi-player-js';
+// import { EventType } from '@angular/router';
 
 // Extract the actual class from the module namespace
-const PlayerClass = (MidiPlayer as any).default || MidiPlayer;
+// const PlayerClass = (MidiPlayer as any).default || MidiPlayer;
 // const EventClass = (Event as any).default || MidiPlayer;
-type MidiEvent = MidiPlayer.Event;
-type MidiTrack = MidiPlayer.Track;
+// type MidiEvent = MidiPlayer.Event;
+// type MidiTrack = MidiPlayer.Track;
 
 export interface MidiNoteEvent {
   note: number; // MIDI note number (0-127)
@@ -33,15 +34,17 @@ export class MidiPlayerService {
   private noteSubject = new Subject<MidiNoteEvent>();
   noteEvents$: Observable<MidiNoteEvent> = this.noteSubject.asObservable();
 
+  private player!: MidiPlayer.Player;
+
   // Internal player instance
-  private player: any;
+  // private player: any;
   // private player: InstanceType<typeof PlayerClass> | null = null;
   constructor() {
     this.initPlayer();
   }
 
   private initPlayer(): void {
-    this.player = new PlayerClass((event: MidiEvent) => {
+    this.player = new MidiPlayer.Player((event: MidiPlayer.Event) => {
       if (event.name === 'Note on' || event.name === 'Note off') {
         this.noteSubject.next({
           note: event.noteNumber ?? 0,
