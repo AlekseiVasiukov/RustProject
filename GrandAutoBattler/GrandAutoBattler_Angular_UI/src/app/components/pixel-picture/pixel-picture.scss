@@ -1,7 +1,7 @@
 .pixel-picture {
   // Container: controls max dimensions, centers content
-  max-width: 100%;
-  margin: 0 auto;
+  // max-width: 100%;
+  // margin: 0 auto;
 
   // Respect explicit dimensions if provided
   // [style.max-width] {
@@ -10,19 +10,27 @@
   // [style.max-height] {
   //   /* set by input */
   // }
+  z-index: 0;
+  inset: 0;
+  position: relative;
 }
 
 .pixel-picture__image-wrapper {
-  position: relative;
-  display: inline-block; // Shrinks to fit the image
-  overflow: hidden; // Clips the grid to the image bounds
+  // position: absolute;
+  // display: inline-block; // Shrinks to fit the image
+  // Clips the grid to the image bounds
 }
 
 .pixel-picture__image {
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-  height: auto;
+  // position: absolute;
+  z-index: 0;
+  // overflow: hidden;
+  object-fit: cover;
+  // display: block;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  // : auto;
   image-rendering: pixelated; // Sharp pixel edges
   // image-rendering: -moz-crisp-edges;
   // image-rendering: pixelated;
@@ -40,12 +48,12 @@
   background:
     repeating-linear-gradient(
       to right,
-      rgba(0, 0, 0, var(--grid-opacity)) 0.5,
+      rgba(0, 0, 0, 0.5),
       transparent var(--pixel-size)
     ),
     repeating-linear-gradient(
       to bottom,
-      rgba(0, 0, 0, var(--grid-opacity)) 0.5,
+      rgba(0, 0, 0, 0.5),
       transparent var(--pixel-size)
     );
 
