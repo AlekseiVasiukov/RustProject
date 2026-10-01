@@ -1,21 +1,23 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameSessionService } from '../../core/services/game-session.service';
 import { Router } from '@angular/router';
 import type { Combatant } from '../../core/models/game.model';
 import { UnitImageService } from '../../core/services/unit-image.service';
-
+import { CombatantDetails } from '../combatant-details/combatant-details';
 @Component({
   selector: 'app-enemies',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CombatantDetails],
   templateUrl: './enemies.html',
   styleUrl: './enemies.scss',
 })
 export class Enemies {
   session = inject(GameSessionService);
   imageService = inject(UnitImageService);
+  // combatantDetails
   router = inject(Router);
+  selectedCombatant = signal<Combatant | null>(null);
 
   //our combatants (side 0)
   ourCombatants = computed(() => {
@@ -36,9 +38,8 @@ export class Enemies {
     return `${first} ${last}`.trim() || 'Unknown';
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.imageService.updateConfig({ basePath: '/assets/images/64px' });
-
   }
   getCombatantImage = (combatant: Combatant, side: 0 | 1): string => {
     return this.imageService.getCombatantImagePath(combatant.unit_type_name, side);
@@ -51,5 +52,9 @@ export class Enemies {
 
   goToBattleJournal() {
     this.router.navigate(['/battle-journal']);
+  }
+
+  onCombatantClick(combatant: Combatant): void {
+    this.selectedCombatant.set(combatant);
   }
 }

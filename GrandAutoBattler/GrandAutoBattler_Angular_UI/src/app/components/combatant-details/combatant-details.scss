@@ -1,0 +1,25 @@
+.combatant-details-card {
+  grid-template-columns: 128 1fr;
+  max-width: 480px;
+}
+
+@media (max-width: 800px) {
+  .combatant-details-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .card-background {
+    position: relative;
+    height: 160px;
+    inset: auto;
+  }
+
+  .avatar {
+    grid-column: 1/-1;
+    margin: 0 auto;
+  }
+}
