@@ -13,12 +13,16 @@
   z-index: 0;
   inset: 0;
   position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .pixel-picture__image-wrapper {
   // position: absolute;
   // display: inline-block; // Shrinks to fit the image
   // Clips the grid to the image bounds
+  width: 100%;
+  height: 100%;
 }
 
 .pixel-picture__image {
@@ -46,16 +50,8 @@
   z-index: 1;
 
   background:
-    repeating-linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0.5),
-      transparent var(--pixel-size)
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.5),
-      transparent var(--pixel-size)
-    );
+    repeating-linear-gradient(to right, rgba(0, 0, 0, 0.5), transparent var(--pixel-size)),
+    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent var(--pixel-size));
 
   // Optional: add a dim overlay
   background-color: rgba(0, 0, 0, 0.1);
