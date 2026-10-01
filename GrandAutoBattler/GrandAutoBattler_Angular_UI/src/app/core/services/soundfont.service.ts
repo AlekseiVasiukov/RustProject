@@ -17,6 +17,7 @@ export class SoundFontService {
 
   constructor() {
     this.subscribeToMidiEvents();
+    console.log('Soundfont constructed');
   }
 
   private ensureAudioContext(): void {
@@ -39,6 +40,8 @@ export class SoundFontService {
 
   private subscribeToMidiEvents(): void {
     this.midiPlayer.noteEvents$.subscribe((event) => {
+      console.log('event');
+
       if (!this.piano || !this.audioContext) return;
 
       if (event.isNoteOn) {

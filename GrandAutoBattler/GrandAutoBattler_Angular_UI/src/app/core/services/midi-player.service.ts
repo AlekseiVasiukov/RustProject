@@ -53,15 +53,18 @@ export class MidiPlayerService {
           isNoteOn: event.name === 'Note on' && (event.velocity ?? 0) > 0,
         });
       }
+      console.log(this.player);
     });
 
     // Only use valid events from PlayerEventType
     this.player.on('playing', () => {
       this._isPlaying.set(true);
+      console.log(this._isPlaying);
     });
 
     this.player.on('endOfFile', () => {
       this._isPlaying.set(false);
+      console.log(this._isPlaying);
     });
   }
 
@@ -74,20 +77,24 @@ export class MidiPlayerService {
       })
       .then((buffer) => {
         this.player?.loadArrayBuffer(buffer);
+        console.log(buffer);
       });
   }
 
   play(): void {
     this.player?.play();
+    console.log('play');
   }
 
   stop(): void {
     this.player?.stop();
     this._isPlaying.set(false);
+    console.log('stop');
   }
 
   destroy(): void {
     this.stop();
     this.noteSubject.complete();
+    console.log('desroyed');
   }
 }

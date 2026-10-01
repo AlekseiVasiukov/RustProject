@@ -17,5 +17,7 @@ export class App {
 
   async onUserInteraction(): Promise<void> {
     await this.soundfont.loadInstrument();
+                            console.log('loaded instrument');
+
   }
 }
