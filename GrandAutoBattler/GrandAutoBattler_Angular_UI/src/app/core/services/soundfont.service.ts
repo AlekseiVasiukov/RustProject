@@ -29,30 +29,57 @@ export class SoundFontService {
     }
   }
 
-  async loadInstrument(): Promise<void> {
-    this.ensureAudioContext();
-    if (!this.audioContext || this.piano) return;
+async loadInstrument(): Promise<void> {
+  this.ensureAudioContext();
 
-    this.piano = await SoundFont.instrument(this.audioContext, 'acoustic_grand_piano', {
+  console.log('AudioContext:', this.audioContext?.state);
+
+  if (!this.audioContext || this.piano) return;
+
+  this.piano = await SoundFont.instrument(
+    this.audioContext,
+    'acoustic_grand_piano',
+    {
       gain: this._volume(),
-    });
-  }
+    }
+  );
 
-  private subscribeToMidiEvents(): void {
-    this.midiPlayer.noteEvents$.subscribe((event) => {
-      console.log('event');
+  console.log('Piano loaded:', this.piano);
+  console.log('AudioContext after load:', this.audioContext.state);
+}
 
-      if (!this.piano || !this.audioContext) return;
+ private subscribeToMidiEvents(): void {
+  this.midiPlayer.noteEvents$.subscribe((event) => {
 
-      if (event.isNoteOn) {
-        //volume slide affects
-        const gain = this._volume() * (event.velocity / 127);
-        this.piano.play(event.noteName, this.audioContext.currentTime, {
-          gain: gain,
-        });
-      }
-    });
-  }
+    // console.log('MIDI NOTE:', event);
+
+    if (!this.piano || !this.audioContext) {
+      console.warn('No piano or AudioContext');
+      return;
+    }
+
+    if (event.isNoteOn) {
+      const gain = this._volume() * (event.velocity / 127);
+
+      console.log(
+        'PLAY:',
+        event.noteName,
+        'gain:',
+        gain,
+        'context:',
+        this.audioContext.state
+      );
+
+      this.piano.play(
+        event.noteName,
+        this.audioContext.currentTime,
+        {
+          gain,
+        }
+      );
+    }
+  });
+}
 
   setVolume(value: number): void {
     this._volume.set(Math.max(0, Math.min(1, value)));

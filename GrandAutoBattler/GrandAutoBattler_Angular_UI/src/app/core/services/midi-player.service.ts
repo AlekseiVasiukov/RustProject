@@ -40,7 +40,7 @@ export class MidiPlayerService {
   // private player: any;
   // private player: InstanceType<typeof PlayerClass> | null = null;
   constructor() {
-    this.initPlayer();
+    // this.initPlayer();
   }
 
   private initPlayer(): void {
@@ -53,7 +53,7 @@ export class MidiPlayerService {
           isNoteOn: event.name === 'Note on' && (event.velocity ?? 0) > 0,
         });
       }
-      console.log(this.player);
+      // console.log(this.player);
     });
 
     // Only use valid events from PlayerEventType
@@ -77,7 +77,7 @@ export class MidiPlayerService {
       })
       .then((buffer) => {
         this.player?.loadArrayBuffer(buffer);
-        console.log(buffer);
+        // console.log(buffer);
       });
   }
 
