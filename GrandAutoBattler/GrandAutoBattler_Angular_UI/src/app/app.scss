@@ -4,6 +4,8 @@
   max-height: 5rem;
   // grid-template-columns: auto auto auto;
   display: flex;
+  // height: 100%;
+  align-items: center;
   justify-content: space-between;
 
   .game-title {
@@ -15,6 +17,10 @@
   .technologies-text {
     font-size: smaller;
     font-weight: lighter;
+  }
+
+  .music-player{
+    max-height: 2rem;
   }
 
   .developed-by-div {

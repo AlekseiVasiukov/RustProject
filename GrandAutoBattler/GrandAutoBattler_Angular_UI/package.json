@@ -17,7 +17,9 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "midi-player-js": "^2.0.17",
     "rxjs": "~7.8.0",
+    "soundfont-player": "^0.12.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
