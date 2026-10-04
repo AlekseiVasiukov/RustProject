@@ -1,0 +1,23 @@
+<div class="music-player">
+  <!-- Native controls used for play/pause/seek -->
+  <audio #audioPlayer></audio>
+
+  <!-- <audio #audioPlayer controls></audio> -->
+  <!-- (change)="onOurFactionChange($event)" -->
+  <div class="volume-control">
+    <button class="btn-advance-stage" (click)="onPlay($event)">♪♫</button>
+    <!-- <button (click)="onPlay($event)">PLAY</button>
+    <button (click)="onPause($event)">PAUSE</button> -->
+    <!-- <label for="volume">Volume:</label> -->
+    <!-- <label for="volume">&#127925;</label> -->
+    <input class="volume-input"
+      type="range"
+      id="volume"
+      min="0"
+      max="100"
+      [value]="volume"
+      (input)="onVolumeChange($event)"
+    />
+    <!-- <span>{{ volume }}%</span> -->
+  </div>
+</div>
