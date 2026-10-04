@@ -32,11 +32,11 @@ export class MusicPlayerComponent implements AfterViewInit {
         // Optional: Uncomment the line below if you want it to auto-play.
         // Note: Browsers often block auto-play without user interaction.
         // environment
-        if (environment.production) {
-          audioElement.play().catch((e) => console.log('Auto-play prevented by browser'));
-        } else {
-          console.log('Environment is not "production" - music is not autoplayed');
-        }
+        // if (environment.production) {
+        //   audioElement.play().catch((e) => console.log('Auto-play prevented by browser'));
+        // } else {
+        //   console.log('Environment is not "production" - music is not autoplayed');
+        // }
       }
     });
   }
