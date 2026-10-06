@@ -4,12 +4,12 @@
 use crate::combatant_manager::Combatant;
 use crate::game_data_retriever::{Config, IdRegistry};
 use rand::Rng;
+use rand::RngExt;
 use rand::prelude::IndexedRandom;
 use rand::rngs::ThreadRng;
 use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
 use serde_json;
-use rand::RngExt;
 use std::collections::BTreeMap;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -99,8 +99,8 @@ impl BattleJournal {
 
         let mut turn_by = *[0, 1].choose(&mut rng).unwrap_or(&0);
 
-        let mut our_not_taken: Vec<usize> = (0..our_fighters.len()).collect();
-        let mut their_not_taken: Vec<usize> = (0..their_fighters.len()).collect();
+        let mut our_not_taken_turn_yet: Vec<usize> = (0..our_fighters.len()).collect();
+        let mut their_not_taken_turn_yet: Vec<usize> = (0..their_fighters.len()).collect();
 
         let mut winner_side = 0;
 
@@ -123,28 +123,31 @@ impl BattleJournal {
                 break;
             }
 
-            if our_not_taken.is_empty() && their_not_taken.is_empty() {
+            if our_not_taken_turn_yet.is_empty() && their_not_taken_turn_yet.is_empty() {
                 current_round += 1;
                 current_turn = 1;
-                our_not_taken = (0..our_fighters.len())
+                our_not_taken_turn_yet = (0..our_fighters.len())
                     .filter(|&i| our_fighters[i].current_health_points > 0)
                     .collect();
-                their_not_taken = (0..their_fighters.len())
+                their_not_taken_turn_yet = (0..their_fighters.len())
                     .filter(|&i| their_fighters[i].current_health_points > 0)
                     .collect();
             }
 
+            our_not_taken_turn_yet.retain(|&i| our_fighters[i].current_health_points > 0);
+            their_not_taken_turn_yet.retain(|&i| their_fighters[i].current_health_points > 0);
+
             let attacker_option = if turn_by == 0 {
-                our_not_taken.choose(&mut rng).map(|&i| (i, 0))
+                our_not_taken_turn_yet.choose(&mut rng).map(|&i| (i, 0))
             } else {
-                their_not_taken.choose(&mut rng).map(|&i| (i, 1))
+                their_not_taken_turn_yet.choose(&mut rng).map(|&i| (i, 1))
             };
 
             if let Some((idx, side)) = attacker_option {
                 if side == 0 {
-                    our_not_taken.retain(|&i| i != idx);
+                    our_not_taken_turn_yet.retain(|&i| i != idx);
                 } else {
-                    their_not_taken.retain(|&i| i != idx);
+                    their_not_taken_turn_yet.retain(|&i| i != idx);
                 }
 
                 let (attacker_id, attacker_name) = if side == 0 {
