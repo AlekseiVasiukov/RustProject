@@ -1,10 +1,11 @@
 use rand::Rng;
+use rand::RngExt;
 use rand::prelude::IndexedRandom;
 use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
-use rand::RngExt;
 
 use std::collections::BTreeMap;
+use std::intrinsics::fabs;
 
 // use std::error::Error;
 use crate::error_types::{GameEngineError, Result};
@@ -41,7 +42,8 @@ impl Combatant {
             .copied()
             .unwrap_or(0);
 
-        let config = game_data_retriever::get_config().unwrap();
+        let config = game_data_retriever::get_config()?;
+        // let config = game_data_retriever::get_config().unwrap();
 
         // if !unittype.females_only {
         // gender = *[0, 1].choose(&mut rng).unwrap();
@@ -52,22 +54,29 @@ impl Combatant {
             // Female names - use .copied() to avoid clone, and fallback with .copied().ok()
 
             //female names
-            if !faction.female_first_names.is_empty() {
-                first_name = Some(faction.female_first_names.choose(&mut rng).unwrap().clone());
-            }
+            first_name = faction.female_first_names.choose(&mut rng).cloned();
+            // if !faction.female_first_names.is_empty() {
+            //     first_name = Some(faction.female_first_names.choose(&mut rng)).copied();
+            //     // first_name = Some(faction.female_first_names.choose(&mut rng).unwrap().clone());
+            // }
 
-            if !faction.female_last_names.is_empty() {
-                last_name = Some(faction.female_last_names.choose(&mut rng).unwrap().clone());
-            }
+            last_name = faction.female_last_names.choose(&mut rng).cloned();
+            // if !faction.female_last_names.is_empty() {
+            //     last_name = Some(faction.female_last_names.choose(&mut rng)?.clone());
+            //     // last_name = Some(faction.female_last_names.choose(&mut rng).unwrap().clone());
+            // }
         } else {
             //male names
-            if !faction.male_first_names.is_empty() {
-                first_name = Some(faction.male_first_names.choose(&mut rng).unwrap().clone());
-            }
-
-            if !faction.male_last_names.is_empty() {
-                last_name = Some(faction.male_last_names.choose(&mut rng).unwrap().clone());
-            }
+            first_name = faction.male_first_names.choose(&mut rng).cloned();
+            // if !faction.male_first_names.is_empty() {
+            //     first_name = Some(faction.male_first_names.choose(&mut rng)?.clone());
+            //     // first_name = Some(faction.male_first_names.choose(&mut rng).unwrap().clone());
+            // }
+            last_name = faction.male_last_names.choose(&mut rng).cloned();
+            // if !faction.male_last_names.is_empty() {
+            //     last_name = Some(faction.male_last_names.choose(&mut rng)?.clone());
+            //     // last_name = Some(faction.male_last_names.choose(&mut rng).unwrap().clone());
+            // }
         }
         //     first_name = faction.female_first_names.choose(&mut rng).copied();
         //     last_name = faction.female_last_names.choose(&mut rng).copied();
@@ -134,32 +143,57 @@ impl Combatant {
         }
 
         let keys: Vec<_> = parameters.keys().cloned().collect();
+
         for &i in &bonus_affected_indices {
             if let Some(key) = keys.get(i) {
-                let val = parameters.get_mut(key).unwrap();
-                if *val < *maximum {
-                    *val = val.saturating_add(1).min(*maximum);
+                if let Some(val) = parameters.get_mut(key) {
+                    if *val < *maximum {
+                        *val = val.saturating_add(1).min(*maximum);
+                    }
                 }
             }
         }
+        // for &i in &bonus_affected_indices {
+        //     if let Some(key) = keys.get(i) {
+        //         let val = parameters.get_mut(key).unwrap();
+        //         if *val < *maximum {
+        //             *val = val.saturating_add(1).min(*maximum);
+        //         }
+        //     }
+        // }
         //the indices withou bonuses, even if it's only one will be randomly chosen for decreasing by 1 as penalty.
-        let mut unaffected_indices: Vec<usize> = Vec::new();
-        for i in 0..parameters.len() {
-            if !bonus_affected_indices.contains(&i) {
-                unaffected_indices.push(i);
-            }
-        }
-        //decreasing left parameter
-        if !unaffected_indices.is_empty() {
-            let random_unaffected = Some(unaffected_indices.choose(&mut rng).unwrap()).unwrap();
 
-            if let Some(key) = keys.get(*random_unaffected) {
-                let val = parameters.get_mut(key).unwrap();
-                if *val < *maximum {
-                    *val = val.saturating_sub(1).max(*minimum);
+        let unaffected_indices: Vec<usize> = (0..parameters.len())
+            .filter(|i| !bonus_affected_indices.contains(i))
+            .collect();
+
+        // let mut unaffected_indices: Vec<usize> = Vec::new();
+        // for i in 0..parameters.len() {
+        //     if !bonus_affected_indices.contains(&i) {
+        //         unaffected_indices.push(i);
+        //     }
+        // }
+        //decreasing left parameter
+
+        if let Some(&random_unaffected) = unaffected_indices.choose(&mut rng) {
+            if let Some(key) = keys.get(random_unaffected) {
+                if let Some(val) = parameters.get_mut(key) {
+                    if *val < *minimum {
+                        *val = val.saturating_sub(1).max(*minimum);
+                    }
                 }
             }
         }
+        // if !unaffected_indices.is_empty() {
+        //     let random_unaffected = Some(unaffected_indices.choose(&mut rng).unwrap()).unwrap();
+
+        //     if let Some(key) = keys.get(*random_unaffected) {
+        //         let val = parameters.get_mut(key).unwrap();
+        //         if *val < *maximum {
+        //             *val = val.saturating_sub(1).max(*minimum);
+        //         }
+        //     }
+        // }
     }
 
     pub(crate) fn generate_health_points(config: &Config, healthParameter: u8) -> usize {
@@ -167,7 +201,7 @@ impl Combatant {
         let health_bonus = config.HEALTH_PERCENTAGE_PER_POINT * health_bonus_points;
         let health_points = config.BASIC_HEALTH + (config.BASIC_HEALTH * health_bonus) / 100.0;
 
-        if health_points < 0.0 {
+        if health_points < 1.0 {
             1
         } else {
             health_points.trunc() as usize
