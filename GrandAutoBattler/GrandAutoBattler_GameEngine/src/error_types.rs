@@ -1,5 +1,7 @@
 use thiserror::Error;
 
+use crate::error_types;
+
 //different error types;
 #[derive(Error, Debug)]
 pub enum GameEngineError {
@@ -27,3 +29,6 @@ pub enum GameEngineError {
     // #[error("Missing parameter: {0}")]
     // MissingParameter(String),
 }
+
+// alias for convenience. Not Result<T,error::GameEngineError>, using GameResult<T>
+pub type Result<T> = std::result::Result<T, GameEngineError>;

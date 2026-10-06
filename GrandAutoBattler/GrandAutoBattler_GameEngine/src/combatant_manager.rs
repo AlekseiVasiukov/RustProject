@@ -1,9 +1,13 @@
 use rand::Rng;
+use rand::prelude::IndexedRandom;
 use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
+use rand::RngExt;
+
 use std::collections::BTreeMap;
 
-use std::error::Error;
+// use std::error::Error;
+use crate::error_types::{GameEngineError, Result};
 
 use crate::game_data_retriever::{self, Config, Faction, UnitType};
 
@@ -23,21 +27,30 @@ pub struct Combatant {
 }
 
 impl Combatant {
-    pub fn generate_based_on_data(id: String, faction: Faction, mut unittype: UnitType) -> Self {
+    pub fn generate_based_on_data(
+        id: String,
+        faction: Faction,
+        mut unittype: UnitType,
+    ) -> Result<Self> {
         //choosing name:
-
         let mut first_name: Option<String> = None;
         let mut last_name: Option<String> = None;
-        let mut rng = rand::thread_rng();
-        let mut gender = 0;
+        let mut rng = rand::rng();
+        // let mut gender = 0;
+        let gender = rand::seq::IndexedRandom::choose(&[0, 1], &mut rng)
+            .copied()
+            .unwrap_or(0);
 
         let config = game_data_retriever::get_config().unwrap();
 
         // if !unittype.females_only {
-        gender = *[0, 1].choose(&mut rng).unwrap();
+        // gender = *[0, 1].choose(&mut rng).unwrap();
+        // gender = *[0, 1].choose(&mut rng).copied().uwrap_or(0);
         // }
 
         if gender == 0 {
+            // Female names - use .copied() to avoid clone, and fallback with .copied().ok()
+
             //female names
             if !faction.female_first_names.is_empty() {
                 first_name = Some(faction.female_first_names.choose(&mut rng).unwrap().clone());
@@ -56,6 +69,33 @@ impl Combatant {
                 last_name = Some(faction.male_last_names.choose(&mut rng).unwrap().clone());
             }
         }
+        //     first_name = faction.female_first_names.choose(&mut rng).copied();
+        //     last_name = faction.female_last_names.choose(&mut rng).copied();
+        // } else {
+        //     // Male names
+        //     first_name = faction.male_first_names.choose(&mut rng).copied();
+        //     last_name = faction.male_last_names.choose(&mut rng).copied();
+        // }
+
+        // if gender == 0 {
+        //     //female names
+        //     if !faction.female_first_names.is_empty() {
+        //         first_name = Some(faction.female_first_names.choose(&mut rng)).copied();
+        //     }
+
+        //     if !faction.female_last_names.is_empty() {
+        //         last_name = Some(faction.female_last_names.choose(&mut rng).copied());
+        //     }
+        // } else {
+        //     //male names
+        //     if !faction.male_first_names.is_empty() {
+        //         first_name = Some(faction.male_first_names.choose(&mut rng).copied());
+        //     }
+
+        //     if !faction.male_last_names.is_empty() {
+        //         last_name = Some(faction.male_last_names.choose(&mut rng).copied());
+        //     }
+        // }
 
         Self::apply_random_variance_to_parameters(
             &mut unittype.parameters_set,
@@ -65,17 +105,17 @@ impl Combatant {
 
         let hp = Self::generate_health_points(&config, unittype.parameters_set["health"]);
 
-        Self {
-            id: id,
+        Ok(Self {
+            id,
             faction_name: faction.name,
             unit_type_name: unittype.unit_type_name.clone(),
             unit_type_pretty_name: unittype.unit_type_pretty_name.clone(),
             parameters: unittype.parameters_set.clone(),
             health_points: hp.clone(),
             current_health_points: hp.clone(),
-            first_name: first_name,
-            last_name: last_name,
-        }
+            first_name,
+            last_name,
+        })
     }
 
     pub(crate) fn apply_random_variance_to_parameters(
@@ -83,14 +123,14 @@ impl Combatant {
         maximum: &u8,
         minimum: &u8,
     ) {
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         //can add bonus points to many parameter, but guarantying at least one will be unaffected.
         let number_of_applicable_parameters = parameters.len().saturating_sub(1);
 
         //Destributing bonus points
         let mut bonus_affected_indices = vec![0; number_of_applicable_parameters];
         for i in 0..(number_of_applicable_parameters) {
-            bonus_affected_indices[i] = rand::thread_rng().gen_range(0..parameters.len());
+            bonus_affected_indices[i] = rand::rng().random_range(0..parameters.len());
         }
 
         let keys: Vec<_> = parameters.keys().cloned().collect();
