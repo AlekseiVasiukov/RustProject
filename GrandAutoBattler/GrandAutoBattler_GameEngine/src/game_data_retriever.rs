@@ -1,7 +1,10 @@
 use rand::Rng;
+use rand::RngExt;
+use rand::seq::SliceRandom;
 use serde::Deserialize;
 use std::collections::{BTreeMap, BTreeSet};
-use std::error::Error;
+// use std::error::Error;
+use crate::error_types::{GameEngineError, Result};
 
 use crate::toml_parser;
 
@@ -53,7 +56,7 @@ impl UnitType {
     }
 }
 
-//From pattern, good shit
+//This 'from' pattern is very good and idomatic, it allows to make conversiion without fails.
 impl From<toml_parser::UnitTypesToml> for UnitType {
     fn from(item: toml_parser::UnitTypesToml) -> Self {
         let mut parameters_set = BTreeMap::new();
@@ -71,14 +74,16 @@ impl From<toml_parser::UnitTypesToml> for UnitType {
     }
 }
 
-pub(crate) fn get_config() -> Result<Config, Box<dyn Error>> {
-    let config = toml_parser::load_config()?;
-    Ok(config)
+pub(crate) fn get_config() -> Result<Config> {
+    toml_parser::load_config()
+    // let config = toml_parser::load_config()?;
+    // Ok(config)
 }
 
-pub(crate) fn get_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
-    let factions = toml_parser::load_factions()?;
-    Ok(factions)
+pub(crate) fn get_factions() -> Result<Vec<Faction>> {
+    toml_parser::load_factions()
+    // let factions = toml_parser::load_factions()?;
+    // Ok(factions)
 }
 
 #[derive(Debug, Deserialize, Clone)]

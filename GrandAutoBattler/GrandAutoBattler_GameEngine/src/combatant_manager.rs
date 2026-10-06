@@ -5,7 +5,6 @@ use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
 
 use std::collections::BTreeMap;
-use std::intrinsics::fabs;
 
 // use std::error::Error;
 use crate::error_types::{GameEngineError, Result};
@@ -36,11 +35,13 @@ impl Combatant {
         //choosing name:
         let mut first_name: Option<String> = None;
         let mut last_name: Option<String> = None;
-        let mut rng = rand::rng();
-        // let mut gender = 0;
-        let gender = rand::seq::IndexedRandom::choose(&[0, 1], &mut rng)
-            .copied()
-            .unwrap_or(0);
+        let mut rng = rand::rngs::ThreadRng::default();
+        let mut gender = 0;
+        let mut turn_by = *[0, 1].choose(&mut rng).unwrap_or(&0);
+
+        // let gender = rand::seq::IndexedRandom::choose(&[0, 1], &mut rng)
+        // .copied()
+        // .unwrap_or(0);
 
         let config = game_data_retriever::get_config()?;
         // let config = game_data_retriever::get_config().unwrap();
