@@ -118,7 +118,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
         .max_depth(1)
         .min_depth(1)
         .into_iter()
-        .filter_map(Result::ok)
+        .filter_map(|e| e.ok())
         .filter(|e| e.file_type().is_dir())
     {
         let f_name = String::from(entry.file_name().to_string_lossy());
@@ -136,10 +136,10 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
         // return Err("Factions folder is empty".into());
     }
 
-    let mut factions_list: Vec<Faction> = Vec::new();
+    // let mut factions_list: Vec<Faction> = Vec::new();
     for faction_name in factions_names {
         //Checking if there are types
-        let faction_folder_path = factions_folder_path.join(faction_name);
+        let faction_folder_path = factions_folder_path.join(&faction_name);
         let faction_types_path = faction_folder_path.join("UnitTypes.toml");
         let toml_content = match fs::read_to_string(&faction_types_path) {
             Err(e) => {
