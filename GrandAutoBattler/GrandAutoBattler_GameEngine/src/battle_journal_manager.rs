@@ -2,6 +2,7 @@
 //Battle Journal .-.. Turn -<
 //                            .Outcome .-.. Effect ((Enum Effects types))
 use crate::combatant_manager::Combatant;
+use crate::error_types::{GameEngineError, Result};
 use crate::game_data_retriever::{Config, IdRegistry};
 use rand::Rng;
 use rand::RngExt;
@@ -73,7 +74,7 @@ impl BattleJournal {
 
     pub(crate) fn generate_based_on_data(sides: &BTreeMap<usize, Vec<Combatant>>) -> Self {
         // let mut rng = rand::rng();
-        let mut rng = rand::rng();
+        let mut rng = rand::rngs::ThreadRng::default();
         // let mut rng = ThreadRng::default();
 
         let mut game_events: Vec<GameEvent> = Vec::new();

@@ -1,15 +1,15 @@
 use crate::battle_journal_manager::{self, *};
 use crate::combatant_manager::{self, Combatant};
+use crate::error_types::{GameEngineError, Result};
 use crate::game_data_retriever::{self, Config, Faction, UnitType};
 use crate::game_result_manager::GameResult;
-
 use crate::game_result_manager::*;
 
-use rand::seq::SliceRandom;
-use std::io::{Write, stdout};
-
 use crate::game_data_retriever::IdRegistry;
-use std::{collections::BTreeMap, error::Error};
+use rand::RngExt;
+// use rand::seq::SliceRandom;
+use std::collections::BTreeMap;
+use std::io::{Write, stdout};
 
 #[derive(Debug, Clone)]
 pub struct GameInstance {
@@ -33,7 +33,7 @@ pub struct GameInstance {
 // }
 
 impl GameInstance {
-    pub fn new(new_id: &String) -> Result<Self, Box<dyn Error>> {
+    pub fn new(new_id: &String) -> Result<Self> {
         let config = game_data_retriever::get_config()?;
         let available_factions = game_data_retriever::get_factions()?;
 
@@ -52,7 +52,7 @@ impl GameInstance {
         &mut self,
         selected_factions: &BTreeMap<usize, usize>,
         selected_unittypes: &BTreeMap<usize, Option<usize>>,
-    ) -> Result<GameResult, Box<dyn Error>> {
+    ) -> Result<GameResult> {
         //Plan
 
         //1) Get our faction
@@ -69,35 +69,78 @@ impl GameInstance {
         //5) Genarate Battle journal...
 
         //calculating how much fighters
-        let number_of_our_non_empty_combatants: usize =
+        let number_of_our_non_null_combatants: usize =
             selected_unittypes.values().filter(|v| v.is_some()).count();
         let mut our_units: Vec<Combatant> = Vec::new();
 
         // let mut combatant_manager = combatant_manager::CombatantManager::new();
 
-        for (key, value) in selected_unittypes.iter().filter(|(_, v)| v.is_some()) {
+        for (_key, value) in selected_unittypes.iter().filter(|(_, v)| v.is_some()) {
             let new_id = self.combatants_register_id.generate_id();
-            let faction = &self.factions[selected_factions[&0]];
-            let unittype = &self.factions[selected_factions[&0]].unit_types[value.unwrap()];
 
-            // for selected_unittype in selected_unittypes{
-            //     let unittype = &self.factions[selected_factions[&0]].unit_types[selected_factions];
-            // }
-            let mut unittype_clone = unittype.clone();
+            let faction_index = *selected_factions.get(&0).ok_or_else(|| {
+                GameEngineError::FactionNotFound(
+                    "No faction selected for player (index 0)".to_string(),
+                )
+            })?;
+
+            let faction = self.factions.get(faction_index).ok_or_else(|| {
+                GameEngineError::FactionNotFound(format!(
+                    "Faction index {} out of range",
+                    faction_index
+                ))
+            })?;
+
+            let unittype_index = value.unwrap_or_default();
+            let unittype = faction
+                .unit_types
+                .get(unittype_index)
+                .ok_or_else(|| GameEngineError::UnitTypeNotFound(unittype_index))?
+                .clone();
+
             let new_combatant =
-                Combatant::generate_based_on_data(new_id, faction.clone(), unittype_clone);
+                Combatant::generate_based_on_data(new_id, faction.clone(), unittype)?;
+
             our_units.push(new_combatant);
         }
 
+        // for (key, value) in selected_unittypes.iter().filter(|(_, v)| v.is_some()) {
+        //     let new_id = self.combatants_register_id.generate_id();
+        //     let faction = &self.factions[selected_factions[&0]];
+        //     let unittype = &self.factions[selected_factions[&0]].unit_types[value.unwrap()];
+
+        //     // for selected_unittype in selected_unittypes{
+        //     //     let unittype = &self.factions[selected_factions[&0]].unit_types[selected_factions];
+        //     // }
+        //     let mut unittype_clone = unittype.clone();
+        //     let new_combatant =
+        //         Combatant::generate_based_on_data(new_id, faction.clone(), unittype_clone)?;
+        //     our_units.push(new_combatant);
+        // }
+
         let mut their_units: Vec<Combatant> = Vec::new();
-        for n in 0..number_of_our_non_empty_combatants {
+        for n in 0..number_of_our_non_null_combatants {
             let new_id = self.combatants_register_id.generate_id();
             let faction = &self.factions[selected_factions[&1]];
-            let mut rng = rand::thread_rng();
+            let mut rng = rand::rngs::ThreadRng::default();
 
-            let unittype = self.factions[selected_factions[&1]]
-                .unit_types
-                .choose(&mut rng);
+            let opponent_faction_index = *selected_factions.get(&1).ok_or_else(|| {
+                GameEngineError::FactionNotFound(
+                    "No faction selected for opponent (index 1)".to_string(),
+                )
+            })?;
+
+            let faction = self.factions.get(opponent_faction_index).ok_or_else(|| {
+                GameEngineError::FactionNotFound(format!(
+                    "Faction index {} out of range",
+                    opponent_faction_index
+                ))
+            })?;
+
+            // if let Some(unitType)
+            // let unittype = self.factions[selected_factions[&1]]
+            //     .unit_types
+            //     .choose(&mut rng);
 
             // let new_combatant = Combatant::generate_based_on_data(
             //     new_id,
@@ -107,12 +150,12 @@ impl GameInstance {
             // .clone();
 
             // their_units.push(new_combatant);
-            if let Some(unittype) = unittype {
-                let mut unittype_clone = unittype.clone();
-                let new_combatant =
-                    Combatant::generate_based_on_data(new_id, faction.clone(), unittype_clone);
-                their_units.push(new_combatant);
-            }
+            // if let Some(unittype) = unittype {
+            //     let mut unittype_clone = unittype.clone();
+            //     let new_combatant =
+            //         Combatant::generate_based_on_data(new_id, faction.clone(), unittype_clone)?;
+            //     their_units.push(new_combatant);
+            // }
         }
 
         let mut sides: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();
@@ -120,53 +163,56 @@ impl GameInstance {
         sides.insert(1, their_units);
 
         let battle_journal = battle_journal_manager::BattleJournal::generate_based_on_data(&sides);
+        // let battle_journal = battle_journal_manager::BattleJournal::generate_based_on_data(&sides);
 
-        match GameResult::new(sides, battle_journal) {
-            Ok(result) => {
-                return Ok(result);
-            }
-            Err(e) => {
-                return Err(e);
-            }
-        }
-        // sides.insert(1, opponents_units);
-
-        // Ok(None);
-        // let character1 = Combatant::new(
-        //     "42".to_string(),
-        //     "Humans".to_string(),
-        //     "knight".to_string(),
-        //     Some("Knight".to_string()),
-        //     Some("Gorge".to_string()),
-        //     Some("From Jungle".to_string()),
-        // );
-        // let mut our_units: BTreeMap<usize, Combatant> = BTreeMap::new();
-        // our_units.insert(0, character1);
-
-        // let character2 = Combatant::new(
-        //     "666".to_string(),
-        //     "Demons".to_string(),
-        //     "imp".to_string(),
-        //     Some("Imp".to_string()),
-        //     Some("Jujuka".to_string()),
-        //     Some("Minoris".to_string()),
-        // );
-        // let mut opponents_units: BTreeMap<usize, Combatant> = BTreeMap::new();
-        // opponents_units.insert(0, character2);
-        // let mut sides: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
-        // sides.insert(0, our_units);
-        // sides.insert(1, opponents_units);
-
-        // let generated_combatants: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
-        // match GameResult::new(sides) {
-        //     Ok(result) => {
-        //         return Ok(result);
-        //     }
-        //     Err(e) => {
-        //         return Err(e);
-        //     }
-        // }
+        Ok(GameResult::new(sides, battle_journal))
     }
+    // match GameResult::new(sides, battle_journal) {
+    //     Ok(result) => {
+    //         return Ok(result);
+    //     }
+    //     Err(e) => {
+    //         return Err(e);
+    //     }
+    // }
+    // sides.insert(1, opponents_units);
+
+    // Ok(None);
+    // let character1 = Combatant::new(
+    //     "42".to_string(),
+    //     "Humans".to_string(),
+    //     "knight".to_string(),
+    //     Some("Knight".to_string()),
+    //     Some("Gorge".to_string()),
+    //     Some("From Jungle".to_string()),
+    // );
+    // let mut our_units: BTreeMap<usize, Combatant> = BTreeMap::new();
+    // our_units.insert(0, character1);
+
+    // let character2 = Combatant::new(
+    //     "666".to_string(),
+    //     "Demons".to_string(),
+    //     "imp".to_string(),
+    //     Some("Imp".to_string()),
+    //     Some("Jujuka".to_string()),
+    //     Some("Minoris".to_string()),
+    // );
+    // let mut opponents_units: BTreeMap<usize, Combatant> = BTreeMap::new();
+    // opponents_units.insert(0, character2);
+    // let mut sides: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
+    // sides.insert(0, our_units);
+    // sides.insert(1, opponents_units);
+
+    // let generated_combatants: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
+    // match GameResult::new(sides) {
+    //     Ok(result) => {
+    //         return Ok(result);
+    //     }
+    //     Err(e) => {
+    //         return Err(e);
+    //     }
+    // }
+    // }
     //    match GameResult::new(generated_combatants){
     //         Ok(game_result)=>{
     //              self.result = Some(result.clone());
