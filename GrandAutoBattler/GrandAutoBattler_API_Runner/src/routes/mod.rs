@@ -152,7 +152,7 @@ async fn available_factions_retrieve(
     State(state): State<ApiState>,
 ) -> (StatusCode, Json<GetAvailableFactionsResponse>) {
     let game_manager = state.game_manager.lock().await;
-    let factions = game_manager.GetAvailableFactions(&game_id);
+    let factions = game_manager.get_available_factions(&game_id);
     drop(game_manager);
     // let generation_result = state.game_manager.GetNewGameInstanceId();
 
@@ -179,7 +179,7 @@ async fn available_unittypes_retrieve(
     State(state): State<ApiState>,
 ) -> (StatusCode, Json<GetAvailableUnitTypesResponse>) {
     let game_manager = state.game_manager.lock().await;
-    let unittypes = game_manager.GetAvailableUnitTypes(&game_id);
+    let unittypes = game_manager.get_available_unit_types(&game_id);
     drop(game_manager);
     // let generation_result = state.game_manager.GetNewGameInstanceId();
 

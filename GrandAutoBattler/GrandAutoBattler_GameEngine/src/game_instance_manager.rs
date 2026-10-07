@@ -190,7 +190,7 @@ impl GameInstance {
         let battle_journal = battle_journal_manager::BattleJournal::generate_based_on_data(&sides);
         // let battle_journal = battle_journal_manager::BattleJournal::generate_based_on_data(&sides);
 
-        Ok(GameResult::new(sides, battle_journal))
+        Ok(GameResult::new(sides, battle_journal)?)
     }
     // match GameResult::new(sides, battle_journal) {
     //     Ok(result) => {
@@ -268,70 +268,100 @@ impl GameInstancesManager {
         }
     }
 
-    pub fn GetNewGameInstanceId(&mut self) -> String {
+    pub fn GetNewGameInstanceId(&mut self) -> Result<String> {
         tracing::info!("Trying to initialize new Game Instance");
-
         let new_game_id = self.game_instances_ids.generate_id();
-        let result = match GameInstance::new(&new_game_id) {
+
+        match GameInstance::new(&new_game_id) {
             Err(e) => {
-                tracing::error!(
-                    "Initialization failed. Game continuation is not possible. Error: {}",
-                    e
-                );
-
-                return String::new();
+                tracing::error!("Initialization failed. Error: {} ", e);
+                Err(e)
             }
-
-            Ok(result) => {
-                self.games_by_ids
-                    .insert(new_game_id.clone(), result.clone());
-                tracing::info!("Initialization succeed. ");
-                // println!("Initialization succeed. {:#?}", &result);
-                return new_game_id;
+            Ok(game_instance) => {
+                self.games_by_ids.insert(new_game_id.clone(), game_instance);
+                tracing::info!("Initialization succeeded with ID: {}", new_game_id);
+                Ok(new_game_id)
             }
-        };
+        }
+        // let new_game_id = self.game_instances_ids.generate_id();
+        // let result = match GameInstance::new(&new_game_id) {
+        //     Err(e) => {
+        //         tracing::error!(
+        //             "Initialization failed. Game continuation is not possible. Error: {}",
+        //             e
+        //         );
+
+        //         return String::new();
+        //     }
+
+        //     Ok(result) => {
+        //         self.games_by_ids
+        //             .insert(new_game_id.clone(), result.clone());
+        //         tracing::info!("Initialization succeed. ");
+        //         // println!("Initialization succeed. {:#?}", &result);
+        //         return new_game_id;
+        //     }
+        // };
     }
 
-    pub fn GetGameDataById(&self, key: &String) -> GameInstance {
-        let game_instance = self.games_by_ids.get(key);
-        return game_instance.unwrap().clone();
+    pub fn get_game_data_by_id(&self, game_id: &str) -> Result<GameInstance> {
+        self.games_by_ids
+            .get(game_id)
+            .cloned()
+            .ok_or_else(|| GameEngineError::GameInstanceNotFound(game_id.to_string()))
+        // let game_instance = self.games_by_ids.get(key);
+        // return game_instance.unwrap().clone();
     }
 
-    pub fn GetGameResultByIdAndSelection(
+    pub fn get_game_result_by_id_and_selection(
         &mut self,
-        key: &String,
+        game_id: &str,
         selected_factions: &BTreeMap<usize, usize>,
         selected_unittypes: &BTreeMap<usize, Option<usize>>,
-    ) -> GameResult {
+    ) -> Result<GameResult> {
         let game_instance_ref = self
             .games_by_ids
-            .get_mut(key)
-            .expect("Game instance not found");
-        // let mut game_instance_clone = game_instance_ref.clone();
-        // let game_instance: Option<&GameInstance> = self.games_by_ids.get_mut(key).as_deref();
-        // let result = GameInstance::calculate_game_result(&mut (game_instance.unwrap()));
-        let result = game_instance_ref
-            .calculate_game_result(selected_factions, selected_unittypes)
-            .expect("Failed to calculate game result");
-        result
+            .get_mut(game_id)
+            .ok_or_else(|| GameEngineError::GameInstanceNotFound(game_id.to_string()))?;
+
+        let result =
+            game_instance_ref.calculate_game_result(selected_factions, selected_unittypes)?;
+        Ok(result)
+        // let game_instance_ref = self
+        //     .games_by_ids
+        //     .get_mut(key)
+        //     .expect("Game instance not found");
+        // // let mut game_instance_clone = game_instance_ref.clone();
+        // // let game_instance: Option<&GameInstance> = self.games_by_ids.get_mut(key).as_deref();
+        // // let result = GameInstance::calculate_game_result(&mut (game_instance.unwrap()));
+        // let result = game_instance_ref
+        //     .calculate_game_result(selected_factions, selected_unittypes)
+        //     .expect("Failed to calculate game result");
+        // result
     }
 
-    pub fn GetAvailableFactions(&self, game_id: &String) -> Vec<String> {
+    pub fn get_available_factions(&self, game_id: &String) -> Result<Vec<String>> {
         let mut faction_names: Vec<String> = Vec::new();
-        let game_instance = self.GetGameDataById(&game_id);
+        let game_instance = self.get_game_data_by_id(&game_id)?;
 
         for (i, faction) in game_instance.factions.iter().enumerate() {
             faction_names.push(faction.name.clone());
         }
 
-        faction_names
+        Ok(faction_names)
     }
 
-    pub fn GetAvailableUnitTypes(&self, game_id: &String) -> BTreeMap<usize, Vec<String>> {
-        let game_instance = self.GetGameDataById(&game_id);
+    pub fn get_available_unit_types(
+        &self,
+        game_id: &String,
+    ) -> Result<BTreeMap<usize, Vec<String>>> {
+        let game_instance = self.get_game_data_by_id(&game_id);
 
         let mut unittypes_names: BTreeMap<usize, Vec<String>> = BTreeMap::new();
-        for (i, faction) in game_instance.factions.iter().enumerate() {
+        // for (i, faction) in game_instance.factions.iter().enumerate(){
+
+        // }
+        for (i, faction) in game_instance?.factions.iter().enumerate() {
             let mut unittypes_names_of_faction: Vec<String> = Vec::new();
             for unit_type in faction.unit_types.clone() {
                 if let Some(pretty_name) = unit_type.unit_type_pretty_name {
@@ -343,6 +373,6 @@ impl GameInstancesManager {
             unittypes_names.insert(i, unittypes_names_of_faction);
         }
 
-        unittypes_names
+        Ok(unittypes_names)
     }
 }
