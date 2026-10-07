@@ -44,9 +44,9 @@ pub struct ApiState {
 #[derive(OpenApi)]
 #[openapi(
     info(
-        title = "Grand Auto Battler gameengine API",
+        title = "Grand Auto-Battler gameengine API",
         description = "API for retrieving game_instance objects, the options to choose during gameplay and results of simulated battles.",
-        version = "0.0.1",
+        version = "0.0.2",
         contact(name = "https://github.com/AlekseiVasiukov")
     ),
     paths(
@@ -67,35 +67,53 @@ pub struct ApiState {
 )]
 pub struct ApiDoc;
 
-pub fn create_routes() -> Router {
-    let mut game_manager = GameInstancesManager::new();
-    // let game = game_manager.GetNewGameInstanceId();
-    // println!("{:?}", game);
-    // println!("YO");
+pub fn create_routes() -> anyhow::Result<Router> {
+    let game_manager = GameInstancesManager::new();
     let api_state = ApiState {
         game_manager: Arc::new(Mutex::new(game_manager)),
+
     };
 
-    // let state = ApiState {api_state};
 
-    // let routes = create_routes();
-    return Router::new()
+    Ok(Router::new()
         .route("/", get(health_check))
         .route("/health", get(health_check))
         .route("/new_game_id", post(new_game_id_retrieve))
         .route("/games/:game_id/factions", get(available_factions_retrieve))
-        .route(
-            "/games/:game_id/unittypes",
-            get(available_unittypes_retrieve),
-        )
-                .route("/games/:game_id/result", post(game_result_retrieve))
-
-        //Add swagger for interactive api]
+        .route("/games/:game_id/unittypes", get(available_factions_retrieve))
+        .route("/games/:game_id/result", post(game_result_retrieve))
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
-        .layer(
-            tower_http::cors::CorsLayer::permissive(), // .with_state(api_state)
-        )
-        .with_state(api_state);
+
+        .with_state(api_state)
+)
+    // let mut game_manager = GameInstancesManager::new();
+    // // let game = game_manager.GetNewGameInstanceId();
+    // // println!("{:?}", game);
+    // // println!("YO");
+    // let api_state = ApiState {
+    //     game_manager: Arc::new(Mutex::new(game_manager)),
+    // };
+
+    // // let state = ApiState {api_state};
+
+    // // let routes = create_routes();
+    // return Router::new()
+    //     .route("/", get(health_check))
+    //     .route("/health", get(health_check))
+    //     .route("/new_game_id", post(new_game_id_retrieve))
+    //     .route("/games/:game_id/factions", get(available_factions_retrieve))
+    //     .route(
+    //         "/games/:game_id/unittypes",
+    //         get(available_unittypes_retrieve),
+    //     )
+    //             .route("/games/:game_id/result", post(game_result_retrieve))
+
+    //     //Add swagger for interactive api]
+    //     .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
+    //     .layer(
+    //         tower_http::cors::CorsLayer::permissive(), // .with_state(api_state)
+    //     )
+    //     .with_state(api_state);
 }
 
 #[utoipa::path(
