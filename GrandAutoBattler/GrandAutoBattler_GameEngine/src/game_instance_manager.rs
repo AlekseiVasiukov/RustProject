@@ -268,7 +268,7 @@ impl GameInstancesManager {
         }
     }
 
-    pub fn GetNewGameInstanceId(&mut self) -> Result<String> {
+    pub fn create_new_game_instance(&mut self) -> Result<String> {
         tracing::info!("Trying to initialize new Game Instance");
         let new_game_id = self.game_instances_ids.generate_id();
 

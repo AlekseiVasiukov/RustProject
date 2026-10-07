@@ -3,10 +3,7 @@
 use GrandAutoBattler_GameEngine::game_instance_manager::GameInstancesManager;
 // use types::HealthStatus;
 use axum::{
-    Extension, Json, Router,
-    extract::{Path, State},
-    http::{StatusCode, request},
-    routing::{get, post},
+    Extension, Json, Router, extract::{Path, State}, http::{StatusCode, request, response}, routing::{get, post},
 };
 use std::{collections::BTreeMap, sync::Arc};
 use tokio::sync::Mutex;
@@ -83,7 +80,7 @@ pub fn create_routes() -> anyhow::Result<Router> {
         .route("/games/:game_id/unittypes", get(available_factions_retrieve))
         .route("/games/:game_id/result", post(game_result_retrieve))
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
-
+        .layer(tower_http::cors::CorsLayer::permissive())
         .with_state(api_state)
 )
     // let mut game_manager = GameInstancesManager::new();
@@ -127,7 +124,7 @@ pub fn create_routes() -> anyhow::Result<Router> {
 async fn health_check() -> (StatusCode, Json<HealthStatus>) {
     let status = HealthStatus {
         status: "ok".to_string(),
-        message: "Game Engine server is running. For API documentation use /swagger-ui path".to_string(),
+        message: "Game Engine server is running. Use /swagger-ui for API documentation.".to_string(),
         timestamp: chrono::Utc::now(),
     };
     (StatusCode::OK, Json(status))
@@ -138,22 +135,49 @@ async fn health_check() -> (StatusCode, Json<HealthStatus>) {
     path = "/new_game_id",
     tag = "Game Id",
     responses(
-        (status = 200, description = "Get the id for newly created game instance", body = NewGameInstanceIdResponse),
+        (status = 200, description = "ID for newly created game instance", body = NewGameInstanceIdResponse),
+        (status = 500, description = "Failed to create game instance", body = NewGameInstanceIdResponse),
     )
 )]
 async fn new_game_id_retrieve(
     State(state): State<ApiState>,
 ) -> (StatusCode, Json<NewGameInstanceIdResponse>) {
     let mut game_manager = state.game_manager.lock().await;
-    let generation_result = game_manager.GetNewGameInstanceId();
-    drop(game_manager);
-    let response = NewGameInstanceIdResponse {
-        game_id: generation_result,
-        timestamp: chrono::Utc::now(),
-        success: true,
-        error: None,
-    };
-    (StatusCode::OK, Json(response))
+
+    match game_manager.create_new_game_instance(){
+        Ok(game_id)=>{
+            drop(game_manager);
+            let response = NewGameInstanceIdResponse{
+                game_id,
+                timestamp: chrono::Utc::now(),
+                success: true,
+                error: None,
+            };
+            (StatusCode::OK, Json(response))
+        }
+        Err(e) =>{
+            drop(game_manager);
+            tracing::error!("Failed to create game instance: {}", e);
+            let response = NewGameInstanceIdResponse{
+                game_id: String::new(),
+                timestamp: chrono::Utc::now(),
+                success: false,
+                error: Some(e.to_string()),
+            };
+            (StatusCode::INTERNAL_SERVER_ERROR, Json(response))
+        }
+
+    }
+    // let mut game_manager = state.game_manager.lock().await;
+    // let generation_result = game_manager.GetNewGameInstanceId();
+    // drop(game_manager);
+    // let response = NewGameInstanceIdResponse {
+    //     game_id: generation_result,
+    //     timestamp: chrono::Utc::now(),
+    //     success: true,
+    //     error: None,
+    // };
+    // (StatusCode::OK, Json(response))
 }
 
 #[utoipa::path(
