@@ -25,12 +25,15 @@ dependencies = [
 name = "GrandAutoBattler_GameEngine"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "fs_extra",
  "rand",
  "serde",
  "serde_json",
  "thiserror",
  "toml",
+ "tracing",
+ "tracing-subscriber",
  "walkdir",
 ]
 

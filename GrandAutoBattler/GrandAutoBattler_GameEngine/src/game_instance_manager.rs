@@ -7,6 +7,7 @@ use crate::game_result_manager::*;
 
 use crate::game_data_retriever::IdRegistry;
 use rand::RngExt;
+use rand::seq::IndexedRandom;
 // use rand::seq::SliceRandom;
 use std::collections::BTreeMap;
 use std::io::{Write, stdout};
@@ -121,12 +122,12 @@ impl GameInstance {
         let mut their_units: Vec<Combatant> = Vec::new();
         for n in 0..number_of_our_non_null_combatants {
             let new_id = self.combatants_register_id.generate_id();
-            let faction = &self.factions[selected_factions[&1]];
+
             let mut rng = rand::rngs::ThreadRng::default();
 
             let opponent_faction_index = *selected_factions.get(&1).ok_or_else(|| {
                 GameEngineError::FactionNotFound(
-                    "No faction selected for opponent (index 1)".to_string(),
+                    "No factions selected for opponent (index 1)".to_string(),
                 )
             })?;
 
@@ -136,6 +137,30 @@ impl GameInstance {
                     opponent_faction_index
                 ))
             })?;
+
+            if let Some(unittype) = faction.unit_types.choose(&mut rng) {
+                let unittype_clone = unittype.clone();
+                let new_combatant =
+                    Combatant::generate_based_on_data(new_id, faction.clone(), unittype_clone)?;
+
+                their_units.push(new_combatant);
+            }
+
+            // let faction = &self.factions[selected_factions[&1]];
+            // let mut rng = rand::rngs::ThreadRng::default();
+
+            // let opponent_faction_index = *selected_factions.get(&1).ok_or_else(|| {
+            //     GameEngineError::FactionNotFound(
+            //         "No faction selected for opponent (index 1)".to_string(),
+            //     )
+            // })?;
+
+            // let faction = self.factions.get(opponent_faction_index).ok_or_else(|| {
+            //     GameEngineError::FactionNotFound(format!(
+            //         "Faction index {} out of range",
+            //         opponent_faction_index
+            //     ))
+            // })?;
 
             // if let Some(unitType)
             // let unittype = self.factions[selected_factions[&1]]
@@ -244,12 +269,12 @@ impl GameInstancesManager {
     }
 
     pub fn GetNewGameInstanceId(&mut self) -> String {
-        println!("Trying to initialize new Game Instance");
+        tracing::info!("Trying to initialize new Game Instance");
 
         let new_game_id = self.game_instances_ids.generate_id();
         let result = match GameInstance::new(&new_game_id) {
             Err(e) => {
-                println!(
+                tracing::error!(
                     "Initialization failed. Game continuation is not possible. Error: {}",
                     e
                 );
@@ -260,7 +285,7 @@ impl GameInstancesManager {
             Ok(result) => {
                 self.games_by_ids
                     .insert(new_game_id.clone(), result.clone());
-                println!("Initialization succeed. ");
+                tracing::info!("Initialization succeed. ");
                 // println!("Initialization succeed. {:#?}", &result);
                 return new_game_id;
             }

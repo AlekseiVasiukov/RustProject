@@ -143,7 +143,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
         let faction_types_path = faction_folder_path.join("UnitTypes.toml");
         let toml_content = match fs::read_to_string(&faction_types_path) {
             Err(e) => {
-                println!(
+                tracing::warn!(
                     "Cound't read UnitTypes.toml for faction '{}': {}",
                     faction_name, e
                 );
@@ -158,7 +158,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
 
         let unit_types_result: UnitTypesArrayToml = match toml::from_str(&toml_content) {
             Err(e) => {
-                println!(
+                tracing::warn!(
                     "Couldn't parse the faction's UnitType contents for: {:?},{}",
                     &faction_name, e
                 );
@@ -168,7 +168,7 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
         };
 
         if unit_types_result.UnitTypes.is_empty() {
-            println!(
+            tracing::warn!(
                 "No unittypes defined for faction '{}. Skipping.",
                 faction_name
             );
