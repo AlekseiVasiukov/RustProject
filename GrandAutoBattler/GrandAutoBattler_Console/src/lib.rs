@@ -642,22 +642,27 @@ pub fn RunConsoleApp() -> io::Result<()> {
     raw_println("Trying to request new game instance from game engine");
     let mut games_manager = GameInstancesManager::new();
     // let mut games_manager = GrandAutoBattler_GameEngine::GameInstancesManager::new();
-    let game_instance_id = &games_manager.GetNewGameInstanceId();
+    let game_instance_id = &games_manager.create_new_game_instance().unwrap();
     raw_println(format!(
         "Game engine generated new game with Id: {}",
         &game_instance_id
     ));
 
-    let game_instance = games_manager.GetGameDataById(&game_instance_id);
+    let game_instance = games_manager
+        .get_game_data_by_id(&game_instance_id)
+        .unwrap();
 
     enable_raw_mode()?;
     std::io::stdout().execute(EnterAlternateScreen).unwrap();
     std::io::stdout().execute(Hide).unwrap();
 
     //collectin available factions and unittypes from engine
-    let mut faction_names: Vec<String> = games_manager.GetAvailableFactions(&game_instance_id);
-    let mut unittypes_names: BTreeMap<usize, Vec<String>> =
-        games_manager.GetAvailableUnitTypes(&game_instance_id);
+    let mut faction_names: Vec<String> = games_manager
+        .get_available_factions(&game_instance_id)
+        .unwrap();
+    let mut unittypes_names: BTreeMap<usize, Vec<String>> = games_manager
+        .get_available_unit_types(&game_instance_id)
+        .unwrap();
 
     // clear any buffered input events
     while event::poll(Duration::from_millis(0))? {
@@ -703,11 +708,13 @@ pub fn RunConsoleApp() -> io::Result<()> {
                                         .map(|(&index, side)| (index, side.selected_faction))
                                         .collect();
 
-                                    let game_result = games_manager.GetGameResultByIdAndSelection(
-                                        &game_instance_id,
-                                        &selected_factions,
-                                        &game.conflicting_sides[&0].selected_units,
-                                    );
+                                    let game_result = games_manager
+                                        .get_game_result_by_id_and_selection(
+                                            &game_instance_id,
+                                            &selected_factions,
+                                            &game.conflicting_sides[&0].selected_units,
+                                        )
+                                        .unwrap();
                                     game.game_result = Some(game_result);
                                     game.next_stage();
                                 } else {

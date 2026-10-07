@@ -187,6 +187,7 @@ async fn new_game_id_retrieve(
     params(("game_id"= String, Path, description = "Game Instance Id")),
     responses(
         (status = 200, description = "Get the available factions based on particular game_id of a game instance", body = GetAvailableFactionsResponse),
+        (status = 404, description = "Game instance not found", body = GetAvailableFactionsResponse),
     )
 )]
 async fn available_factions_retrieve(
@@ -194,17 +195,41 @@ async fn available_factions_retrieve(
     State(state): State<ApiState>,
 ) -> (StatusCode, Json<GetAvailableFactionsResponse>) {
     let game_manager = state.game_manager.lock().await;
-    let factions = game_manager.get_available_factions(&game_id);
-    drop(game_manager);
-    // let generation_result = state.game_manager.GetNewGameInstanceId();
+    match game_manager.get_available_factions(&game_id){
+        Ok(factions) =>{
+            drop(game_manager);
+            let response = GetAvailableFactionsResponse{
+                factions,
+                timestamp: chrono::Utc::now(),
+                success: true,
+                error: None,
+            };
+            (StatusCode::OK, Json(response))
+        }
+        Err(e)=>{
+            drop(game_manager);
+            tracing::error!("Failed to get factions for game '{}':{}", game_id, e);
+            let response = GetAvailableFactionsResponse{
+                factions: Vec::new(),
+                                timestamp: chrono::Utc::now(),
+success:false,
+error: Some(e.to_string()),
+            };
+            (StatusCode::NOT_FOUND, Json(response))
+        }
+    }
+    // let game_manager = state.game_manager.lock().await;
+    // let factions = game_manager.get_available_factions(&game_id);
+    // drop(game_manager);
+    // // let generation_result = state.game_manager.GetNewGameInstanceId();
 
-    let response = GetAvailableFactionsResponse {
-        factions,
-        timestamp: chrono::Utc::now(),
-        success: true,
-        error: None,
-    };
-    (StatusCode::OK, Json(response))
+    // let response = GetAvailableFactionsResponse {
+    //     factions,
+    //     timestamp: chrono::Utc::now(),
+    //     success: true,
+    //     error: None,
+    // };
+    // (StatusCode::OK, Json(response))
 }
 
 #[utoipa::path(
@@ -214,6 +239,8 @@ async fn available_factions_retrieve(
     params(("game_id"= String, Path, description = "Game Instance Id")),
     responses(
         (status = 200, description = "Get the available unit types based on particular game_id of a game instance", body = GetAvailableUnitTypesResponse),
+                (status = 404, description = "Game instance not found", body = GetAvailableUnitTypesResponse),
+
     )
 )]
 async fn available_unittypes_retrieve(
@@ -221,17 +248,42 @@ async fn available_unittypes_retrieve(
     State(state): State<ApiState>,
 ) -> (StatusCode, Json<GetAvailableUnitTypesResponse>) {
     let game_manager = state.game_manager.lock().await;
-    let unittypes = game_manager.get_available_unit_types(&game_id);
-    drop(game_manager);
-    // let generation_result = state.game_manager.GetNewGameInstanceId();
+    match game_manager.get_available_unit_types(&game_id){
+        Ok(unittypes) => {
+            drop(game_manager);
+            let response = GetAvailableUnitTypesResponse{
+                unittypes: unittypes,
+                                timestamp: chrono::Utc::now(),
+success: true,
+error: None,
+            };
+            (StatusCode::OK, Json(response))
+        }
+        Err(e) => {
+            drop(game_manager);
+            tracing::error!("Not successful unit types retrieval for game '{}': {}", game_id, e
+        );
+        let response = GetAvailableUnitTypesResponse{
+            unittypes: BTreeMap::new(),
+                timestamp: chrono::Utc::now(),
+                success:false,
+                error: Some(e.to_string()),
+        };
+        (StatusCode::NOT_FOUND, Json(response))
+        }
+    }
+    // let game_manager = state.game_manager.lock().await;
+    // let unittypes = game_manager.get_available_unit_types(&game_id);
+    // drop(game_manager);
+    // // let generation_result = state.game_manager.GetNewGameInstanceId();
 
-    let response = GetAvailableUnitTypesResponse {
-        unittypes,
-        timestamp: chrono::Utc::now(),
-        success: true,
-        error: None,
-    };
-    (StatusCode::OK, Json(response))
+    // let response = GetAvailableUnitTypesResponse {
+    //     unittypes,
+    //     timestamp: chrono::Utc::now(),
+    //     success: true,
+    //     error: None,
+    // };
+    // (StatusCode::OK, Json(response))
 }
 
 
@@ -258,6 +310,12 @@ async fn available_unittypes_retrieve(
             body = GetGameResultByIdAndSelectionResponse
 
         ),
+               (
+            status = 500, 
+            description = "Failed to calculate game result",
+            body = GetGameResultByIdAndSelectionResponse
+
+        ),
     )
     
 )]
@@ -266,26 +324,67 @@ async fn game_result_retrieve(
     State(state): State<ApiState>,
     Json(request): Json<GetGameResultByIdAndSelectionRequest>,
 )->(StatusCode, Json<GetGameResultByIdAndSelectionResponse>){
-    let mut selected_factions = std::collections::BTreeMap::new();
+    let mut selected_factions = BTreeMap::new();
     selected_factions.insert(0, request.our_faction_index);
     selected_factions.insert(1, request.opponent_faction_index);
 
     let mut selected_unittypes: BTreeMap<usize, Option<usize>> = BTreeMap::new();
-    for (index, value) in request.our_unittype_indices.iter().enumerate() {
+    for (index, value) in request.our_unittype_indices.iter().enumerate()
+    {
         selected_unittypes.insert(index, *value);
     }
 
     let mut game_manager = state.game_manager.lock().await;
-    let game_result = game_manager.GetGameResultByIdAndSelection(&game_id, &selected_factions, &selected_unittypes);
-    drop(game_manager);
-    let response = GetGameResultByIdAndSelectionResponse{
-        result: game_result,
-        success: true,
-        timestamp: chrono::Utc::now(),
-        error: None,
 
-    };
- (StatusCode::OK, Json(response) )
+    match game_manager.get_game_result_by_id_and_selection(&game_id, &selected_factions, &selected_unittypes){
+        Ok(game_result)=>{
+            drop(game_manager);
+            let response = GetGameResultByIdAndSelectionResponse{
+                result: game_result,
+                success: true,
+                                timestamp: chrono::Utc::now(),
+error:None
+            };
+            (StatusCode::OK, Json(response))
+        }
+        Err(e)=>{
+            drop(game_manager);
+            tracing::error!("Failed to calculate result for '{}': {}",game_id,e);
+            let response = GetGameResultByIdAndSelectionResponse{
+                result: GrandAutoBattler_GameEngine::game_result_manager::GameResult::new(BTreeMap::new(), GrandAutoBattler_GameEngine::battle_journal_manager::BattleJournal::new(),)
+                .unwrap_or_else(|_|{
+                    GrandAutoBattler_GameEngine::game_result_manager::GameResult{
+                        generated_combatants: BTreeMap::new(),
+                        battle_journal: GrandAutoBattler_GameEngine::battle_journal_manager::BattleJournal::new(),
+                    }
+                }),
+                success: false,
+                                timestamp: chrono::Utc::now(),
+error: Some(e.to_string()),
+            };
+            (StatusCode::INTERNAL_SERVER_ERROR, Json(response))
+        }
+    }
+    // let mut selected_factions = std::collections::BTreeMap::new();
+    // selected_factions.insert(0, request.our_faction_index);
+    // selected_factions.insert(1, request.opponent_faction_index);
+
+    // let mut selected_unittypes: BTreeMap<usize, Option<usize>> = BTreeMap::new();
+    // for (index, value) in request.our_unittype_indices.iter().enumerate() {
+    //     selected_unittypes.insert(index, *value);
+    // }
+
+    // let mut game_manager = state.game_manager.lock().await;
+    // let game_result = game_manager.GetGameResultByIdAndSelection(&game_id, &selected_factions, &selected_unittypes);
+    // drop(game_manager);
+    // let response = GetGameResultByIdAndSelectionResponse{
+    //     result: game_result,
+    //     success: true,
+    //     timestamp: chrono::Utc::now(),
+    //     error: None,
+
+    // };
+//  (StatusCode::OK, Json(response) )
 }
 
 // async fn available_factions_retrieve(

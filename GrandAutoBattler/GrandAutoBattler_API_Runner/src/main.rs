@@ -29,7 +29,7 @@ pub async fn main() -> Result<()> {
         .with_max_level(tracing::Level::INFO)
         .init();
 
-    let routes = routes::create_routes();
+    let routes = routes::create_routes()?;
 
     if cfg!(debug_assertions) {
         tracing::info!("Starting debug server on 0.0.0.0:3000");

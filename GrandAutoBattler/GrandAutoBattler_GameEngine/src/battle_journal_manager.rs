@@ -38,7 +38,7 @@ pub struct BattleJournal {
 }
 
 impl BattleJournal {
-    pub(crate) fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             winner_side: 0,
             events: Vec::new(),
