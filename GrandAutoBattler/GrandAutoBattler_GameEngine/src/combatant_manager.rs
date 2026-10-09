@@ -1,14 +1,9 @@
-use rand::Rng;
+use crate::error_types::Result;
 use rand::RngExt;
 use rand::prelude::IndexedRandom;
-use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
-
 use std::collections::BTreeMap;
-
-// use std::error::Error;
-use crate::error_types::{GameEngineError, Result};
+use utoipa::ToSchema;
 
 use crate::game_data_retriever::{self, Config, Faction, UnitType};
 
@@ -40,73 +35,17 @@ impl Combatant {
         let mut gender = 0;
         let mut turn_by = *[0, 1].choose(&mut rng).unwrap_or(&0);
 
-        // let gender = rand::seq::IndexedRandom::choose(&[0, 1], &mut rng)
-        // .copied()
-        // .unwrap_or(0);
-
         let config = game_data_retriever::get_config()?;
-        // let config = game_data_retriever::get_config().unwrap();
-
-        // if !unittype.females_only {
-        // gender = *[0, 1].choose(&mut rng).unwrap();
-        // gender = *[0, 1].choose(&mut rng).copied().uwrap_or(0);
-        // }
 
         if gender == 0 {
-            // Female names - use .copied() to avoid clone, and fallback with .copied().ok()
-
             //female names
             first_name = faction.female_first_names.choose(&mut rng).cloned();
-            // if !faction.female_first_names.is_empty() {
-            //     first_name = Some(faction.female_first_names.choose(&mut rng)).copied();
-            //     // first_name = Some(faction.female_first_names.choose(&mut rng).unwrap().clone());
-            // }
-
             last_name = faction.female_last_names.choose(&mut rng).cloned();
-            // if !faction.female_last_names.is_empty() {
-            //     last_name = Some(faction.female_last_names.choose(&mut rng)?.clone());
-            //     // last_name = Some(faction.female_last_names.choose(&mut rng).unwrap().clone());
-            // }
         } else {
             //male names
             first_name = faction.male_first_names.choose(&mut rng).cloned();
-            // if !faction.male_first_names.is_empty() {
-            //     first_name = Some(faction.male_first_names.choose(&mut rng)?.clone());
-            //     // first_name = Some(faction.male_first_names.choose(&mut rng).unwrap().clone());
-            // }
             last_name = faction.male_last_names.choose(&mut rng).cloned();
-            // if !faction.male_last_names.is_empty() {
-            //     last_name = Some(faction.male_last_names.choose(&mut rng)?.clone());
-            //     // last_name = Some(faction.male_last_names.choose(&mut rng).unwrap().clone());
-            // }
         }
-        //     first_name = faction.female_first_names.choose(&mut rng).copied();
-        //     last_name = faction.female_last_names.choose(&mut rng).copied();
-        // } else {
-        //     // Male names
-        //     first_name = faction.male_first_names.choose(&mut rng).copied();
-        //     last_name = faction.male_last_names.choose(&mut rng).copied();
-        // }
-
-        // if gender == 0 {
-        //     //female names
-        //     if !faction.female_first_names.is_empty() {
-        //         first_name = Some(faction.female_first_names.choose(&mut rng)).copied();
-        //     }
-
-        //     if !faction.female_last_names.is_empty() {
-        //         last_name = Some(faction.female_last_names.choose(&mut rng).copied());
-        //     }
-        // } else {
-        //     //male names
-        //     if !faction.male_first_names.is_empty() {
-        //         first_name = Some(faction.male_first_names.choose(&mut rng).copied());
-        //     }
-
-        //     if !faction.male_last_names.is_empty() {
-        //         last_name = Some(faction.male_last_names.choose(&mut rng).copied());
-        //     }
-        // }
 
         Self::apply_random_variance_to_parameters(
             &mut unittype.parameters_set,
@@ -135,7 +74,6 @@ impl Combatant {
         minimum: &u8,
     ) {
         let mut rng = rand::rng();
-        //can add bonus points to many parameter, but guarantying at least one will be unaffected.
         let number_of_applicable_parameters = parameters.len().saturating_sub(1);
 
         //Destributing bonus points
@@ -155,27 +93,10 @@ impl Combatant {
                 }
             }
         }
-        // for &i in &bonus_affected_indices {
-        //     if let Some(key) = keys.get(i) {
-        //         let val = parameters.get_mut(key).unwrap();
-        //         if *val < *maximum {
-        //             *val = val.saturating_add(1).min(*maximum);
-        //         }
-        //     }
-        // }
-        //the indices withou bonuses, even if it's only one will be randomly chosen for decreasing by 1 as penalty.
 
         let unaffected_indices: Vec<usize> = (0..parameters.len())
             .filter(|i| !bonus_affected_indices.contains(i))
             .collect();
-
-        // let mut unaffected_indices: Vec<usize> = Vec::new();
-        // for i in 0..parameters.len() {
-        //     if !bonus_affected_indices.contains(&i) {
-        //         unaffected_indices.push(i);
-        //     }
-        // }
-        //decreasing left parameter
 
         if let Some(&random_unaffected) = unaffected_indices.choose(&mut rng) {
             if let Some(key) = keys.get(random_unaffected) {
@@ -186,16 +107,6 @@ impl Combatant {
                 }
             }
         }
-        // if !unaffected_indices.is_empty() {
-        //     let random_unaffected = Some(unaffected_indices.choose(&mut rng).unwrap()).unwrap();
-
-        //     if let Some(key) = keys.get(*random_unaffected) {
-        //         let val = parameters.get_mut(key).unwrap();
-        //         if *val < *maximum {
-        //             *val = val.saturating_sub(1).max(*minimum);
-        //         }
-        //     }
-        // }
     }
 
     pub(crate) fn generate_health_points(config: &Config, healthParameter: u8) -> usize {

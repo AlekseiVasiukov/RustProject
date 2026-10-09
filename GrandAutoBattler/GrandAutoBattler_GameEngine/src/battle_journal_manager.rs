@@ -2,17 +2,12 @@
 //Battle Journal .-.. Turn -<
 //                            .Outcome .-.. Effect ((Enum Effects types))
 use crate::combatant_manager::Combatant;
-use crate::error_types::{GameEngineError, Result};
-use crate::game_data_retriever::{Config, IdRegistry};
-use rand::Rng;
+use crate::game_data_retriever::Config;
 use rand::RngExt;
 use rand::prelude::IndexedRandom;
-use rand::rngs::ThreadRng;
-use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
-use serde_json;
 use std::collections::BTreeMap;
+use utoipa::ToSchema;
 
 #[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub enum Command {
