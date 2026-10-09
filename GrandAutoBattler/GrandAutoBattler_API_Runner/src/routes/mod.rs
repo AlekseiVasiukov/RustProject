@@ -14,6 +14,9 @@ use chrono::{DateTime, Utc};
 use tokio::sync::mpsc;
 use utoipa_swagger_ui::SwaggerUi;
 
+use GrandAutoBattler_GameEngine::game_result_manager::GameResult;
+use GrandAutoBattler_GameEngine::battle_journal_manager::{BattleJournal, GameEvent, Command, Effect};
+use GrandAutoBattler_GameEngine::combatant_manager::Combatant;
 use crate::types::{
     GetAvailableFactionsResponse, GetAvailableUnitTypesResponse,
     GetGameResultByIdAndSelectionRequest, GetGameResultByIdAndSelectionResponse, HealthStatus,
@@ -60,6 +63,12 @@ pub struct ApiState {
         GetAvailableUnitTypesResponse,
         GetGameResultByIdAndSelectionRequest,
         GetGameResultByIdAndSelectionResponse,
+        GameResult,
+        BattleJournal,
+        Combatant,
+        GameEvent,
+        Command,
+        Effect,
     ),)
 )]
 pub struct ApiDoc;

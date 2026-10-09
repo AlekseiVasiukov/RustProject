@@ -10,16 +10,17 @@ use rand::prelude::IndexedRandom;
 use rand::rngs::ThreadRng;
 use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 use serde_json;
 use std::collections::BTreeMap;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub enum Command {
     Attack { src: String, dst: String, dmg: u32 },
     //Others shit goes here Heal, Hex, Poison
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub enum Effect {
     Damage {
         src: String,
@@ -31,7 +32,7 @@ pub enum Effect {
     // Other effects goes here like Heal_received, Got_Poisoned
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub struct BattleJournal {
     pub winner_side: usize,
     pub events: Vec<GameEvent>,
@@ -325,7 +326,7 @@ impl BattleJournal {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub struct GameEvent {
     pub round: u32,
     pub turn: u32,

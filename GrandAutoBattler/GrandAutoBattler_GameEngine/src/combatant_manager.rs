@@ -3,6 +3,7 @@ use rand::RngExt;
 use rand::prelude::IndexedRandom;
 use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use std::collections::BTreeMap;
 
@@ -13,7 +14,7 @@ use crate::game_data_retriever::{self, Config, Faction, UnitType};
 
 pub struct CombatantManager {}
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct Combatant {
     pub id: String,
     pub faction_name: String,
