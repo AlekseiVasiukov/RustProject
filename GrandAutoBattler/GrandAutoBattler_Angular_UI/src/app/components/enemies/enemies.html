@@ -1,6 +1,8 @@
 @if (selectedCombatant()) {
-  <app-combatant-details [combatant]="selectedCombatant()"></app-combatant-details>
-  <!-- (closed)="selectedCombatant(null)" -->
+  <app-combatant-details
+    [combatant]="selectedCombatant()"
+    (closed)="selectedCombatant(null)"
+  ></app-combatant-details>
 }
 <div class="enemies-container">
   <div class="game-zone">
@@ -11,7 +13,7 @@
       <div class="side our-side">
         <h3 class="side-title golden">Our Forces</h3>
         @for (combatant of ourCombatants(); track combatant.id) {
-          <div class="unit-picture-and-text" click="onCombatantClick(combatant">
+          <div class="unit-picture-and-text" (click)="onCombatantClick(combatant)">
             <div class="combatant-card golden">
               <div class="combatant-name">{{ getFullName(combatant) }}</div>
               <div class="combatant-type">{{ getUnitType(combatant) }}</div>
@@ -39,7 +41,7 @@
       <div class="side enemy-side">
         <h3 class="side-title magenta">Enemy Forces</h3>
         @for (combatant of enemyCombatants(); track combatant.id) {
-          <div class="unit-picture-and-text">
+          <div class="unit-picture-and-text" (click)="onCombatantClick(combatant)">
             <img
               [src]="getCombatantImage(combatant, 1)"
               [alt]="combatant.unit_type_pretty_name"
