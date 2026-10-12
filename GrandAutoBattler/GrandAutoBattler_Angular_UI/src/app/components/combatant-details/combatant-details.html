@@ -1,10 +1,10 @@
 <div class="modal-overlay" (click)="close()">
   <div class="combatant-details-card" (click)="$event.stopPropagation()">
     <!-- LAYER 0: GIF Background -->
-    @if (combatant()) {
+    @if (combatant(); as c) {
       <div class="card-background">
         <img
-          [src]="'/assets/images/gif/' + combatant()!.unit_type_name + '.gif'"
+          [src]="getCombatantGif(c, 0)"
           [alt]="getUnitType(combatant()!)"
           class="background-gif"
         />
@@ -16,11 +16,12 @@
       <div class="card-content">
         <!-- Row 1: Avatar + Name -->
         <div class="avatar">
-          <img
+          <img [src]="getCombatantPng(c, 0)" [alt]="getUnitType(c)" class="avatar-image" />
+          <!-- <img
             [src]="'/assets/images/128px/' + c.unit_type_name + '.png'"
             [alt]="getUnitType(c)"
             class="avatar-image"
-          />
+          /> -->
         </div>
         <div class="name-section">
           <div class="name">{{ getFullName(c) }}</div>
@@ -31,7 +32,9 @@
         <div class="health-section">
           <span class="health-label">Health Pool:</span>
           <span class="health-value">{{ c.parameters.health }}</span>
-          <span class="health-current">(Current: {{ c.current_health_points }}/{{ c.health_points }})</span>
+          <span class="health-current"
+            >(Current: {{ c.current_health_points }}/{{ c.health_points }})</span
+          >
         </div>
         <div class="hard-stats">
           <div class="stat-box">

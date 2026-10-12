@@ -4,13 +4,14 @@ import { GameSessionService } from './game-session.service';
 export interface ImageConfig {
   //Path to assets
   basePath: string;
+  baseExtension: string;
   //Size demanded 64 or 128 px
   // size: string;
 }
 
 const DEFAULT_CONFIG: ImageConfig = {
-  basePath: '/assets/images/64px', //or 127px, or gif
-  // size: '64',
+  basePath: '/assets/images/64px', //or 127px, or gif // size: '64',
+  baseExtension: '.png', //.gif
 };
 
 @Injectable({
@@ -28,7 +29,7 @@ export class UnitImageService {
   //generating path for particular image
   private getImagePath(faction: string, unitTypeName: string): string {
     const cfg = this.config();
-    return `${cfg.basePath}/${faction.toLowerCase()}-${unitTypeName.toLowerCase()}.png`;
+    return `${cfg.basePath}/${faction.toLowerCase()}-${unitTypeName.toLowerCase()}${cfg.baseExtension}`;
     // return `${cfg.basePath}/${cfg.size}/${faction.toLowerCase()}-${unitTypeName.toLowerCase()}.png`;
   }
 
