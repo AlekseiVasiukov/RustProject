@@ -69,7 +69,7 @@ pub fn create_routes() -> anyhow::Result<Router> {
         .route("/health", get(health_check))
         .route("/new_game_id", post(new_game_id_retrieve))
         .route("/games/:game_id/factions", get(available_factions_retrieve))
-        .route("/games/:game_id/unittypes", get(available_factions_retrieve))
+        .route("/games/:game_id/unittypes", get(available_unittypes_retrieve))
         .route("/games/:game_id/result", post(game_result_retrieve))
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .layer(tower_http::cors::CorsLayer::permissive())

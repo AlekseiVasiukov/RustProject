@@ -1,6 +1,57 @@
-<!-- <div class="modal-overlay" (click)="close()"> -->
-<div class="modal-card" (click)="$event.stopPropagation()">
-  <!-- //Future unit card detail here -->
+<div class="modal-overlay" (click)="close()">
+  <div class="combatant-details-card" (click)="$event.stopPropagation()">
+    <!-- LAYER 0: GIF Background -->
+    @if (combatant()) {
+      <div class="card-background">
+        <img
+          [src]="'/assets/images/gif/' + combatant()!.unit_type_name + '.gif'"
+          [alt]="getUnitType(combatant()!)"
+          class="background-gif"
+        />
+      </div>
+    }
 
+    <!-- LAYER 1: Foreground Content -->
+    @if (combatant(); as c) {
+      <div class="card-content">
+        <!-- Row 1: Avatar + Name -->
+        <div class="avatar">
+          <img
+            [src]="'/assets/images/128px/' + c.unit_type_name + '.png'"
+            [alt]="getUnitType(c)"
+            class="avatar-image"
+          />
+        </div>
+        <div class="name-section">
+          <div class="name">{{ getFullName(c) }}</div>
+          <div class="pretty-type">{{ getUnitType(c) }}</div>
+        </div>
+
+        <!-- Row 2: Health + HARD Stats -->
+        <div class="health-section">
+          <span class="health-label">Health Pool:</span>
+          <span class="health-value">{{ c.parameters.health }}</span>
+          <span class="health-current">(Current: {{ c.current_health_points }}/{{ c.health_points }})</span>
+        </div>
+        <div class="hard-stats">
+          <div class="stat-box">
+            <span class="stat-letter">H</span>
+            <span class="stat-value">{{ c.parameters.health }}</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-letter">A</span>
+            <span class="stat-value">{{ c.parameters.attack }}</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-letter">R</span>
+            <span class="stat-value">{{ c.parameters.range }}</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-letter">D</span>
+            <span class="stat-value">{{ c.parameters.defense }}</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 </div>
-<!-- </div> -->

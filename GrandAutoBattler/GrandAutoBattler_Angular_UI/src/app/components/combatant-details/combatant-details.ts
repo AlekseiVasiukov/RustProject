@@ -1,7 +1,6 @@
-import { Component, inject, input, output } from '@angular/core';
-import type { Combatant } from '../../core/models/game.model';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// import {  } from '@angular/core';
+import type { Combatant } from '../../core/models/game.model';
 
 @Component({
   selector: 'app-combatant-details',
@@ -18,15 +17,15 @@ export class CombatantDetails {
     this.closed.emit();
   }
 
+  // Helper to get full display name
   getFullName(c: Combatant): string {
     const first = c.first_name ?? '';
     const last = c.last_name ?? '';
     return `${first} ${last}`.trim() || 'Unknown';
   }
 
+  // Helper to get pretty unit type name
   getUnitType(c: Combatant): string {
     return c.unit_type_pretty_name || c.unit_type_name;
   }
-
-  // selectedCombatant = signal<Combatant | null>(null);
 }

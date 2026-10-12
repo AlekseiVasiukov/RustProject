@@ -1,25 +1,275 @@
-.combatant-details-card {
-  grid-template-columns: 128 1fr;
-  max-width: 480px;
+/* ============================================================
+   LAYER 0: Modal Overlay (full viewport backdrop)
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
+/* ============================================================
+   Card Container (relative positioning for z-index context)
+   ============================================================ */
+.combatant-details-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 128px 1fr;
+  grid-template-rows: auto auto;
+  gap: 12px;
+  padding: 16px;
+  max-width: 480px;
+  min-width: 320px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: linear-gradient(to bottom, #2a2a2a 0%, #1a1a1a 100%);
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.35),
+    inset -3px -3px 0 rgba(0, 0, 0, 0.45),
+    inset 0 0 6px rgba(0, 0, 0, 0.25),
+    0 4px 20px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* ============================================================
+   LAYER 0: GIF Background (behind all content)
+   ============================================================ */
+.card-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  .background-gif {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+
+    /* Desktop: One-time flare animation */
+    @media (min-width: 801px) {
+      animation: flareIn 1.5s ease-out forwards;
+    }
+
+    /* Mobile: Infinite pan with fade edges */
+    @media (max-width: 800px) {
+      animation: none;
+    }
+  }
+}
+
+/* Desktop flare animation - starts bright/oversaturated, settles to normal */
+@keyframes flareIn {
+  0% {
+    filter: brightness(3.0) saturate(3.0) contrast(0.2) blur(4px);
+    opacity: 0;
+  }
+  30% {
+    filter: brightness(1.8) saturate(1.8) contrast(0.6) blur(2px);
+    opacity: 0.7;
+  }
+  70% {
+    filter: brightness(1.2) saturate(1.2) contrast(0.9) blur(0.5px);
+    opacity: 0.9;
+  }
+  100% {
+    filter: brightness(1.0) saturate(1.0) contrast(1.0) blur(0px);
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   LAYER 1: Foreground Content (on top of background)
+   ============================================================ */
+.card-content {
+  position: relative;
+  z-index: 1;
+  color: #e0e0e0;
+  width: 100%;
+
+  /* Dark semi-transparent backdrop behind text for readability */
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+/* ============================================================
+   Grid Cell: Avatar (Row 1, Column 1)
+   ============================================================ */
+.avatar {
+  grid-row: 1;
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .avatar-image {
+    width: 128px;
+    height: 128px;
+    image-rendering: pixelated;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+  }
+}
+
+/* ============================================================
+   Grid Cell: Name Section (Row 1, Column 2)
+   ============================================================ */
+.name-section {
+  grid-row: 1;
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .name {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    margin-bottom: 4px;
+  }
+
+  .pretty-type {
+    font-size: 0.9rem;
+    color: #b0b0b0;
+    font-style: italic;
+  }
+}
+
+/* ============================================================
+   Grid Cell: Health Section (Row 2, Column 1)
+   ============================================================ */
+.health-section {
+  grid-row: 2;
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .health-label {
+    font-size: 0.8rem;
+    color: #999;
+  }
+
+  .health-value {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ff6b6b;
+  }
+
+  .health-current {
+    font-size: 0.75rem;
+    color: #777;
+  }
+}
+
+/* ============================================================
+   Grid Cell: HARD Stats (Row 2, Column 2)
+   ============================================================ */
+.hard-stats {
+  grid-row: 2;
+  grid-column: 2;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 8px;
+
+  .stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 4px 8px;
+    min-width: 40px;
+
+    .stat-letter {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #ffcc00;
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #ffffff;
+    }
+  }
+}
+
+/* ============================================================
+   Glossy Highlight Effect (::before pseudo-element)
+   ============================================================ */
+.combatant-details-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.0) 100%
+  );
+  border-radius: 10px 10px 0 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE (width < 800px)
+   ============================================================ */
 @media (max-width: 800px) {
   .combatant-details-card {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
     max-width: 90vw;
     max-height: 80vh;
     overflow-y: auto;
+    padding: 8px;
+    gap: 8px;
   }
 
+  /* On mobile, the background becomes a top banner instead of full card */
   .card-background {
     position: relative;
     height: 160px;
     inset: auto;
+
+    .background-gif {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
   }
 
+  /* Avatar spans full width and centers */
   .avatar {
-    grid-column: 1/-1;
-    margin: 0 auto;
+    grid-column: 1 / -1;
+
+    .avatar-image {
+      width: 96px;
+      height: 96px;
+    }
+  }
+
+  /* Name section centers on mobile */
+  .name-section {
+    grid-column: 1 / -1;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Health and stats stack vertically */
+  .health-section {
+    grid-column: 1 / -1;
+  }
+
+  .hard-stats {
+    grid-column: 1 / -1;
   }
 }
