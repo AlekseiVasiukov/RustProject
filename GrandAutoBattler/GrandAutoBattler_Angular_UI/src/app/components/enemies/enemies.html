@@ -1,7 +1,7 @@
 @if (selectedCombatant()) {
   <app-combatant-details
     [combatant]="selectedCombatant()"
-    (closed)="selectedCombatant(null)"
+    (closed)="selectedCombatant.set(null)"
   ></app-combatant-details>
 }
 <div class="enemies-container">
