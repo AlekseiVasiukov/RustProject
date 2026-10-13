@@ -2,11 +2,12 @@ import { Component, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { Combatant } from '../../core/models/game.model';
 import { UnitImageService } from '../../core/services/unit-image.service';
+import { PixelPicture } from '../pixel-picture/pixel-picture';
 
 @Component({
   selector: 'app-combatant-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PixelPicture],
   templateUrl: './combatant-details.html',
   styleUrl: './combatant-details.scss',
 })

@@ -3,11 +3,17 @@
     <!-- LAYER 0: GIF Background -->
     @if (combatant(); as c) {
       <div class="card-background">
-        <img
+        <app-pixel-picture
+          class="background-gif"
+          [src]="getCombatantGif(c, side())"
+          [alt]="getUnitType(c)"
+          pixelSize="2px"
+        />
+        <!-- <img
           [src]="getCombatantGif(c, side())"
           [alt]="getUnitType(combatant()!)"
           class="background-gif"
-        />
+        /> -->
       </div>
     }
 
