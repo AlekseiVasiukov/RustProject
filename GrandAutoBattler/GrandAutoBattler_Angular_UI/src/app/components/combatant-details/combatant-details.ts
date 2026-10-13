@@ -20,10 +20,7 @@ export class CombatantDetails {
     this.closed.emit();
   }
 
-  ngOnInit() {
-    this.imageServicePng.updateConfig({ basePath: '/assets/images/128px' });
-    this.imageServiceGif.updateConfig({ basePath: '/assets/images/gif', baseExtension: '.gif' });
-  }
+  ngOnInit() {}
 
   // Helper to get full display name
   getFullName(c: Combatant): string {
@@ -37,11 +34,24 @@ export class CombatantDetails {
     return c.unit_type_pretty_name || c.unit_type_name;
   }
 
-  getCombatantPng = (combatant: Combatant, side: 0 | 1): string => {
-    return this.imageServicePng.getCombatantImagePath(combatant.unit_type_name, side);
-  };
+  // getCombatantPng = (combatant: Combatant, side: 0 | 1): string => {
+  //   this.imageServicePng.updateConfig({ basePath: '/assets/images/128px', baseExtension: '.png' });
+  //   return this.imageServicePng.getCombatantImagePath(combatant.unit_type_name, side);
+  // };
 
-  getCombatantGif = (combatant: Combatant, side: 0 | 1): string => {
-    return this.imageServiceGif.getCombatantImagePath(combatant.unit_type_name, side);
-  };
+  getCombatantPng = (c: Combatant, side: 0 | 1): string =>
+    this.imageServicePng.getCombatantImagePath(c.unit_type_name, side, {
+      basePath: '/assets/images/128px',
+      baseExtension: '.png',
+    });
+
+  // getCombatantGif = (combatant: Combatant, side: 0 | 1): string => {
+  //   this.imageServiceGif.updateConfig({ basePath: '/assets/images/gif', baseExtension: '.gif' });
+  //   return this.imageServiceGif.getCombatantImagePath(combatant.unit_type_name, side);
+  // };
+  getCombatantGif = (c: Combatant, side: 0 | 1): string =>
+    this.imageServicePng.getCombatantImagePath(c.unit_type_name, side, {
+      basePath: '/assets/images/gif',
+      baseExtension: '.gif',
+    });
 }

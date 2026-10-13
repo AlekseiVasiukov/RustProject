@@ -33,12 +33,25 @@ export class UnitImageService {
     // return `${cfg.basePath}/${cfg.size}/${faction.toLowerCase()}-${unitTypeName.toLowerCase()}.png`;
   }
 
-  getCombatantImagePath(combatantUnitTypeName: string, side: 0 | 1): string {
+  // getCombatantImagePath(combatantUnitTypeName: string, side: 0 | 1): string {
+  //   const factions = this.session.availableFactions();
+  //   const factionIndex =
+  //     side === 0 ? this.session.ourFactionIndex() : this.session.opponentFactionIndex();
+  //   const faction = factions[factionIndex] ?? 'unknown';
+  //   return this.getImagePath(faction, combatantUnitTypeName);
+  // }
+
+  getCombatantImagePath(
+    combatantUnitTypeName: string,
+    side: 0 | 1,
+    config?: Partial<ImageConfig>,
+  ): string {
+    const cfg = config ? { ...this.config(), ...config } : this.config();
     const factions = this.session.availableFactions();
     const factionIndex =
       side === 0 ? this.session.ourFactionIndex() : this.session.opponentFactionIndex();
     const faction = factions[factionIndex] ?? 'unknown';
-    return this.getImagePath(faction, combatantUnitTypeName);
+    return `${cfg.basePath}/${faction.toLowerCase()}-${combatantUnitTypeName.toLowerCase()}${cfg.baseExtension}`;
   }
 
   // hasImage(faction, unitTypeName: string): boolean{
