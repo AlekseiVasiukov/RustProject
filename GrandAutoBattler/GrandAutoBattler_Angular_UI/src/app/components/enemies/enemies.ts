@@ -18,6 +18,7 @@ export class Enemies {
   // combatantDetails
   router = inject(Router);
   selectedCombatant = signal<Combatant | null>(null);
+  selectedConbatantSide = signal<0 | 1>(0);
 
   //our combatants (side 0)
   ourCombatants = computed(() => {
@@ -54,7 +55,11 @@ export class Enemies {
     this.router.navigate(['/battle-journal']);
   }
 
-  onCombatantClick(combatant: Combatant): void {
+  onCombatantClick(combatant: Combatant, side: 0 | 1): void {
+    console.log('type in enemies is', combatant.unit_type_name);
+    console.log('side in enemies is', side);
+
+    this.selectedConbatantSide.set(side);
     this.selectedCombatant.set(combatant);
   }
 }

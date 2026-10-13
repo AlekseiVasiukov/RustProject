@@ -4,7 +4,7 @@
     @if (combatant(); as c) {
       <div class="card-background">
         <img
-          [src]="getCombatantGif(c, 0)"
+          [src]="getCombatantGif(c, side())"
           [alt]="getUnitType(combatant()!)"
           class="background-gif"
         />
@@ -16,7 +16,7 @@
       <div class="card-content">
         <!-- Row 1: Avatar + Name -->
         <div class="avatar">
-          <img [src]="getCombatantPng(c, 0)" [alt]="getUnitType(c)" class="avatar-image" />
+          <img [src]="getCombatantPng(c, side())" [alt]="getUnitType(c)" class="avatar-image" />
           <!-- <img
             [src]="'/assets/images/128px/' + c.unit_type_name + '.png'"
             [alt]="getUnitType(c)"

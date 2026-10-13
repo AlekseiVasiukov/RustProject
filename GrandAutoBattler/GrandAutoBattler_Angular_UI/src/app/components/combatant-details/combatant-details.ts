@@ -12,9 +12,9 @@ import { UnitImageService } from '../../core/services/unit-image.service';
 })
 export class CombatantDetails {
   combatant = input.required<Combatant | null>();
+  side = input.required<0 | 1>();
   closed = output<void>();
-  imageServicePng = inject(UnitImageService);
-  imageServiceGif = inject(UnitImageService);
+  imageService = inject(UnitImageService);
 
   close(): void {
     this.closed.emit();
@@ -39,19 +39,26 @@ export class CombatantDetails {
   //   return this.imageServicePng.getCombatantImagePath(combatant.unit_type_name, side);
   // };
 
-  getCombatantPng = (c: Combatant, side: 0 | 1): string =>
-    this.imageServicePng.getCombatantImagePath(c.unit_type_name, side, {
+  getCombatantPng = (c: Combatant, side: 0 | 1): string => {
+    console.log('unit for png', c.unit_type_name);
+    console.log('side for png', side);
+    return this.imageService.getCombatantImagePath(c.unit_type_name, side, {
       basePath: '/assets/images/128px',
       baseExtension: '.png',
     });
+  };
 
   // getCombatantGif = (combatant: Combatant, side: 0 | 1): string => {
   //   this.imageServiceGif.updateConfig({ basePath: '/assets/images/gif', baseExtension: '.gif' });
   //   return this.imageServiceGif.getCombatantImagePath(combatant.unit_type_name, side);
   // };
-  getCombatantGif = (c: Combatant, side: 0 | 1): string =>
-    this.imageServicePng.getCombatantImagePath(c.unit_type_name, side, {
+  getCombatantGif = (c: Combatant, side: 0 | 1): string => {
+    console.log('unit for gif', c.unit_type_name);
+    console.log('side for gif', side);
+
+    return this.imageService.getCombatantImagePath(c.unit_type_name, side, {
       basePath: '/assets/images/gif',
       baseExtension: '.gif',
     });
+  };
 }
