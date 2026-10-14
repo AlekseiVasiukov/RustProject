@@ -1,6 +1,6 @@
 <div class="modal-overlay" (click)="close()">
   <div class="combatant-details-card" (click)="$event.stopPropagation()">
-    <!-- LAYER 0: GIF Background -->
+    <!-- Lower LAYER: GIF  -->
     @if (combatant(); as c) {
       <div class="card-background">
         <app-pixel-picture
@@ -17,9 +17,13 @@
       </div>
     }
 
-    <!-- LAYER 1: Foreground Content -->
+    <!-- Higher level. Foreground Content -->
     @if (combatant(); as c) {
       <div class="card-content">
+        <div class="name-section">
+          <div class="name">{{ getFullName(c) }}</div>
+          <div class="pretty-type">{{ getUnitType(c) }}</div>
+        </div>
         <!-- Row 1: Avatar + Name -->
         <div class="avatar">
           <img [src]="getCombatantPng(c, side())" [alt]="getUnitType(c)" class="avatar-image" />
@@ -29,23 +33,27 @@
             class="avatar-image"
           /> -->
         </div>
-        <div class="name-section">
-          <div class="name">{{ getFullName(c) }}</div>
-          <div class="pretty-type">{{ getUnitType(c) }}</div>
-        </div>
 
-        <!-- Row 2: Health + HARD Stats -->
         <div class="health-section">
-          <span class="health-label">Health Pool:</span>
-          <span class="health-value">{{ c.parameters.health }}</span>
-          <span class="health-current"
+          <span class="health-label">Health Points:</span>
+          <span class="health-value">{{ c.health_points }}</span>
+          <!-- <span class="health-current"
             >(Current: {{ c.current_health_points }}/{{ c.health_points }})</span
-          >
+          > -->
         </div>
         <div class="hard-stats">
           <div class="stat-box">
             <span class="stat-letter">H</span>
             <span class="stat-value">{{ c.parameters.health }}</span>
+            <span class="stat-description"
+              >HP bonus
+              <span
+                class="stat-bonus"
+                [class.positive]="getUnitHealthBonus(c) > 0"
+                [class.negative]="getUnitHealthBonus(c) < 0"
+                >{{ getUnitHealthBonus(c) }}%</span
+              >
+            </span>
           </div>
           <div class="stat-box">
             <span class="stat-letter">A</span>

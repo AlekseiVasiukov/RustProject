@@ -1,5 +1,5 @@
 /* ============================================================
-   LAYER 0: Modal Overlay (full viewport backdrop)
+   Modal overlay. COVERING EVERYTHING WHEN COMBATANT SELECTED
    ============================================================ */
 .modal-overlay {
   position: fixed;
@@ -63,7 +63,7 @@
 /* Desktop flare animation - starts bright/oversaturated, settles to normal */
 @keyframes flareIn {
   0% {
-    filter: brightness(3.0) saturate(3.0) contrast(0.2) blur(4px);
+    filter: brightness(3) saturate(3) contrast(0.2) blur(4px);
     opacity: 0;
   }
   30% {
@@ -75,7 +75,7 @@
     opacity: 0.9;
   }
   100% {
-    filter: brightness(1.0) saturate(1.0) contrast(1.0) blur(0px);
+    filter: brightness(1) saturate(1) contrast(1) blur(0px);
     opacity: 1;
   }
 }
@@ -198,6 +198,19 @@
       font-weight: bold;
       color: #ffffff;
     }
+
+    .stat-bonus {
+      font-style: italic;
+
+      &.positive {
+        color: olive;
+        // color: olive;
+      }
+
+      &.negative {
+        color: deeppink;
+      }
+    }
   }
 }
 
@@ -211,11 +224,7 @@
   left: 0;
   right: 0;
   height: 40%;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.15) 0%,
-    rgba(255, 255, 255, 0.0) 100%
-  );
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
   border-radius: 10px 10px 0 0;
   z-index: 2;
   pointer-events: none;

@@ -35,6 +35,10 @@ export class CombatantDetails {
     return c.unit_type_pretty_name || c.unit_type_name;
   }
 
+  getUnitHealthBonus(c: Combatant): number {
+    return (c.parameters.health-4) * 5;
+  }
+
   // getCombatantPng = (combatant: Combatant, side: 0 | 1): string => {
   //   this.imageServicePng.updateConfig({ basePath: '/assets/images/128px', baseExtension: '.png' });
   //   return this.imageServicePng.getCombatantImagePath(combatant.unit_type_name, side);
