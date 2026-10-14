@@ -45,9 +45,9 @@
           <div class="stat-box">
             <span class="stat-letter">H</span>
             <span class="stat-value">{{ c.parameters.health }}</span>
+            <!-- prettier-ignore -->
             <span class="stat-description"
-              >HP bonus
-              <span
+              >HP bonus <span
                 class="stat-bonus"
                 [class.positive]="getUnitHealthBonus(c) > 0"
                 [class.negative]="getUnitHealthBonus(c) < 0"
@@ -58,14 +58,41 @@
           <div class="stat-box">
             <span class="stat-letter">A</span>
             <span class="stat-value">{{ c.parameters.attack }}</span>
+            <!-- prettier-ignore -->
+            <span class="stat-description"
+              >Attack bonus <span
+                class="stat-bonus"
+                [class.positive]="getUnitAttackBonus(c) > 0"
+                [class.negative]="getUnitAttackBonus(c) < 0"
+                >{{ getUnitAttackBonus(c) }}%</span
+              >
+            </span>
           </div>
           <div class="stat-box">
             <span class="stat-letter">R</span>
             <span class="stat-value">{{ c.parameters.range }}</span>
+            <span class="stat-description"
+              >Chance to get hit
+              <span
+                class="stat-bonus-range"
+                [class.low-probability]="getUnitRangeBonus(c) < 50"
+                [class.high-probability]="getUnitRangeBonus(c) >= 50"
+                >{{ getUnitRangeBonus(c) }}%</span
+              >
+            </span>
           </div>
           <div class="stat-box">
             <span class="stat-letter">D</span>
             <span class="stat-value">{{ c.parameters.defense }}</span>
+            <span class="stat-description"
+              >Defense bonus
+              <span
+                class="stat-bonus"
+                [class.positive]="getUnitDefenceBonus(c) > 40"
+                [class.negative]="getUnitDefenceBonus(c) < 40"
+                >{{ getUnitDefenceBonus(c) }}%</span
+              >
+            </span>
           </div>
         </div>
       </div>

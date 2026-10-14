@@ -36,7 +36,19 @@ export class CombatantDetails {
   }
 
   getUnitHealthBonus(c: Combatant): number {
-    return (c.parameters.health-4) * 5;
+    return (c.parameters.health - 4) * 5;
+  }
+
+  getUnitAttackBonus(c: Combatant): number {
+    return (c.parameters.attack - 4) * 5;
+  }
+
+  getUnitRangeBonus(c: Combatant): number {
+    return (10 - c.parameters.range) * 10;
+  }
+
+  getUnitDefenceBonus(c: Combatant): number {
+    return Math.max(c.parameters.defense - 2, 0) * 5;
   }
 
   // getCombatantPng = (combatant: Combatant, side: 0 | 1): string => {

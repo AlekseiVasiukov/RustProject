@@ -211,6 +211,20 @@
         color: deeppink;
       }
     }
+
+    .stat-bonus-range {
+      font-style: italic;
+
+      &.low-probability {
+        color: olive;
+        font-weight: 200;
+        // color: olive;
+      }
+
+      &.high-probability {
+        color: deeppink;
+      }
+    }
   }
 }
 
