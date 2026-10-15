@@ -96,7 +96,7 @@
 
   background: rgba(0, 0, 0, 0.25);
   // border-radius: 1rem;
-  border: 2px solid yellow;
+  // border: 2px solid yellow;
   padding: 1rem;
 
   display: grid;
@@ -134,7 +134,7 @@
    ============================================================ */
 .name-section {
   // grid-area: name-zone;
-  border: 2px solid white;
+  // border: 2px solid white;
   grid-row: 1;
   grid-column: 1;
   display: flex;
@@ -158,7 +158,7 @@
 
 .health-section {
   // grid-area: hp-zone;
-  border: 2px solid white;
+  // border: 2px solid white;
   grid-row: 1;
   grid-column: 2;
   display: flex;
@@ -168,14 +168,14 @@
   gap: 2px;
 
   .health-label {
-    font-size: 0.8rem;
+    font-size: 1rem;
     color: white;
   }
 
   .health-value {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     font-weight: bolder;
-    color: crimson;
+    color: pink;
   }
 
   // .health-current {
@@ -184,32 +184,62 @@
   // }
 }
 
-/* ============================================================
-   Grid Cell: HARD Stats (Row 2, Column 2)
-   ============================================================ */
 .hard-stats-section {
   grid-column: span;
   // grid-area: hard-stats-zone;
-  border: 2px solid white;
+  // border: 2px solid white;
   grid-row: 2;
   grid-column: 1;
   grid-column-end: span 2;
-  // grid-auto-columns: max-content;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  justify-content: center;
+
+  .hard-stats-label {
+    text-align: center;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: larger;
+    margin: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.7);
+    // width: 10rem;
+
+    border-radius: 1rem;
+  }
+
+  .hard-stats-grid {
+    width: 100%;
+    justify-self: center;
+
+    align-self: stretch;
+    text-align: center;
+    width: 100%;
+    height: auto;
+    // vertical-align: middle;
+    align-items: center;
+    // position: absolute;
+    inset: 0;
+    // background-color: yellow;
+    display: grid;
+    grid-template-columns: auto auto;
+    // grid-template-rows: auto auto;
+    justify-content: space-around;
+    // text-align: center;
+    // align-items: center;
+    align-items: center;
+    gap: 8px;
+  }
 
   .stat-box {
+    // grid-auto-flow: dense;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.7);
     // border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
     // gap: 1rem;
-    padding: 4px 8px;
-    min-width: 40px;
+    border-radius: 1rem;
+    padding: 0.5rem 1rem;
+    // min-width: 10rem;
 
     .parameter-pair {
       display: flex;
