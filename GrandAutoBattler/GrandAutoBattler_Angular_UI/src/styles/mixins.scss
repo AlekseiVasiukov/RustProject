@@ -6,6 +6,18 @@
   box-shadow: $shadow;
 }
 
+@mixin beveled-rounded-card {
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.35),
+    inset -3px -3px 0 rgba(0, 0, 0, 0.45),
+    inset 0 0 6px rgba(0, 0, 0, 0.25),
+    0 4px 20px rgba(0, 0, 0, 0.6);
+
+  border-radius: 10px;
+    // background: linear-gradient(to bottom, #2a2a2a 0%, #1a1a1a 100%);
+
+}
+
 @mixin game-zone-style {
   height: $game-zone-height;
 

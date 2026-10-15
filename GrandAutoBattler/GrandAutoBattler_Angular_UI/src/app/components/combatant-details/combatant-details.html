@@ -8,6 +8,8 @@
           [src]="getCombatantGif(c, side())"
           [alt]="getUnitType(c)"
           pixelSize="2px"
+          width="auto"
+          height="auto"
         />
         <!-- <img
           [src]="getCombatantGif(c, side())"
@@ -43,8 +45,10 @@
         </div>
         <div class="hard-stats">
           <div class="stat-box">
-            <span class="stat-letter">H</span>
-            <span class="stat-value">{{ c.parameters.health }}</span>
+            <div class="parameter-pair">
+              <span class="stat-letter">Health</span>
+              <span class="stat-value">{{ c.parameters.health }}</span>
+            </div>
             <!-- prettier-ignore -->
             <span class="stat-description"
               >HP bonus <span
@@ -56,8 +60,10 @@
             </span>
           </div>
           <div class="stat-box">
-            <span class="stat-letter">A</span>
-            <span class="stat-value">{{ c.parameters.attack }}</span>
+            <div class="parameter-pair">
+              <span class="stat-letter">Attack</span>
+              <span class="stat-value">{{ c.parameters.attack }}</span>
+            </div>
             <!-- prettier-ignore -->
             <span class="stat-description"
               >Attack bonus <span
@@ -69,8 +75,10 @@
             </span>
           </div>
           <div class="stat-box">
-            <span class="stat-letter">R</span>
-            <span class="stat-value">{{ c.parameters.range }}</span>
+            <div class="parameter-pair">
+              <span class="stat-letter">Range</span>
+              <span class="stat-value">{{ c.parameters.range }}</span>
+            </div>
             <span class="stat-description"
               >Chance to get hit
               <span
@@ -82,15 +90,17 @@
             </span>
           </div>
           <div class="stat-box">
-            <span class="stat-letter">D</span>
-            <span class="stat-value">{{ c.parameters.defense }}</span>
+            <div class="parameter-pair">
+              <span class="stat-letter">Defense</span>
+              <span class="stat-value">{{ c.parameters.defense }}</span>
+            </div>
             <span class="stat-description"
               >Defense bonus
               <span
                 class="stat-bonus"
-                [class.positive]="getUnitDefenceBonus(c) > 40"
-                [class.negative]="getUnitDefenceBonus(c) < 40"
-                >{{ getUnitDefenceBonus(c) }}%</span
+                [class.positive]="getUnitDefenseBonus(c) > 40"
+                [class.negative]="getUnitDefenseBonus(c) < 40"
+                >{{ getUnitDefenseBonus(c) }}%</span
               >
             </span>
           </div>

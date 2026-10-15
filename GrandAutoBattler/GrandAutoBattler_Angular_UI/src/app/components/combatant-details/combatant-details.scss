@@ -1,3 +1,5 @@
+@import '../../../styles/mixins.scss';
+
 /* ============================================================
    Modal overlay. COVERING EVERYTHING WHEN COMBATANT SELECTED
    ============================================================ */
@@ -15,22 +17,18 @@
    Card Container (relative positioning for z-index context)
    ============================================================ */
 .combatant-details-card {
+  @include beveled-rounded-card;
   position: relative;
   display: grid;
-  grid-template-columns: 128px 1fr;
+  grid-template-columns: auto auto;
   grid-template-rows: auto auto;
-  gap: 12px;
-  padding: 16px;
-  max-width: 480px;
-  min-width: 320px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  background: linear-gradient(to bottom, #2a2a2a 0%, #1a1a1a 100%);
-  box-shadow:
-    inset 2px 2px 0 rgba(255, 255, 255, 0.35),
-    inset -3px -3px 0 rgba(0, 0, 0, 0.45),
-    inset 0 0 6px rgba(0, 0, 0, 0.25),
-    0 4px 20px rgba(0, 0, 0, 0.6);
+  // gap: 12px;
+  padding: 1rem;
+
+  min-width: 700px;
+  height: 25rem;
+  // border: 1px solid rgba(255, 255, 255, 0.08);
+
   overflow: hidden;
 }
 
@@ -38,13 +36,20 @@
    LAYER 0: GIF Background (behind all content)
    ============================================================ */
 .card-background {
+  // position: absolute;
+  // inset: 0;
   position: absolute;
+  width: 100%;
+  height: 100%;
   inset: 0;
   z-index: 0;
 
   .background-gif {
+    position: absolute;
     width: 100%;
     height: 100%;
+    inset: 0;
+    z-index: 0;
     object-fit: cover;
     image-rendering: pixelated;
 
@@ -86,13 +91,13 @@
 .card-content {
   position: relative;
   z-index: 1;
-  color: #e0e0e0;
+  // color: #e0e0e0;
   width: 100%;
 
   /* Dark semi-transparent backdrop behind text for readability */
-  background: rgba(0, 0, 0, 0.45);
-  border-radius: 6px;
-  padding: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 1rem;
+  padding: 0.3rem;
 }
 
 /* ============================================================
@@ -127,14 +132,14 @@
   .name {
     font-size: 1.4rem;
     font-weight: bold;
-    color: #ffffff;
+    color: white;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
     margin-bottom: 4px;
   }
 
   .pretty-type {
     font-size: 0.9rem;
-    color: #b0b0b0;
+    color: lightgray;
     font-style: italic;
   }
 }
@@ -151,19 +156,19 @@
 
   .health-label {
     font-size: 0.8rem;
-    color: #999;
+    color: white;
   }
 
   .health-value {
     font-size: 1.1rem;
-    font-weight: bold;
-    color: #ff6b6b;
+    font-weight: bolder;
+    color: crimson;
   }
 
-  .health-current {
-    font-size: 0.75rem;
-    color: #777;
-  }
+  // .health-current {
+  //   font-size: 0.75rem;
+  //   color: #777;
+  // }
 }
 
 /* ============================================================
@@ -187,8 +192,17 @@
     padding: 4px 8px;
     min-width: 40px;
 
+    .parameter-pair {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      align-items: center;
+      gap: 0.5rem;
+      // align-items: stretch;
+    }
+
     .stat-letter {
-      font-size: 0.75rem;
+      font-size: 1rem;
       font-weight: bold;
       color: #ffcc00;
     }
@@ -238,7 +252,7 @@
   left: 0;
   right: 0;
   height: 40%;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+  // background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
   border-radius: 10px 10px 0 0;
   z-index: 2;
   pointer-events: none;

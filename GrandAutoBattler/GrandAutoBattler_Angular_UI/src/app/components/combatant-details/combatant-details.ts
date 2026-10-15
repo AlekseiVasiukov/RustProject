@@ -47,7 +47,7 @@ export class CombatantDetails {
     return (10 - c.parameters.range) * 10;
   }
 
-  getUnitDefenceBonus(c: Combatant): number {
+  getUnitDefenseBonus(c: Combatant): number {
     return Math.max(c.parameters.defense - 2, 0) * 5;
   }
 
