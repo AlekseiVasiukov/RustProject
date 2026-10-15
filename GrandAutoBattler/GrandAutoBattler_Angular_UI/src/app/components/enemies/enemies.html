@@ -15,6 +15,19 @@
         <h3 class="side-title golden">Our Forces</h3>
         @for (combatant of ourCombatants(); track combatant.id) {
           <div class="button-open-combatant-card golden" (click)="onCombatantClick(combatant, 0)">
+            <div class="combatant-card golden">
+              <div class="combatant-name">{{ getFullName(combatant) }}</div>
+              <div class="combatant-type">{{ getUnitType(combatant) }}</div>
+              <div class="hard-and-hp">
+                <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
+                <div class="combatant-stats">
+                  <span>H[{{ combatant.parameters.health }}]</span>
+                  <span>A[{{ combatant.parameters.attack }}]</span>
+                  <span>R[{{ combatant.parameters.range }}]</span>
+                  <span>D[{{ combatant.parameters.defense }}]</span>
+                </div>
+              </div>
+            </div>
             <img
               [src]="getCombatantImage(combatant, 0)"
               [alt]="combatant.unit_type_pretty_name"
@@ -22,19 +35,6 @@
               class="unit-icon"
               loading="lazy"
             />
-            <div class="combatant-card golden">
-              <div class="combatant-name">{{ getFullName(combatant) }}</div>
-              <div class="combatant-type">{{ getUnitType(combatant) }}</div>
-              <div class="hard-and-hp">
-                <div class="combatant-stats">
-                  <span>H[{{ combatant.parameters.health }}]</span>
-                  <span>A[{{ combatant.parameters.attack }}]</span>
-                  <span>R[{{ combatant.parameters.range }}]</span>
-                  <span>D[{{ combatant.parameters.defense }}]</span>
-                </div>
-                <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
-              </div>
-            </div>
           </div>
         }
       </div>
@@ -54,13 +54,13 @@
               <div class="combatant-name">{{ getFullName(combatant) }}</div>
               <div class="combatant-type">{{ getUnitType(combatant) }}</div>
               <div class="hard-and-hp">
+                <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
                 <div class="combatant-stats">
                   <span>H[{{ combatant.parameters.health }}]</span>
                   <span>A[{{ combatant.parameters.attack }}]</span>
                   <span>R[{{ combatant.parameters.range }}]</span>
                   <span>D[{{ combatant.parameters.defense }}]</span>
                 </div>
-                <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
               </div>
             </div>
           </div>

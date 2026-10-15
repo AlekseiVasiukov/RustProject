@@ -32,7 +32,7 @@
   text-align: center;
   width: auto;
   // height: 100%;
-  padding: 2rem;
+  // padding: 0.2rem 0;
   flex-shrink: 0;
   // height: 100%;
 
@@ -53,7 +53,8 @@
   height: 100%;
   // flex: 1;
   // justify-content: space-around;
-  padding: 1rem;
+  // padding: 1rem;
+  padding: 0 1rem;
 
   &.our-side {
     // background-color: white;
@@ -71,6 +72,8 @@
   }
 
   .side-title {
+    margin-top: 0.2rem;
+
     &.golden {
       color: gold;
     }
@@ -81,11 +84,17 @@
 }
 
 .combatant-name {
-  font-style: italic;
+  color: white;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  align-items: end;
+  // font-size: medium;
+  // font-style: italic;
 }
 
 .combatant-type {
+  font-style: oblique;
   font-size: small;
+  align-content: start;
 }
 
 .combatant-card {
@@ -101,15 +110,22 @@
   // &.magenta {
   //   border-left: 4px solid magenta;
   // }
-
+  display: grid;
+  grid-template-rows: 0.5fr 1fr 3fr;
   @media (max-width: 800px) {
     padding: 0;
   }
 }
 
 .hard-and-hp {
+  grid-row: 3;
+  align-items: center;
+
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  height: auto;
+  // background-color: yellow;
+  justify-content: center;
 }
 
 .combatant-hp {
@@ -146,13 +162,15 @@
   --border-color: rgba(255, 255, 255, 0.08); // Subtle edge border
   --border-radius: 10px; // Rounded corners
 
+  // flex: 0;
   position: relative; // Required for ::before positioning
   overflow: hidden; // Clips the gloss to card boundaries
   // border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
   border-radius: var(--border-radius, 10px);
   padding: 0.3rem 0.5rem;
   margin-bottom: 10px;
-
+  display: flex;
+  flex-direction: row;
   // Base background gradient for the plastic body
   background: linear-gradient(
     to bottom,
