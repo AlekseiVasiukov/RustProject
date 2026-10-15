@@ -53,12 +53,10 @@
     object-fit: cover;
     image-rendering: pixelated;
 
-    /* Desktop: One-time flare animation */
     @media (min-width: 801px) {
-      animation: flareIn 1.5s ease-out forwards;
+      animation: flareIn 1s ease-out forwards;
     }
 
-    /* Mobile: Infinite pan with fade edges */
     @media (max-width: 800px) {
       animation: none;
     }
@@ -89,15 +87,17 @@
    LAYER 1: Foreground Content (on top of background)
    ============================================================ */
 .card-content {
-  position: relative;
+  position: absolute;
   z-index: 1;
   // color: #e0e0e0;
   width: 100%;
+  height: 100%;
+  inset: 0;
 
   /* Dark semi-transparent backdrop behind text for readability */
   background: rgba(0, 0, 0, 0.25);
   border-radius: 1rem;
-  padding: 0.3rem;
+  padding: 1rem;
 }
 
 /* ============================================================

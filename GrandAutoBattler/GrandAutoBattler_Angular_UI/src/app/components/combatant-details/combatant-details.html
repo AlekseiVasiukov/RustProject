@@ -17,10 +17,9 @@
           class="background-gif"
         /> -->
       </div>
-    }
 
-    <!-- Higher level. Foreground Content -->
-    @if (combatant(); as c) {
+      <!-- Higher level. Foreground Content -->
+
       <div class="card-content">
         <div class="name-section">
           <div class="name">{{ getFullName(c) }}</div>
@@ -28,7 +27,7 @@
         </div>
         <!-- Row 1: Avatar + Name -->
         <div class="avatar">
-          <img [src]="getCombatantPng(c, side())" [alt]="getUnitType(c)" class="avatar-image" />
+          <!-- <img [src]="getCombatantPng(c, side())" [alt]="getUnitType(c)" class="avatar-image" /> -->
           <!-- <img
             [src]="'/assets/images/128px/' + c.unit_type_name + '.png'"
             [alt]="getUnitType(c)"
