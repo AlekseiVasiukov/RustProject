@@ -23,9 +23,18 @@
 .combatants-grid {
   display: flex;
   flex-direction: row;
+  // flex: 1;
 
+  // background-color: yellow;
   // gap: 40px;
   justify-content: space-around;
+  // align-items: center;
+  text-align: center;
+  width: auto;
+  // height: 100%;
+  padding: 2rem;
+  flex-shrink: 0;
+  // height: 100%;
 }
 
 .side {
@@ -33,17 +42,38 @@
   // flex: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  flex-wrap: 0;
+  flex-shrink: 0;
+  flex-grow: 0;
+  height: 100%;
+  // flex: 1;
   // justify-content: space-around;
+  padding: 1rem;
+
+  &.our-side {
+    // background-color: white;
+    border-right: 1px solid gold;
+    border-radius: 1rem;
+  }
+
+  &.enemies-side {
+    border-left: 1px solid magenta;
+    border-radius: 1rem;
+  }
+
+  .side-title {
+    &.golden {
+      color: gold;
+    }
+    &.magenta {
+      color: magenta;
+    }
+  }
+
+
 }
 
-.side-title {
-  &.golden {
-    color: gold;
-  }
-  &.magenta {
-    color: magenta;
-  }
-}
 .combatant-name {
   font-style: italic;
 }
@@ -88,12 +118,12 @@
 }
 
 .unit-icon {
-  width: 64px;
-  height: 64px;
+  width: 128px;
+  height: 128px;
   object-fit: contain; //scales to fit without distortion
   // background-color: var(--color-placeholder-bg,);
 
-  &.inverted{
+  &.inverted {
     transform: scaleX(-1);
   }
 }

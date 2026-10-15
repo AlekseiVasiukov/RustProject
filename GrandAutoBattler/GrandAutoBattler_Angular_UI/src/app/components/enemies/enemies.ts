@@ -40,7 +40,7 @@ export class Enemies {
   }
 
   ngOnInit() {
-    this.imageService.updateConfig({ basePath: '/assets/images/64px' });
+    this.imageService.updateConfig({ basePath: '/assets/images/128px' });
   }
   getCombatantImage = (combatant: Combatant, side: 0 | 1): string => {
     return this.imageService.getCombatantImagePath(combatant.unit_type_name, side);
