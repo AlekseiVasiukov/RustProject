@@ -123,7 +123,12 @@
   margin: 8px 0;
 }
 
-.unit-picture-and-text {
+.button-open-combatant-card {
+  @include btn-open-combatant-card;
+  // background-color: yellow;
+}
+
+.combatant-picture-and-text {
   display: flex;
   flex-direction: row;
 }

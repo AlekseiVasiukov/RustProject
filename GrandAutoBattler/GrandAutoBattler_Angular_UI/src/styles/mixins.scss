@@ -36,3 +36,34 @@
   justify-content: end;
   gap: 0.5rem;
 }
+
+@mixin btn-open-combatant-card {
+  background-color: $button-open-combatant-card-bg-color;
+  // padding: 0.3rem 1rem;
+  color: $text-color;
+  border-radius: $border-radius;
+  align-self: center;
+
+  // border-color: $contour-color;
+  // box-shadow: $shadow;
+  transition:
+    background-color 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+    // opacity 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+    transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  &:hover {
+    background-color: $button-open-combatant-card-bg-color-accented;
+    // opacity: 0.85;
+    transform: scale(1.05);
+
+    transition:
+      background-color 0.1s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+      // opacity 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+      transform 0.25s cubic-bezier(0, 1.6, 0.7, 5);
+  }
+
+  // &:active {
+  //   transform: scale(0.94);
+  //   transition-duration: 0.12s;
+  // }
+}
