@@ -174,7 +174,7 @@
 /* ============================================================
    Grid Cell: HARD Stats (Row 2, Column 2)
    ============================================================ */
-.hard-stats {
+.hard-stats-section {
   grid-row: 2;
   grid-column: 2;
   display: flex;
@@ -306,7 +306,7 @@
     grid-column: 1 / -1;
   }
 
-  .hard-stats {
+  .hard-stats-section {
     grid-column: 1 / -1;
   }
 }

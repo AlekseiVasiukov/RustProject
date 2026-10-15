@@ -26,14 +26,10 @@
           <div class="pretty-type">{{ getUnitType(c) }}</div>
         </div>
         <!-- Row 1: Avatar + Name -->
-        <div class="avatar">
-          <!-- <img [src]="getCombatantPng(c, side())" [alt]="getUnitType(c)" class="avatar-image" /> -->
-          <!-- <img
-            [src]="'/assets/images/128px/' + c.unit_type_name + '.png'"
-            [alt]="getUnitType(c)"
-            class="avatar-image"
-          /> -->
-        </div>
+        <!-- <div class="avatar">
+          <img [src]="getCombatantPng(c, side())" [alt]="getUnitType(c)" class="avatar-image" />
+
+        </div> -->
 
         <div class="health-section">
           <span class="health-label">Health Points:</span>
@@ -42,7 +38,7 @@
             >(Current: {{ c.current_health_points }}/{{ c.health_points }})</span
           > -->
         </div>
-        <div class="hard-stats">
+        <div class="hard-stats-section">
           <div class="stat-box">
             <div class="parameter-pair">
               <span class="stat-letter">Health</span>
