@@ -14,7 +14,7 @@
       <div class="side our-side">
         <h3 class="side-title golden">Our Forces</h3>
         @for (combatant of ourCombatants(); track combatant.id) {
-          <div class="button-open-combatant-card" (click)="onCombatantClick(combatant, 0)">
+          <div class="button-open-combatant-card golden" (click)="onCombatantClick(combatant, 0)">
             <div class="combatant-card golden">
               <div class="combatant-name">{{ getFullName(combatant) }}</div>
               <div class="combatant-type">{{ getUnitType(combatant) }}</div>
@@ -42,7 +42,7 @@
       <div class="side enemies-side">
         <h3 class="side-title magenta">Enemy Forces</h3>
         @for (combatant of enemyCombatants(); track combatant.id) {
-          <div class="combatant-picture-and-text" (click)="onCombatantClick(combatant, 1)">
+          <div class="button-open-combatant-card magenta" (click)="onCombatantClick(combatant, 1)">
             <img
               [src]="getCombatantImage(combatant, 1)"
               [alt]="combatant.unit_type_pretty_name"

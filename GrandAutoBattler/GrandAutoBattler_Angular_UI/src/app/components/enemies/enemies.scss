@@ -125,7 +125,130 @@
 
 .button-open-combatant-card {
   @include btn-open-combatant-card;
+  --gloss-top-opacity: 0.45; // Opacity of the top highlight (0.0 = invisible, 1.0 = solid white)
+  --gloss-bottom-opacity: 0; // Opacity at the bottom of the gloss band (fade-out edge)
+  --gloss-height: 50%; // Vertical extent of the gloss band (30% = thin strip, 80% = wide wash)
+  --gloss-blur: 0px; // Blur applied to the gloss edge (0px = sharp, 8px = soft diffusion)
+
+  // --BEVEL PARAMETERS--
+  --bevel-light-size: 2px; // Thickness of the light edge highlight (1px = hairline, 4px = bold)
+  --bevel-light-color: rgba(255, 255, 255, 0.35); // Color of the top-left catchlight
+  --bevel-dark-size: 3px; // Thickness of the dark edge shadow
+  --bevel-dark-color: rgba(0, 0, 0, 0.45); // Color of the bottom-right shadow edge
+
+  // --INNER SHADOW PARAMETERS--
+  --inner-shadow-size: 6px; // Spread/blurred radius of the inner shadow (0px = none, 12px = deep cavity)
+  --inner-shadow-color: rgba(0, 0, 0, 0.25); // Color of the inner shadow
+
+  // --BASE PARAMETERS--
+  --base-bg-start: #2a2a2a; // Top gradient color of the card background
+  --base-bg-end: #1a1a1a; // Bottom gradient color (slightly darker for depth)
+  --border-color: rgba(255, 255, 255, 0.08); // Subtle edge border
+  --border-radius: 10px; // Rounded corners
+
+  position: relative; // Required for ::before positioning
+  overflow: hidden; // Clips the gloss to card boundaries
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: var(--border-radius, 10px);
+  padding: 12px;
+  margin-bottom: 10px;
+
+  // Base background gradient for the plastic body
+  background: linear-gradient(
+    to bottom,
+    var(--base-bg-start, #2a2a2a) 0%,
+    var(--base-bg-end, #1a1a1a) 100%
+  );
+
+  // Bevel + inner shadow via layered box-shadow
+  box-shadow:
+    // Top-left light bevel (catchlight)
+    inset var(--bevel-light-size, 2px) var(--bevel-light-size, 2px) 0
+      var(--bevel-light-color, rgba(255, 255, 255, 0.35)),
+    // Bottom-right dark bevel (shadow edge)
+    inset calc(-1 * var(--bevel-dark-size, 3px)) calc(-1 * var(--bevel-dark-size, 3px)) 0
+      var(--bevel-dark-color, rgba(0, 0, 0, 0.45)),
+    // Inner ambient shadow for depth/cavity feel
+    inset 0 0 var(--inner-shadow-size, 6px) var(--inner-shadow-color, rgba(0, 0, 0, 0.25)),
+    // Outer drop shadow for floating effect (optional)
+    0 2px 6px rgba(0, 0, 0, 0.4);
   // background-color: yellow;
+
+  &.golden::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: gold;
+    border-radius: var(--border-radius, 10px) 0 0 var(--border-radius, 10px);
+  }
+
+  &.magenta::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: magenta;
+    border-radius: 0 var(--border-radius, 10px) var(--border-radius, 10px) 0;
+  }
+
+  &:hover {
+    // On hover, tweak the custom properties
+    --gloss-top-opacity: 0.65; // Brighter (was 0.45)
+    --gloss-height: 35%; // Narrower (was 50%)
+    --bevel-light-color: rgba(255, 255, 255, 0.5); // Stronger catchlight
+
+    // Slight lift effect
+    transform: translateY(-1px);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+    box-shadow:
+      inset var(--bevel-light-size, 2px) var(--bevel-light-size, 2px) 0
+        var(--bevel-light-color, rgba(255, 255, 255, 0.5)),
+      inset calc(-1 * var(--bevel-dark-size, 3px)) calc(-1 * var(--bevel-dark-size, 3px)) 0
+        var(--bevel-dark-color, rgba(0, 0, 0, 0.45)),
+      inset 0 0 var(--inner-shadow-size, 6px) var(--inner-shadow-color, rgba(0, 0, 0, 0.25)),
+      0 4px 10px rgba(0, 0, 0, 0.5);
+  }
+  &:active {
+    --gloss-top-opacity: 0.25; // More matte/diffuse (was 0.45)
+    --gloss-height: 70%; // Wider spread (was 50%)
+    --inner-shadow-size: 3px; // Less depth (surface flattened)
+    --bevel-light-size: 1px; // Thinner catchlight
+
+    transform: translateY(1px);
+    box-shadow:
+      inset var(--bevel-light-size, 1px) var(--bevel-light-size, 1px) 0
+        var(--bevel-light-color, rgba(255, 255, 255, 0.2)),
+      inset calc(-1 * var(--bevel-dark-size, 3px)) calc(-1 * var(--bevel-dark-size, 3px)) 0
+        var(--bevel-dark-color, rgba(0, 0, 0, 0.45)),
+      inset 0 0 var(--inner-shadow-size, 3px) var(--inner-shadow-color, rgba(0, 0, 0, 0.25)),
+      0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.button-open-combatant-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--gloss-height, 50%);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, var(--gloss-top-opacity, 0.45)) 0%,
+    rgba(255, 255, 255, var(--gloss-bottom-opacity, 0)) 100%
+  );
+  border-radius: var(--border-radius, 10px) var(--border-radius, 10px) 0 0;
+  pointer-events: none; // Allows clicks to pass through to the card
+  transition:
+    height 0.25s ease,
+    opacity 0.25s ease;
 }
 
 .combatant-picture-and-text {
