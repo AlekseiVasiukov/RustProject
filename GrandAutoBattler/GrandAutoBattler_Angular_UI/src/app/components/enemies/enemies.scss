@@ -148,9 +148,9 @@
 
   position: relative; // Required for ::before positioning
   overflow: hidden; // Clips the gloss to card boundaries
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  // border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
   border-radius: var(--border-radius, 10px);
-  padding: 12px;
+  padding: 0.3rem 0.5rem;
   margin-bottom: 10px;
 
   // Base background gradient for the plastic body
@@ -179,9 +179,9 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 4px;
+    width: 1px;
     height: 100%;
-    background: gold;
+    // background: gold;
     border-radius: var(--border-radius, 10px) 0 0 var(--border-radius, 10px);
   }
 
@@ -190,9 +190,9 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 4px;
+    width: 1px;
     height: 100%;
-    background: magenta;
+    // background: magenta;
     border-radius: 0 var(--border-radius, 10px) var(--border-radius, 10px) 0;
   }
 
