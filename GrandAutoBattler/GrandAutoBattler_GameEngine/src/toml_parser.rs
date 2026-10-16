@@ -189,3 +189,42 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
     }
     Ok(factions)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod parse_config_from_str {
+        use super::*;
+
+        #[test]
+        //Arrange: string exactly from assets/Settings/GameSettings.toml
+        fn parse_valid_config_toml() {
+            let toml_string = r#"
+PARAMETER_MINIMUM = 0
+PARAMETER_MAXIMUM = 9
+
+BASIC_HEALTH = 100.0
+BASIC_ATTACK = 10.0
+ATTACK_PERCENTAGE_PER_POINT = 5.0
+DEFENSE_PERCENTAGE_PER_POINT = 5.0
+HEALTH_PERCENTAGE_PER_POINT = 5.0
+
+ATTACK_MIDDLE_VALUE_PARAMETER = 4.0
+DEFENSE_MIDDLE_VALUE_PARAMETER = 4.0
+HEALTH_MIDDLE_VALUE_PARAMETER = 4.0
+            "#;
+
+            //Act
+            let config = parse_config_from_str(toml_string).expect("this valid TOML must parse");
+
+            //Assert
+            assert_eq!(config.PARAMETER_MAXIMUM, 9, "Parameter maximum must be 9");
+            assert_eq!(config.BASIC_HEALTH, 100.0, "Basic health must be 100.0");
+            assert_eq!(
+                config.DEFENSE_MIDDLE_VALUE_PARAMETER, 4.0,
+                "Defense middle value should be 4"
+            );
+        }
+    }
+}
