@@ -2,24 +2,20 @@
 //Battle Journal .-.. Turn -<
 //                            .Outcome .-.. Effect ((Enum Effects types))
 use crate::combatant_manager::Combatant;
-use crate::error_types::{GameEngineError, Result};
-use crate::game_data_retriever::{Config, IdRegistry};
-use rand::Rng;
+use crate::game_data_retriever::Config;
 use rand::RngExt;
 use rand::prelude::IndexedRandom;
-use rand::rngs::ThreadRng;
-use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
-use serde_json;
 use std::collections::BTreeMap;
+use utoipa::ToSchema;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub enum Command {
     Attack { src: String, dst: String, dmg: u32 },
     //Others shit goes here Heal, Hex, Poison
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub enum Effect {
     Damage {
         src: String,
@@ -31,7 +27,7 @@ pub enum Effect {
     // Other effects goes here like Heal_received, Got_Poisoned
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub struct BattleJournal {
     pub winner_side: usize,
     pub events: Vec<GameEvent>,
@@ -91,7 +87,7 @@ impl BattleJournal {
             DEFENSE_PERCENTAGE_PER_POINT: 5.0,
             HEALTH_PERCENTAGE_PER_POINT: 5.0,
             ATTACK_MIDDLE_VALUE_PARAMETER: 4.0,
-            DEFENSE_MIDDLE_VALUE_PARAMETER: 2.0,
+            DEFENSE_MIDDLE_VALUE_PARAMETER: 4.0,
             HEALTH_MIDDLE_VALUE_PARAMETER: 4.0,
         });
 
@@ -325,7 +321,7 @@ impl BattleJournal {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub struct GameEvent {
     pub round: u32,
     pub turn: u32,

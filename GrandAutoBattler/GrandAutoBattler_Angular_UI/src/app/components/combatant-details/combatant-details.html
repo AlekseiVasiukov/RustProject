@@ -1,6 +1,109 @@
-<!-- <div class="modal-overlay" (click)="close()"> -->
-<div class="modal-card" (click)="$event.stopPropagation()">
-  <!-- //Future unit card detail here -->
+<div class="modal-overlay" (click)="close()">
+  <div class="combatant-details-card" (click)="$event.stopPropagation()">
+    <!-- Lower LAYER: GIF  -->
+    @if (combatant(); as c) {
+      <div class="card-background">
+        <app-pixel-picture
+          class="background-gif"
+          [src]="getCombatantGif(c, side())"
+          [alt]="getUnitType(c)"
+          pixelSize="2px"
+          width="auto"
+          height="auto"
+        />
+        <!-- <img
+          [src]="getCombatantGif(c, side())"
+          [alt]="getUnitType(combatant()!)"
+          class="background-gif"
+        /> -->
+      </div>
 
+      <!-- Higher level. Foreground Content -->
+
+      <div class="card-content">
+        <div class="name-section">
+          <div class="name">{{ getFullName(c) }}</div>
+          <div class="pretty-type">{{ getUnitType(c) }}</div>
+        </div>
+        <!-- Row 1: Avatar + Name -->
+        <!-- <div class="avatar">
+          <img [src]="getCombatantPng(c, side())" [alt]="getUnitType(c)" class="avatar-image" />
+
+        </div> -->
+
+        <div class="health-section">
+          <span class="health-label">Health Points:</span>
+          <span class="health-value">{{ c.health_points }}</span>
+          <!-- <span class="health-current"
+            >(Current: {{ c.current_health_points }}/{{ c.health_points }})</span
+          > -->
+        </div>
+        <div class="hard-stats-section">
+          <span class="hard-stats-label">H.A.R.D Stats</span>
+          <div class="hard-stats-grid">
+            <div class="stat-box">
+              <div class="parameter-pair">
+                <span class="stat-letter">Health</span>
+                <span class="stat-value">{{ c.parameters.health }}</span>
+              </div>
+              <!-- prettier-ignore -->
+              <span class="stat-description"
+              >HP bonus <span
+                class="stat-bonus"
+                [class.positive]="getUnitHealthBonus(c) > 0"
+                [class.negative]="getUnitHealthBonus(c) < 0"
+                >{{ getUnitHealthBonus(c) }}%</span
+              >
+            </span>
+            </div>
+            <div class="stat-box">
+              <div class="parameter-pair">
+                <span class="stat-letter">Attack</span>
+                <span class="stat-value">{{ c.parameters.attack }}</span>
+              </div>
+              <!-- prettier-ignore -->
+              <span class="stat-description"
+              >Attack bonus <span
+                class="stat-bonus"
+                [class.positive]="getUnitAttackBonus(c) > 0"
+                [class.negative]="getUnitAttackBonus(c) < 0"
+                >{{ getUnitAttackBonus(c) }}%</span
+              >
+            </span>
+            </div>
+            <div class="stat-box">
+              <div class="parameter-pair">
+                <span class="stat-letter">Range</span>
+                <span class="stat-value">{{ c.parameters.range }}</span>
+              </div>
+              <span class="stat-description"
+                >Chance to get hit
+                <span
+                  class="stat-bonus-range"
+                  [class.low-probability]="getUnitRangeBonus(c) < 50"
+                  [class.high-probability]="getUnitRangeBonus(c) >= 50"
+                  >{{ getUnitRangeBonus(c) }}%</span
+                >
+              </span>
+            </div>
+            <div class="stat-box">
+              <div class="parameter-pair">
+                <span class="stat-letter">Defense</span>
+                <span class="stat-value">{{ c.parameters.defense }}</span>
+              </div>
+              <span class="stat-description"
+                >Defense bonus
+                <span
+                  class="stat-bonus"
+                  [class.positive]="getUnitDefenseBonus(c) > 15"
+                  [class.negative]="getUnitDefenseBonus(c) < 15"
+                  >{{ getUnitDefenseBonus(c) }}%</span
+                >
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 </div>
-<!-- </div> -->

@@ -3,8 +3,8 @@ title="UnitTypes"
 [[UnitTypes]]
 unit_type_name="knight"
 unit_type_pretty_name="Knight"
-health=8
-attack=3
+health=7
+attack=4
 range=2
 defense=7
 

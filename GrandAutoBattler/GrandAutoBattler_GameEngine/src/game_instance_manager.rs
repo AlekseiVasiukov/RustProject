@@ -105,20 +105,6 @@ impl GameInstance {
             our_units.push(new_combatant);
         }
 
-        // for (key, value) in selected_unittypes.iter().filter(|(_, v)| v.is_some()) {
-        //     let new_id = self.combatants_register_id.generate_id();
-        //     let faction = &self.factions[selected_factions[&0]];
-        //     let unittype = &self.factions[selected_factions[&0]].unit_types[value.unwrap()];
-
-        //     // for selected_unittype in selected_unittypes{
-        //     //     let unittype = &self.factions[selected_factions[&0]].unit_types[selected_factions];
-        //     // }
-        //     let mut unittype_clone = unittype.clone();
-        //     let new_combatant =
-        //         Combatant::generate_based_on_data(new_id, faction.clone(), unittype_clone)?;
-        //     our_units.push(new_combatant);
-        // }
-
         let mut their_units: Vec<Combatant> = Vec::new();
         for n in 0..number_of_our_non_null_combatants {
             let new_id = self.combatants_register_id.generate_id();
@@ -145,42 +131,6 @@ impl GameInstance {
 
                 their_units.push(new_combatant);
             }
-
-            // let faction = &self.factions[selected_factions[&1]];
-            // let mut rng = rand::rngs::ThreadRng::default();
-
-            // let opponent_faction_index = *selected_factions.get(&1).ok_or_else(|| {
-            //     GameEngineError::FactionNotFound(
-            //         "No faction selected for opponent (index 1)".to_string(),
-            //     )
-            // })?;
-
-            // let faction = self.factions.get(opponent_faction_index).ok_or_else(|| {
-            //     GameEngineError::FactionNotFound(format!(
-            //         "Faction index {} out of range",
-            //         opponent_faction_index
-            //     ))
-            // })?;
-
-            // if let Some(unitType)
-            // let unittype = self.factions[selected_factions[&1]]
-            //     .unit_types
-            //     .choose(&mut rng);
-
-            // let new_combatant = Combatant::generate_based_on_data(
-            //     new_id,
-            //     faction.clone(),
-            //     unittype.unwrap().clone(),
-            // )
-            // .clone();
-
-            // their_units.push(new_combatant);
-            // if let Some(unittype) = unittype {
-            //     let mut unittype_clone = unittype.clone();
-            //     let new_combatant =
-            //         Combatant::generate_based_on_data(new_id, faction.clone(), unittype_clone)?;
-            //     their_units.push(new_combatant);
-            // }
         }
 
         let mut sides: BTreeMap<usize, Vec<Combatant>> = BTreeMap::new();
@@ -192,66 +142,6 @@ impl GameInstance {
 
         Ok(GameResult::new(sides, battle_journal)?)
     }
-    // match GameResult::new(sides, battle_journal) {
-    //     Ok(result) => {
-    //         return Ok(result);
-    //     }
-    //     Err(e) => {
-    //         return Err(e);
-    //     }
-    // }
-    // sides.insert(1, opponents_units);
-
-    // Ok(None);
-    // let character1 = Combatant::new(
-    //     "42".to_string(),
-    //     "Humans".to_string(),
-    //     "knight".to_string(),
-    //     Some("Knight".to_string()),
-    //     Some("Gorge".to_string()),
-    //     Some("From Jungle".to_string()),
-    // );
-    // let mut our_units: BTreeMap<usize, Combatant> = BTreeMap::new();
-    // our_units.insert(0, character1);
-
-    // let character2 = Combatant::new(
-    //     "666".to_string(),
-    //     "Demons".to_string(),
-    //     "imp".to_string(),
-    //     Some("Imp".to_string()),
-    //     Some("Jujuka".to_string()),
-    //     Some("Minoris".to_string()),
-    // );
-    // let mut opponents_units: BTreeMap<usize, Combatant> = BTreeMap::new();
-    // opponents_units.insert(0, character2);
-    // let mut sides: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
-    // sides.insert(0, our_units);
-    // sides.insert(1, opponents_units);
-
-    // let generated_combatants: BTreeMap<usize, BTreeMap<usize, Combatant>> = BTreeMap::new();
-    // match GameResult::new(sides) {
-    //     Ok(result) => {
-    //         return Ok(result);
-    //     }
-    //     Err(e) => {
-    //         return Err(e);
-    //     }
-    // }
-    // }
-    //    match GameResult::new(generated_combatants){
-    //         Ok(game_result)=>{
-    //              self.result = Some(result.clone());
-    //              return result;
-
-    // }
-
-    //     }
-    //     Err(e)=>{return e}
-    //         // Ok(result.unwrap().clone());
-
-    // pub fn calculate_game_result(&mut self) -> Result<GameResult, Box<dyn Error>> {
-    //     Ok(GameResult {})
-    // }
 }
 
 #[derive(Debug, Clone)]
@@ -283,25 +173,6 @@ impl GameInstancesManager {
                 Ok(new_game_id)
             }
         }
-        // let new_game_id = self.game_instances_ids.generate_id();
-        // let result = match GameInstance::new(&new_game_id) {
-        //     Err(e) => {
-        //         tracing::error!(
-        //             "Initialization failed. Game continuation is not possible. Error: {}",
-        //             e
-        //         );
-
-        //         return String::new();
-        //     }
-
-        //     Ok(result) => {
-        //         self.games_by_ids
-        //             .insert(new_game_id.clone(), result.clone());
-        //         tracing::info!("Initialization succeed. ");
-        //         // println!("Initialization succeed. {:#?}", &result);
-        //         return new_game_id;
-        //     }
-        // };
     }
 
     pub fn get_game_data_by_id(&self, game_id: &str) -> Result<GameInstance> {
@@ -309,8 +180,6 @@ impl GameInstancesManager {
             .get(game_id)
             .cloned()
             .ok_or_else(|| GameEngineError::GameInstanceNotFound(game_id.to_string()))
-        // let game_instance = self.games_by_ids.get(key);
-        // return game_instance.unwrap().clone();
     }
 
     pub fn get_game_result_by_id_and_selection(
@@ -327,17 +196,6 @@ impl GameInstancesManager {
         let result =
             game_instance_ref.calculate_game_result(selected_factions, selected_unittypes)?;
         Ok(result)
-        // let game_instance_ref = self
-        //     .games_by_ids
-        //     .get_mut(key)
-        //     .expect("Game instance not found");
-        // // let mut game_instance_clone = game_instance_ref.clone();
-        // // let game_instance: Option<&GameInstance> = self.games_by_ids.get_mut(key).as_deref();
-        // // let result = GameInstance::calculate_game_result(&mut (game_instance.unwrap()));
-        // let result = game_instance_ref
-        //     .calculate_game_result(selected_factions, selected_unittypes)
-        //     .expect("Failed to calculate game result");
-        // result
     }
 
     pub fn get_available_factions(&self, game_id: &String) -> Result<Vec<String>> {
@@ -358,9 +216,7 @@ impl GameInstancesManager {
         let game_instance = self.get_game_data_by_id(&game_id);
 
         let mut unittypes_names: BTreeMap<usize, Vec<String>> = BTreeMap::new();
-        // for (i, faction) in game_instance.factions.iter().enumerate(){
 
-        // }
         for (i, faction) in game_instance?.factions.iter().enumerate() {
             let mut unittypes_names_of_faction: Vec<String> = Vec::new();
             for unit_type in faction.unit_types.clone() {

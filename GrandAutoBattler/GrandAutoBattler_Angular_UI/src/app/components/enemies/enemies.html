@@ -1,6 +1,9 @@
 @if (selectedCombatant()) {
-  <app-combatant-details [combatant]="selectedCombatant()"></app-combatant-details>
-  <!-- (closed)="selectedCombatant(null)" -->
+  <app-combatant-details
+    [combatant]="selectedCombatant()"
+    [side]="selectedConbatantSide()"
+    (closed)="selectedCombatant.set(null)"
+  ></app-combatant-details>
 }
 <div class="enemies-container">
   <div class="game-zone">
@@ -11,18 +14,18 @@
       <div class="side our-side">
         <h3 class="side-title golden">Our Forces</h3>
         @for (combatant of ourCombatants(); track combatant.id) {
-          <div class="unit-picture-and-text" click="onCombatantClick(combatant">
+          <div class="button-open-combatant-card golden" (click)="onCombatantClick(combatant, 0)">
             <div class="combatant-card golden">
               <div class="combatant-name">{{ getFullName(combatant) }}</div>
               <div class="combatant-type">{{ getUnitType(combatant) }}</div>
               <div class="hard-and-hp">
+                <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
                 <div class="combatant-stats">
                   <span>H[{{ combatant.parameters.health }}]</span>
                   <span>A[{{ combatant.parameters.attack }}]</span>
                   <span>R[{{ combatant.parameters.range }}]</span>
                   <span>D[{{ combatant.parameters.defense }}]</span>
                 </div>
-                <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
               </div>
             </div>
             <img
@@ -36,10 +39,10 @@
         }
       </div>
       <!-- enemy side MAGENTA -->
-      <div class="side enemy-side">
+      <div class="side enemies-side">
         <h3 class="side-title magenta">Enemy Forces</h3>
         @for (combatant of enemyCombatants(); track combatant.id) {
-          <div class="unit-picture-and-text">
+          <div class="button-open-combatant-card magenta" (click)="onCombatantClick(combatant, 1)">
             <img
               [src]="getCombatantImage(combatant, 1)"
               [alt]="combatant.unit_type_pretty_name"
@@ -51,13 +54,13 @@
               <div class="combatant-name">{{ getFullName(combatant) }}</div>
               <div class="combatant-type">{{ getUnitType(combatant) }}</div>
               <div class="hard-and-hp">
+                <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
                 <div class="combatant-stats">
                   <span>H[{{ combatant.parameters.health }}]</span>
                   <span>A[{{ combatant.parameters.attack }}]</span>
                   <span>R[{{ combatant.parameters.range }}]</span>
                   <span>D[{{ combatant.parameters.defense }}]</span>
                 </div>
-                <div class="combatant-hp">HP: {{ combatant.health_points }}</div>
               </div>
             </div>
           </div>

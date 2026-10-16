@@ -1,25 +1,357 @@
-.combatant-details-card {
-  grid-template-columns: 128 1fr;
-  max-width: 480px;
+@import '../../../styles/mixins.scss';
+
+/* ============================================================
+   Modal overlay. COVERING EVERYTHING WHEN COMBATANT SELECTED
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
+/* ============================================================
+   Card Container (relative positioning for z-index context)
+   ============================================================ */
+.combatant-details-card {
+  @include beveled-rounded-card;
+  position: relative;
+  display: grid;
+  // grid-template-columns: auto auto;
+  // grid-template-rows: auto auto;
+  // gap: 12px;
+  padding: 1rem;
+
+  min-width: 700px;
+  height: 25rem;
+  // border: 1px solid rgba(255, 255, 255, 0.08);
+
+  overflow: hidden;
+}
+
+/* ============================================================
+   LAYER 0: GIF Background (behind all content)
+   ============================================================ */
+.card-background {
+  // position: absolute;
+  // inset: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  z-index: 0;
+
+  .background-gif {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+    z-index: 0;
+    object-fit: cover;
+    image-rendering: pixelated;
+
+    @media (min-width: 801px) {
+      animation: flareIn 1s ease-out forwards;
+    }
+
+    @media (max-width: 800px) {
+      animation: none;
+    }
+  }
+}
+
+/* Desktop flare animation - starts bright/oversaturated, settles to normal */
+@keyframes flareIn {
+  0% {
+    filter: brightness(4) saturate(3) contrast(0.2) blur(0px);
+    opacity: 1;
+  }
+  15% {
+    filter: brightness(2) saturate(2) contrast(0.6) blur(0px);
+    opacity: 1;
+  }
+  70% {
+    filter: brightness(1.2) saturate(1.2) contrast(0.9) blur(0px);
+    opacity: 1;
+  }
+  100% {
+    filter: brightness(1) saturate(1) contrast(1) blur(0px);
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   LAYER 1: Foreground Content (on top of background)
+   ============================================================ */
+.card-content {
+  position: absolute;
+  z-index: 1;
+  // color: #e0e0e0;
+  width: auto;
+  height: auto;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.25);
+  // border-radius: 1rem;
+  // border: 2px solid yellow;
+  padding: 1rem;
+
+  display: grid;
+  grid-auto-rows: 1fr 3fr;
+  // grid-auto-rows: 1 -1;
+  // grid-auto-columns: auto auto;
+
+  display: grid;
+
+  // grid-template: auto auto auto;
+  // grid-template-areas:
+  //   'name-zone hp-zone'
+  //   'hard-stats-zone';
+  // grid-template-columns: 1fr 3fr;
+}
+
+// .avatar {
+//   // grid-row: 1;
+//   // grid-column: 1;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+
+//   .avatar-image {
+//     width: 128px;
+//     height: 128px;
+//     image-rendering: pixelated;
+//     border: 2px solid rgba(255, 255, 255, 0.15);
+//     border-radius: 6px;
+//   }
+// }
+
+/* ============================================================
+   Grid Cell: Name Section (Row 1, Column 2)
+   ============================================================ */
+.name-section {
+  // grid-area: name-zone;
+  // border: 2px solid white;
+  grid-row: 1;
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .name {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    margin-bottom: 4px;
+  }
+
+  .pretty-type {
+    font-size: 0.9rem;
+    color: lightgray;
+    font-style: italic;
+  }
+}
+
+.health-section {
+  // grid-area: hp-zone;
+  // border: 2px solid white;
+  grid-row: 1;
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  justify-content: center;
+  gap: 2px;
+
+  .health-label {
+    font-size: 1rem;
+    color: white;
+  }
+
+  .health-value {
+    font-size: 1.5rem;
+    font-weight: bolder;
+    color: pink;
+  }
+
+  // .health-current {
+  //   font-size: 0.75rem;
+  //   color: #777;
+  // }
+}
+
+.hard-stats-section {
+  grid-column: span;
+  // grid-area: hard-stats-zone;
+  // border: 2px solid white;
+  grid-row: 2;
+  grid-column: 1;
+  grid-column-end: span 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .hard-stats-label {
+    text-align: center;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: larger;
+    margin: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.7);
+    // width: 10rem;
+
+    border-radius: 1rem;
+  }
+
+  .hard-stats-grid {
+    width: 100%;
+    justify-self: center;
+
+    align-self: stretch;
+    text-align: center;
+    width: 100%;
+    height: auto;
+    // vertical-align: middle;
+    align-items: center;
+    // position: absolute;
+    inset: 0;
+    // background-color: yellow;
+    display: grid;
+    grid-template-columns: auto auto;
+    // grid-template-rows: auto auto;
+    justify-content: space-around;
+    // text-align: center;
+    // align-items: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stat-box {
+    // grid-auto-flow: dense;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    // border: 1px solid rgba(255, 255, 255, 0.1);
+    // gap: 1rem;
+    border-radius: 1rem;
+    padding: 0.5rem 1rem;
+    // min-width: 10rem;
+
+    .parameter-pair {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      align-items: center;
+      gap: 0.5rem;
+      // align-items: stretch;
+    }
+
+    .stat-letter {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #ffcc00;
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .stat-bonus {
+      font-style: italic;
+
+      &.positive {
+        color: olive;
+        // color: olive;
+      }
+
+      &.negative {
+        color: deeppink;
+      }
+    }
+
+    .stat-bonus-range {
+      font-style: italic;
+
+      &.low-probability {
+        color: olive;
+        font-weight: 200;
+        // color: olive;
+      }
+
+      &.high-probability {
+        color: deeppink;
+      }
+    }
+  }
+}
+
+.combatant-details-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  // background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+  border-radius: 10px 10px 0 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE (width < 800px)
+   ============================================================ */
 @media (max-width: 800px) {
   .combatant-details-card {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
     max-width: 90vw;
     max-height: 80vh;
     overflow-y: auto;
+    padding: 8px;
+    gap: 8px;
   }
 
   .card-background {
     position: relative;
     height: 160px;
     inset: auto;
+
+    .background-gif {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
   }
 
+  /* Avatar spans full width and centers */
   .avatar {
-    grid-column: 1/-1;
-    margin: 0 auto;
+    grid-column: 1 / -1;
+
+    .avatar-image {
+      width: 96px;
+      height: 96px;
+    }
+  }
+
+  /* Name section centers on mobile */
+  .name-section {
+    grid-column: 1 / -1;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Health and stats stack vertically */
+  .health-section {
+    grid-column: 1 / -1;
+  }
+
+  .hard-stats-section {
+    grid-column: 1 / -1;
   }
 }

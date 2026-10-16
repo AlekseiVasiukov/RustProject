@@ -3,19 +3,19 @@ title="UnitTypes"
 [[UnitTypes]]
 unit_type_name="imp"
 unit_type_pretty_name="Imp"
-health=8
-attack=2
-range=8
+health=6
+attack=6
+range=6
 defense=2
 
 [[UnitTypes]]
 unit_type_name="succubus"
 unit_type_pretty_name="Succubus"
 females_only=true
-health=3
-attack=3
+health=4
+attack=4
 range=6
-defense=8
+defense=6
 
 [[UnitTypes]]
 unit_type_name="demonologist"

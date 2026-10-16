@@ -1,13 +1,10 @@
 use crate::error_types::{GameEngineError, Result};
-use rand::RngExt;
+use rand::prelude::IndexedRandom;
 use serde::Deserialize;
 use std::env;
-// use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
-
-use rand::prelude::IndexedRandom;
 
 use crate::game_data_retriever::*;
 
@@ -19,7 +16,6 @@ pub struct ConfigToml {
 impl ConfigToml {
     pub fn new() -> Result<Self> {
         let exe_path = env::current_exe()?;
-        // let exe_dir = exe_path.parent().ok_or("Failed to get parent dir");
         let exe_dir = exe_path.parent().ok_or_else(|| {
             GameEngineError::ConfigNotFound("Failed to get executable parent directory".to_string())
         });
@@ -32,7 +28,6 @@ impl ConfigToml {
             .ok_or_else(|| {
                 GameEngineError::ConfigNotFound("Failed to convert path to string".to_string())
             })?
-            // .ok_or("Failed to convert path to string (possibly invalid UTF-8)")?
             .to_string();
 
         Ok(Self {
@@ -73,46 +68,20 @@ pub(crate) fn load_config() -> Result<Config> {
     let toml_content = fs::read_to_string(&config_path)?;
 
     let config = parse_config_from_str(&toml_content)?;
-    // let config_result =
-    //     parse_config_from_str(&toml_content).map_err(|e| Box::new(e) as Box<dyn Error>);
-    // let config = config_result?;
-
     Ok(config)
 }
 
 pub(crate) fn load_factions() -> Result<Vec<Faction>> {
-    // pub(crate) fn load_factions() -> Result<Vec<Faction>, Box<dyn Error>> {
     let mut factions: Vec<Faction> = Vec::new();
 
     let exe_path = env::current_exe()?;
     let exe_dir = exe_path.parent().ok_or_else(|| {
         GameEngineError::ConfigNotFound("Failed to get executable parent directory".to_string())
     })?;
-    // let exe_dir = exe_path.parent().ok_or("Failed to get parent dir");
     let assets_dir = exe_dir.join("assets");
-    // let b = assets_dir.to_string_lossy();
     let factions_folder_path = assets_dir.join("Factions");
 
-    // for entry in WalkDir::new(&factions_folder_path)
-    //     .max_depth(1)
-    //     .min_depth(1)
-    //     .into_iter()
-    //     .filter_map(Result::ok)
-    //     .filter(|e| e.file_type().is_file())
-    // {
-    //     let f_name = String::from(entry.file_name().to_string_lossy());
-    // }
-
     let mut factions_names: Vec<String> = Vec::new();
-
-    // let factions_names: Vec<String> = WalkDir::new(&factions_folder_path)
-    //     .max_depth(1)
-    //     .min_depth(1)
-    //     .into_iter()
-    //     .filter_map(Result::ok)
-    //     .filter(|e| e.file_type().is_dir())
-    //     .map(|e| String::from(e.file_name()).to_string())
-    //     .collect();
 
     for entry in WalkDir::new(&factions_folder_path)
         .max_depth(1)
@@ -129,28 +98,18 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
         return Err(GameEngineError::FactionNotFound(
             "Factions folder is empty or contains no subdirectories.".to_string(),
         ));
-        // return Err("Factions folder is empty".into());
-
-        //THis is boxing text for Err return 0_o
-
-        // return Err("Factions folder is empty".into());
     }
 
-    // let mut factions_list: Vec<Faction> = Vec::new();
     for faction_name in factions_names {
-        //Checking if there are types
         let faction_folder_path = factions_folder_path.join(&faction_name);
         let faction_types_path = faction_folder_path.join("UnitTypes.toml");
         let toml_content = match fs::read_to_string(&faction_types_path) {
             Err(e) => {
                 tracing::warn!(
                     "Cound't read UnitTypes.toml for faction '{}': {}",
-                    faction_name, e
+                    faction_name,
+                    e
                 );
-                // println!(
-                //     "Couldn't get the faction's UnitType contents for: {:?},{}",
-                //     &faction_name, e
-                // );
                 continue;
             }
             Ok(result) => result,
@@ -160,7 +119,8 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
             Err(e) => {
                 tracing::warn!(
                     "Couldn't parse the faction's UnitType contents for: {:?},{}",
-                    &faction_name, e
+                    &faction_name,
+                    e
                 );
                 continue;
             }
@@ -172,10 +132,6 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
                 "No unittypes defined for faction '{}. Skipping.",
                 faction_name
             );
-            // eprintln!(
-            //     "There is no usable Unit Type for {:?} faction loaded. Skipping faction",
-            //     faction_name
-            // );
             continue;
         }
 
@@ -192,7 +148,6 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
         let mut male_names_last_names_file =
             male_names_folder_location.join("MiddleLastNames.toml");
 
-        // if let Ok(result) pattern, allowing to continue logic and silence the errors.
         if let Ok(content) = fs::read_to_string(male_names_first_names_file)
             && let Ok(data) = toml::from_str::<NameToml>(&content)
         {
@@ -231,7 +186,6 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
         return Err(GameEngineError::FactionNotFound(
             "No usable factions could be loaded from disk".to_string(),
         ));
-        // return Err("There is no usable faction loaded.".into());
     }
     Ok(factions)
 }
