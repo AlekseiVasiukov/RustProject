@@ -226,5 +226,29 @@ HEALTH_MIDDLE_VALUE_PARAMETER = 4.0
                 "Defense middle value should be 4"
             );
         }
+
+        #[test]
+        fn parse_wrong_config_from_string_and_fail() {
+            use super::*;
+            //assert
+            let toml_string = r#"
+            Gargage random text:;;;;#$$
+            "#;
+
+            let err =
+                parse_config_from_str(toml_string).expect_err("garbage input must fail to parse");
+
+            //assert
+            assert!(
+                matches!(err, GameEngineError::TomlParse(_)),
+                "expected a TomlParse error, got: {err:?}"
+            );
+
+            std::assert_matches!(
+                err,
+                GameEngineError::TomlParse(_),
+                "expected a TomlParse error, got: {err:?}"
+            );
+        }
     }
 }
