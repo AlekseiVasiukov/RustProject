@@ -281,4 +281,47 @@ HEALTH_MIDDLE_VALUE_PARAMETER = 4.0
             assert_eq!(unit_type.parameters_set["defense"], 2);
         }
     }
+
+    mod faction_new {
+
+        use super::*;
+
+        #[test]
+        fn creating_new_faction_struct_demons() {
+            //arrange
+            let faction = Faction::new("Demons".to_string());
+
+            //assert
+            assert_eq!(
+                faction.name,
+                "Demons".to_owned(),
+                "faction name should be 'Demons'"
+            );
+
+            assert!(
+                faction.unit_types.is_empty(),
+                "unittypes collection should be empty"
+            );
+
+            assert!(
+                faction.female_first_names.is_empty(),
+                "female_first_names collection should be empty"
+            );
+
+            assert!(
+                faction.female_last_names.is_empty(),
+                "female_last_names collection should be empty"
+            );
+
+            assert!(
+                faction.male_first_names.is_empty(),
+                "female_last_names collection should be empty"
+            );
+
+            assert!(
+                faction.male_last_names.is_empty(),
+                "female_last_names collection should be empty"
+            );
+        }
+    }
 }
