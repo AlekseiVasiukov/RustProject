@@ -251,4 +251,34 @@ HEALTH_MIDDLE_VALUE_PARAMETER = 4.0
             );
         }
     }
+
+    mod unit_type_from_toml {
+        use super::*;
+        use crate::toml_parser::UnitTypesToml;
+
+        #[test]
+        fn converts_imp_toml_into_unit_type_with_default_gender() {
+            //arrange
+            let toml_unit = UnitTypesToml {
+                unit_type_name: "imp".to_string(),
+                unit_type_pretty_name: Some("Imp".to_string()),
+                females_only: None,
+                health: 6,
+                attack: 6,
+                range: 6,
+                defense: 2,
+            };
+
+            //act
+            let unit_type = UnitType::from(toml_unit);
+
+            assert_eq!(unit_type.unit_type_name, "imp");
+            assert_eq!(unit_type.unit_type_pretty_name, Some("Imp".to_string()));
+            assert!(!unit_type.females_only, "Must fall back to false when None");
+            assert_eq!(unit_type.parameters_set["health"], 6);
+            assert_eq!(unit_type.parameters_set["attack"], 6);
+            assert_eq!(unit_type.parameters_set["range"], 6);
+            assert_eq!(unit_type.parameters_set["defense"], 2);
+        }
+    }
 }
