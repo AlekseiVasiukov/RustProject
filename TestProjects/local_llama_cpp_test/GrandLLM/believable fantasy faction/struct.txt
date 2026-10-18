@@ -1,0 +1,12 @@
+{
+  "$id": "https://example.com/person.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Answer",
+  "type": "object",
+  "properties": {
+    "answer": {
+      "type": "boolean",
+      "description": "LLM answer to User's question."
+    }
+  }
+}

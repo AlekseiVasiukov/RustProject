@@ -1,0 +1,2 @@
+https://huggingface.co/chaoliangUNSW/Jev-Style-0.8B-Decision-v3-GGUF
+osmosis-ai/Osmosis-Structure-0.6B

@@ -1,0 +1,33 @@
+{
+  "model": "default",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You must provide a fantasy race name in structured output with a string property. Good examples: Elves, Orcs, Eldars, Tau, Time Weavers, Cave Dwellers, Abyssalists, Aetherians. Bad examples: Lawers (profession in real life), Dadsds (random letters), Idiots (post-modern real life controversial)."
+    },
+    {
+      "role": "user",
+      "content": "Generate a fantasy race name."
+    }
+  ],
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "FactionAnswer",
+      "schema": {
+        "$id": "https://example.com/faction.schema.json",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "FactionAnswer",
+        "type": "object",
+        "properties": {
+          "FactionName": {
+            "type": "string",
+            "description": "The name of the fantasy faction."
+          }
+        },
+        "required": ["FactionName"],
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$id": "https://example.com/person.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "UnitTypesAnswer",
+  "type": "object",
+  "properties": {
+    "unit-types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "UnitTypeName": {
+            "type": "string"
+          },
+          "Strong": {
+            "type": "string"
+          },
+          "Weak": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

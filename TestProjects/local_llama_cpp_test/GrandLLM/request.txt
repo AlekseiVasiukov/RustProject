@@ -1,0 +1,26 @@
+You will get the fantasy/DnD faction name, You must return answer Json-object with string array of four possible unit types specific for that faction.
+Examples: Humans -> Knight, Mage, Archer, Priest.
+Demon -> Succubus, Moloch, Imp, Demonologist.
+
+Be creative: Recall exotic warriors from Warcraft, Dark Souls, Lord of the Rings franchise and so on. Batrider and Gyrocopter are good examples. Complex names like "Hellish Hound" and "Silver Ranger" is fine too. Two of four warriors could be a variations of each other: "Shield-wielding Grunt" "Berserker Grunt".
+
+Additionally you should spread parameters for each of that unit types you'd create. 
+
+The parameters are 
+HEALTH
+ATTACK
+RANGE
+DEFENSE
+
+All of them are 0 at minimum, and 9 at maximum. 
+In summary four parameters should be equal to 20. 
+
+For example:
+Knight H.A.R.D (Health, Attack, Range, Defense). 
+"8 3 2 7"
+
+Archer
+"3 5 9 3"
+
+Mage 
+"3 6 7 4"
