@@ -130,7 +130,7 @@ Use `GrandAutoBattler_Console_Runner` to run this library.
 
 ### TypeScript-based projects
 
-<details open>
+<details>
 
 <summary>- <b>GrandAutoBattler_Angular_UI</b>:</summary>
 
