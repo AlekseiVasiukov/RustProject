@@ -1,0 +1,2 @@
+You will get the question about, is the following string is believable/valid to be Fantasy/DnD faction name. If it can be considered as faction/race you return true, if you unsure or it is not valid - return false.
+There cannot be any other answers from your side

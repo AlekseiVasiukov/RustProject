@@ -1,0 +1,22 @@
+{
+  $id httpsexample.comperson.schema.json,
+  $schema httpsjson-schema.orgdraft2020-12schema,
+  title UnitTypesAnswer,
+  type object,
+  properties {
+    unit-types {
+      type array,
+      items {
+        type object,
+        properties {
+          UnitTypeName {
+            type string
+          },
+          Parameters {
+            type string
+          }
+        }
+      }
+    }
+  }
+}
