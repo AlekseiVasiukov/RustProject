@@ -32,7 +32,7 @@ impl Combatant {
         let mut first_name: Option<String> = None;
         let mut last_name: Option<String> = None;
         let mut rng = rand::rngs::ThreadRng::default();
-        let mut gender: usize = if (unittype.females_only) { 0 } else { 1 };
+        let mut gender: usize = if unittype.females_only { 0 } else { 1 };
         let mut turn_by = *[0, 1].choose(&mut rng).unwrap_or(&0);
 
         let config = game_data_retriever::get_config()?;

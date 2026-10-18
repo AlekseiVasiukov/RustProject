@@ -189,3 +189,139 @@ pub(crate) fn load_factions() -> Result<Vec<Faction>> {
     }
     Ok(factions)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod parse_config_from_str {
+        use super::*;
+
+        #[test]
+        //Arrange: string exactly from assets/Settings/GameSettings.toml
+        fn parse_valid_config_toml() {
+            let toml_string = r#"
+PARAMETER_MINIMUM = 0
+PARAMETER_MAXIMUM = 9
+
+BASIC_HEALTH = 100.0
+BASIC_ATTACK = 10.0
+ATTACK_PERCENTAGE_PER_POINT = 5.0
+DEFENSE_PERCENTAGE_PER_POINT = 5.0
+HEALTH_PERCENTAGE_PER_POINT = 5.0
+
+ATTACK_MIDDLE_VALUE_PARAMETER = 4.0
+DEFENSE_MIDDLE_VALUE_PARAMETER = 4.0
+HEALTH_MIDDLE_VALUE_PARAMETER = 4.0
+            "#;
+
+            //Act
+            let config = parse_config_from_str(toml_string).expect("this valid TOML must parse");
+
+            //Assert
+            assert_eq!(config.PARAMETER_MAXIMUM, 9, "Parameter maximum must be 9");
+            assert_eq!(config.BASIC_HEALTH, 100.0, "Basic health must be 100.0");
+            assert_eq!(
+                config.DEFENSE_MIDDLE_VALUE_PARAMETER, 4.0,
+                "Defense middle value should be 4"
+            );
+        }
+
+        #[test]
+        fn parse_wrong_config_from_string_and_fail() {
+            use super::*;
+            //assert
+            let toml_string = r#"
+            Gargage random text:;;;;#$$
+            "#;
+
+            let err =
+                parse_config_from_str(toml_string).expect_err("garbage input must fail to parse");
+
+            //assert
+            assert!(
+                matches!(err, GameEngineError::TomlParse(_)),
+                "expected a TomlParse error, got: {err:?}"
+            );
+
+            std::assert_matches!(
+                err,
+                GameEngineError::TomlParse(_),
+                "expected a TomlParse error, got: {err:?}"
+            );
+        }
+    }
+
+    mod unit_type_from_toml {
+        use super::*;
+        use crate::toml_parser::UnitTypesToml;
+
+        #[test]
+        fn converts_imp_toml_into_unit_type_with_default_gender() {
+            //arrange
+            let toml_unit = UnitTypesToml {
+                unit_type_name: "imp".to_string(),
+                unit_type_pretty_name: Some("Imp".to_string()),
+                females_only: None,
+                health: 6,
+                attack: 6,
+                range: 6,
+                defense: 2,
+            };
+
+            //act
+            let unit_type = UnitType::from(toml_unit);
+
+            assert_eq!(unit_type.unit_type_name, "imp");
+            assert_eq!(unit_type.unit_type_pretty_name, Some("Imp".to_string()));
+            assert!(!unit_type.females_only, "Must fall back to false when None");
+            assert_eq!(unit_type.parameters_set["health"], 6);
+            assert_eq!(unit_type.parameters_set["attack"], 6);
+            assert_eq!(unit_type.parameters_set["range"], 6);
+            assert_eq!(unit_type.parameters_set["defense"], 2);
+        }
+    }
+
+    mod faction_new {
+
+        use super::*;
+
+        #[test]
+        fn creating_new_faction_struct_demons() {
+            //arrange
+            let faction = Faction::new("Demons".to_string());
+
+            //assert
+            assert_eq!(
+                faction.name,
+                "Demons".to_owned(),
+                "faction name should be 'Demons'"
+            );
+
+            assert!(
+                faction.unit_types.is_empty(),
+                "unittypes collection should be empty"
+            );
+
+            assert!(
+                faction.female_first_names.is_empty(),
+                "female_first_names collection should be empty"
+            );
+
+            assert!(
+                faction.female_last_names.is_empty(),
+                "female_last_names collection should be empty"
+            );
+
+            assert!(
+                faction.male_first_names.is_empty(),
+                "female_last_names collection should be empty"
+            );
+
+            assert!(
+                faction.male_last_names.is_empty(),
+                "female_last_names collection should be empty"
+            );
+        }
+    }
+}
