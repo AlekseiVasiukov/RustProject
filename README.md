@@ -4,7 +4,7 @@
 
 <img width="700" height="350" alt="Grand_Auto-Battler_concept" src="img/Grand_Auto-Battler_concept.png" />
 
-It's the game of **two parties fighting each other**.
+This is the game of the **two parties fighting each other**.
 Left party (ours) consist of selectable characters (4 maximum). The opposite party (enemy, on the right) is generated with equal warriors number. Every warrior has distributed his 20 skill points (out of 40) respectively to their unit type. Health, Attack, Range and Defense (so called **H.A.R.D system**) are distinguish close-quarters swordsman from long-ranged archer.
 
 The design-document can be found in:
