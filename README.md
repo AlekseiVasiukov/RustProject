@@ -156,6 +156,7 @@ Also you can view production version at: [GrandAutoBattler.com](https://GrandAut
 <details>
 
 <summary>- Future technologies improvement:</summary>
+
 * LLM generation of additional game data.
 * Port webUI to React (since it's more popular than Angular)
 * Cover the server-side with unit tests until the end. Introduce integration tests.
@@ -168,6 +169,7 @@ Also you can view production version at: [GrandAutoBattler.com](https://GrandAut
 <details>
 
 <summary>- Future gameplay improvement:</summary>
+
 * Change from the current concept of making the same size of enemy party as user's to gradual progression with inter-battles managing stages (rogue-lite)
 * Give more special effects to webUI action.
 * Make sound effects
