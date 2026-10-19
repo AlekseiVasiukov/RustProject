@@ -36,20 +36,20 @@
               }
             ],
 
-            "styles": ["src/styles/styles.scss", "src/styles/mixins.scss"]
+            "styles": ["src/styles/styles.scss", "src/styles/mixins.scss", "src/styles/_variables.scss"]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "30MB",
-                  "maximumError": "35MB"
+                  "maximumWarning": "2mb",
+                  "maximumError": "3mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "10MB",
-                  "maximumError": "18MB"
+                  "maximumWarning": "2mb",
+                  "maximumError": "3mb"
                 }
               ],
               "outputHashing": "all"
@@ -72,6 +72,7 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
+
               "buildTarget": "GrandAutoBattler_Angular_UI:build:production"
             },
             "development": {
