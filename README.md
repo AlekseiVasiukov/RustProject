@@ -2,7 +2,7 @@
 
 ## Computer game "Grand Auto-Battler".
 
-[https:://GrandAutoBattler.com](GrandAutoBattler.com)
+<a href="https:://GrandAutoBattler.com">GrandAutoBattler.com</>
 
 <img width="700" height="350" alt="Grand_Auto-Battler_concept" src="img/Grand_Auto-Battler_concept.png" />
 
