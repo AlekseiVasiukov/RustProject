@@ -2,6 +2,8 @@
 
 ## Computer game "Grand Auto-Battler".
 
+<a href="https://GrandAutoBattler.com">GrandAutoBattler.com</a>
+
 <img width="700" height="350" alt="Grand_Auto-Battler_concept" src="img/Grand_Auto-Battler_concept.png" />
 
 This is the game of the **two parties fighting each other**.
