@@ -1,0 +1,16 @@
+@page "/newgame"
+<PageTitle> New Game </PageTitle>
+<h1>Text here</h1>
+<p role="status">New Game ID: @currentGameId</p>
+<button class="btn btn-primary" @onclick="Get_New_Game_Id">Click to get ID</button>
+
+@code {
+
+    private string currentGameId = "666";
+
+    private void Get_New_Game_Id()
+    {
+        @* currentGameId = "777"; *@
+        currentGameId = Random.Shared.Next(1,100).ToString();
+    }
+}
